@@ -1,0 +1,502 @@
+/* =========================================
+   1. RESET & UNIDADES DE MEDIDA FLUIDAS
+========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Define o tamanho base de fonte relativo à largura da tela. 
+       Isso faz o site todo 'encolher' ou 'crescer' proporcionalmente */
+    font-size: clamp(14px, 1.2vw, 18px);
+}
+
+:root {
+    --preto: #050505;
+    --amarelo: #ffd900;
+    --cinza-escuro: #121212;
+    --cinza-card: #1c1c1c;
+    --texto: #ffffff;
+    --texto-secundario: #ccc;
+    --borda: #333;
+}
+
+body {
+    background-color: var(--preto);
+    color: var(--texto);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* =========================================
+   2. CONTAINERS & COMPONENTES ADAPTÁVEIS
+========================================= */
+.container {
+    width: min(90%, 1200px); /* Usa 90% da tela em celulares e trava em 1200px em telas gigantes */
+    margin: 0 auto;
+}
+
+/* Textos totalmente adaptáveis com a função clamp(mínimo, ideal, máximo) */
+.titulo {
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    text-transform: uppercase;
+    font-weight: 900;
+    line-height: 1.15;
+}
+
+.titulo span {
+    color: var(--amarelo);
+}
+
+.titulo.centro {
+    text-align: center;
+}
+
+.subtitulo {
+    text-align: center;
+    color: var(--texto-secundario);
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Botões com padding e fonte fluidos */
+.botao {
+    display: inline-block;
+    background: var(--amarelo);
+    color: #000;
+    padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(1.2rem, 2.5vw, 2rem);
+    border-radius: 50px;
+    font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    text-align: center;
+}
+
+.botao:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+.seta {
+    background: none;
+    border: none;
+    color: var(--amarelo);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    cursor: pointer;
+    padding: 0 0.3rem;
+    user-select: none;
+}
+
+/* =========================================
+   3. CAVEÇALHO & HERO (TOTALMENTE FLUIDOS)
+========================================= */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: clamp(0.5rem, 1.5vw, 1rem) 0;
+    background-color: rgba(5, 5, 5, 0.88);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--borda);
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Mini Logo adaptável ao tamanho da tela */
+.logo-img-mini {
+    width: clamp(40px, 6vw, 60px);
+    height: clamp(40px, 6vw, 60px);
+    border-radius: 50%;
+    border: 2px solid var(--amarelo);
+    object-fit: cover;
+}
+
+nav ul {
+    display: flex;
+    gap: clamp(0.6rem, 1.8vw, 1.5rem);
+    list-style: none;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+nav a {
+    color: var(--texto);
+    text-decoration: none;
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--amarelo);
+}
+
+.hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-top: clamp(80px, 12vh, 120px);
+    padding-bottom: 3rem;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: brightness(0.35);
+}
+
+.hero-conteudo {
+    position: relative;
+    z-index: 5;
+    max-width: min(100%, 600px);
+}
+
+.hero-conteudo h1 {
+    font-size: clamp(1.8rem, 5.5vw, 3.5rem);
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.hero-conteudo h1 span {
+    color: var(--amarelo);
+}
+
+.hero-conteudo p {
+    margin: 1.2rem 0;
+    color: var(--texto-secundario);
+    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+}
+
+/* =========================================
+   4. SOBRE NÓS
+========================================= */
+.sobre {
+    padding: clamp(3rem, 8vw, 6rem) 0;
+    background: var(--cinza-escuro);
+}
+
+.sobre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+}
+
+.sobre-texto {
+    margin-top: 1rem;
+    color: var(--texto-secundario);
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    line-height: 1.6;
+}
+
+.logo-principal-container {
+    display: flex;
+    justify-content: center;
+}
+
+.logo-principal-img {
+    width: 100%;
+    max-width: clamp(180px, 30vw, 260px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border: clamp(3px, 0.5vw, 5px) solid var(--amarelo);
+    object-fit: cover;
+}
+
+/* =========================================
+   5. NOSSO ESPAÇO (CARROSSEL ADAPTÁVEL)
+========================================= */
+.espaco {
+    padding: clamp(3rem, 8vw, 6rem) 0;
+    border-top: 1px solid var(--borda);
+    border-bottom: 1px solid var(--borda);
+}
+
+.espaco-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    align-items: center;
+}
+
+.carrossel-espaco-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.carrossel-espaco-container {
+    width: 100%;
+    height: clamp(200px, 35vw, 350px);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--cinza-card);
+}
+
+.carrossel-espaco-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =========================================
+   6. LOCALIZAÇÃO
+========================================= */
+.localizacao {
+    padding: clamp(3rem, 8vw, 6rem) 0;
+    background: var(--cinza-escuro);
+}
+
+.localizacao-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.mapa-container iframe {
+    width: 100%;
+    height: clamp(220px, 30vw, 320px);
+    border-radius: 12px;
+    border: 2px solid var(--borda);
+}
+
+.localizacao-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-item .icone {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    background: var(--cinza-card);
+    border-radius: 50%;
+    border: 1px solid var(--amarelo);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(40px, 5vw, 50px);
+    height: clamp(40px, 5vw, 50px);
+    flex-shrink: 0;
+}
+
+.info-item p {
+    font-weight: bold;
+    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+    line-height: 1.4;
+}
+
+/* =========================================
+   7. AVALIAÇÕES (ADAPTÁVEL)
+========================================= */
+.avaliacoes {
+    padding: clamp(3rem, 8vw, 6rem) 0;
+}
+
+.avaliacoes-carrossel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.avaliacoes-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 0.8rem 0;
+    width: 100%;
+    max-width: 850px;
+}
+
+.avaliacoes-container::-webkit-scrollbar {
+    display: none;
+}
+
+.card-avaliacao {
+    background: var(--cinza-card);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    width: clamp(230px, 70vw, 280px);
+    flex: 0 0 auto;
+}
+
+.card-avaliacao .header-cliente {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.avatar-cliente {
+    width: clamp(35px, 4vw, 45px);
+    height: clamp(35px, 4vw, 45px);
+    border-radius: 50%;
+    background: var(--amarelo);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    flex-shrink: 0;
+}
+
+.card-avaliacao .nome-cliente {
+    font-weight: bold;
+    font-size: clamp(0.8rem, 1.3vw, 0.9rem);
+}
+
+.card-avaliacao .estrelas {
+    color: var(--amarelo);
+    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+}
+
+.card-avaliacao .comentario {
+    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+    color: var(--texto-secundario);
+    line-height: 1.4;
+}
+
+/* Formulário de Avaliação */
+.form-avaliacao-box {
+    margin-top: 3rem;
+    background: var(--cinza-escuro);
+    padding: clamp(1.2rem, 3vw, 2rem);
+    border-radius: 12px;
+    width: min(100%, 500px);
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--borda);
+}
+
+.form-avaliacao-box h3 {
+    margin-bottom: 1.2rem;
+    text-align: center;
+    color: var(--amarelo);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+}
+
+.form-avaliacao-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-avaliacao-box input,
+.form-avaliacao-box select,
+.form-avaliacao-box textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: #000;
+    border: 1px solid var(--borda);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px; /* Evita que o iPhone dê zoom automático ao focar no campo */
+    font-family: inherit;
+}
+
+/* =========================================
+   8. CONTATO E FOOTER
+========================================= */
+.contato {
+    padding: clamp(3rem, 8vw, 6rem) 0;
+    background: var(--cinza-escuro);
+    border-top: 1px solid var(--borda);
+}
+
+.contato-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    align-items: center;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.botao-contato {
+    display: inline-block;
+    padding: clamp(0.8rem, 2vw, 1.1rem) clamp(1.2rem, 3vw, 1.8rem);
+    background: var(--amarelo);
+    color: #000;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+    text-align: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.botao-contato:hover {
+    background: #fff;
+    transform: scale(1.02);
+}
+
+footer {
+    padding: 1.5rem 0;
+    text-align: center;
+    color: var(--texto-secundario);
+    font-size: clamp(0.7rem, 1.1vw, 0.8rem);
+    border-top: 1px solid var(--borda);
+}
+
+/* =========================================
+   9. REGRA ESPECÍFICA PARA DISPOSITIVOS MÓVEIS
+========================================= */
+@media (max-width: 768px) {
+    .menu {
+        flex-direction: column;
+    }
+
+    .sobre-grid,
+    .espaco-grid,
+    .localizacao-grid,
+    .contato-grid {
+        text-align: center;
+    }
+
+    .localizacao-info {
+        align-items: center;
+    }
+
+    .info-item {
+        text-align: left;
+    }
+}
