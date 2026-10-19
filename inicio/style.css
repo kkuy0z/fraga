@@ -1,502 +1,705 @@
-/* =========================================
-   1. RESET & UNIDADES DE MEDIDA FLUIDAS
-========================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ============ BASE (tudo em rem/% para acompanhar zoom e tamanho de fonte) ============ */
+:root {
+  --p: #050505;
+  --a: #ffc800;
+  --c: #d6d6d6;
+  --b: rgba(255, 200, 0, .32);
+  --l: rgba(255, 255, 255, .18);
+  --t: 'Rozha One', Georgia, serif;
+  --h: 'Anton', Impact, 'Arial Narrow', sans-serif
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box
 }
 
 html {
-    scroll-behavior: smooth;
-    /* Define o tamanho base de fonte relativo à largura da tela. 
-       Isso faz o site todo 'encolher' ou 'crescer' proporcionalmente */
-    font-size: clamp(14px, 1.2vw, 18px);
-}
-
-:root {
-    --preto: #050505;
-    --amarelo: #ffd900;
-    --cinza-escuro: #121212;
-    --cinza-card: #1c1c1c;
-    --texto: #ffffff;
-    --texto-secundario: #ccc;
-    --borda: #333;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%
 }
 
 body {
-    background-color: var(--preto);
-    color: var(--texto);
-    font-family: Arial, Helvetica, sans-serif;
-    overflow-x: hidden;
-    width: 100%;
+  margin: 0;
+  background: var(--p);
+  color: #fff;
+  font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  overflow-x: hidden
 }
 
-/* =========================================
-   2. CONTAINERS & COMPONENTES ADAPTÁVEIS
-========================================= */
+img,
+svg {
+  max-width: 100%;
+  display: block
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0
+}
+
+a {
+  color: inherit
+}
+
+:focus-visible {
+  outline: 2px solid var(--a);
+  outline-offset: 3px
+}
+
 .container {
-    width: min(90%, 1200px); /* Usa 90% da tela em celulares e trava em 1200px em telas gigantes */
-    margin: 0 auto;
+  width: min(100% - 2rem, 74rem);
+  margin-inline: auto
 }
 
-/* Textos totalmente adaptáveis com a função clamp(mínimo, ideal, máximo) */
+section {
+  padding: clamp(3.5rem, 8vw, 6.5rem) 0;
+  border-top: 1px solid var(--l)
+}
+
+.duas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center
+}
+
+/* ============ TÍTULOS E BOTÕES ============ */
 .titulo {
-    font-size: clamp(1.5rem, 4vw, 2.8rem);
-    text-transform: uppercase;
-    font-weight: 900;
-    line-height: 1.15;
+  font: 400 clamp(2rem, 5vw, 3.4rem)/1.1 var(--t);
+  text-transform: uppercase;
+  overflow-wrap: anywhere
 }
 
 .titulo span {
-    color: var(--amarelo);
+  color: var(--a)
 }
 
-.titulo.centro {
-    text-align: center;
+.com-seta::before {
+  content: "⟶";
+  margin-right: .4em;
+  color: var(--a);
+  font: .8em system-ui, sans-serif
 }
 
-.subtitulo {
-    text-align: center;
-    color: var(--texto-secundario);
-    font-size: clamp(0.85rem, 1.5vw, 1rem);
-    margin-top: 0.5rem;
-    margin-bottom: 2rem;
+.centro {
+  text-align: center
 }
 
-/* Botões com padding e fonte fluidos */
-.botao {
-    display: inline-block;
-    background: var(--amarelo);
-    color: #000;
-    padding: clamp(0.6rem, 1.5vw, 0.9rem) clamp(1.2rem, 2.5vw, 2rem);
-    border-radius: 50px;
-    font-size: clamp(0.75rem, 1.2vw, 0.95rem);
-    font-weight: bold;
-    text-decoration: none;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-    text-align: center;
+.sub {
+  max-width: 40rem;
+  margin: .9rem auto 0;
+  text-align: center;
+  color: var(--c);
+  font-size: clamp(.95rem, 1.4vw, 1.1rem)
 }
 
-.botao:hover {
-    background: #fff;
-    transform: scale(1.05);
+.linha {
+  display: block;
+  width: min(100%, 17rem);
+  height: 3px;
+  margin: 1.4rem auto 0;
+  background: var(--a);
+  opacity: .75
 }
 
-.seta {
-    background: none;
-    border: none;
-    color: var(--amarelo);
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    cursor: pointer;
-    padding: 0 0.3rem;
-    user-select: none;
+.linha.esq {
+  margin-left: 0
 }
 
-/* =========================================
-   3. CAVEÇALHO & HERO (TOTALMENTE FLUIDOS)
-========================================= */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    padding: clamp(0.5rem, 1.5vw, 1rem) 0;
-    background-color: rgba(5, 5, 5, 0.88);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--borda);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: .85em 1.4em;
+  border: 2px solid var(--a);
+  border-radius: .9rem;
+  background: rgba(0, 0, 0, .55);
+  color: var(--a);
+  font: 800 clamp(.95rem, 1.5vw, 1.2rem)/1.3 inherit;
+  font-family: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s
 }
 
-.menu {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+.btn:hover {
+  background: var(--a);
+  color: #000
 }
 
-/* Mini Logo adaptável ao tamanho da tela */
-.logo-img-mini {
-    width: clamp(40px, 6vw, 60px);
-    height: clamp(40px, 6vw, 60px);
-    border-radius: 50%;
-    border: 2px solid var(--amarelo);
-    object-fit: cover;
+.btn.cheio {
+  background: var(--a);
+  color: #000
 }
 
-nav ul {
-    display: flex;
-    gap: clamp(0.6rem, 1.8vw, 1.5rem);
-    list-style: none;
-    flex-wrap: wrap;
-    justify-content: center;
+.btn.cheio:hover {
+  background: #fff;
+  border-color: #fff
 }
 
-nav a {
-    color: var(--texto);
-    text-decoration: none;
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: color 0.2s;
+/* ============ CABEÇALHO ============ */
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  transition: background .3s
 }
 
-nav a:hover {
-    color: var(--amarelo);
+.header.solido {
+  background: rgba(5, 5, 5, .94);
+  backdrop-filter: blur(6px)
 }
 
+.header-container {
+  width: min(100% - 2rem, 74rem);
+  margin-inline: auto;
+  padding: .6rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem
+}
+
+.logo-img {
+  width: clamp(3.5rem, 8vw, 5.5rem);
+  aspect-ratio: 1;
+  border-radius: 50%
+}
+
+.nav {
+  display: flex;
+  gap: clamp(1rem, 3.2vw, 3.2rem)
+}
+
+.nav a {
+  font: clamp(1rem, 1.7vw, 1.4rem) var(--t);
+  text-decoration: none;
+  transition: color .2s
+}
+
+.nav a:hover {
+  color: var(--a)
+}
+
+.menu-mobile {
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer
+}
+
+.menu-mobile span {
+  display: block;
+  width: 1.7rem;
+  height: .18rem;
+  margin: .32rem auto;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform .25s, opacity .25s
+}
+
+.menu-mobile[aria-expanded=true] span:nth-child(1) {
+  transform: translateY(.5rem) rotate(45deg)
+}
+
+.menu-mobile[aria-expanded=true] span:nth-child(2) {
+  opacity: 0
+}
+
+.menu-mobile[aria-expanded=true] span:nth-child(3) {
+  transform: translateY(-.5rem) rotate(-45deg)
+}
+
+/* ============ HERO ============ */
 .hero {
-    min-height: 100vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding-top: clamp(80px, 12vh, 120px);
-    padding-bottom: 3rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: clamp(34rem, 100vh, 58rem);
+  min-height: clamp(34rem, 100svh, 58rem);
+  padding: 7rem 0 3rem;
+  border: 0
 }
 
 .hero-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    filter: brightness(0.35);
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center
 }
 
-.hero-conteudo {
-    position: relative;
-    z-index: 5;
-    max-width: min(100%, 600px);
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .92), rgba(0, 0, 0, .6) 38%, rgba(0, 0, 0, .1) 75%)
 }
 
-.hero-conteudo h1 {
-    font-size: clamp(1.8rem, 5.5vw, 3.5rem);
-    line-height: 1.1;
-    font-weight: 900;
+.hero h1 {
+  max-width: 9em;
+  font: 400 clamp(2.6rem, 7.2vw, 5.6rem)/1 var(--h);
+  text-transform: uppercase
 }
 
-.hero-conteudo h1 span {
-    color: var(--amarelo);
+.hero h1 span {
+  display: block;
+  color: var(--a)
 }
 
-.hero-conteudo p {
-    margin: 1.2rem 0;
-    color: var(--texto-secundario);
-    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+.hero .btn {
+  margin-top: 1.75rem
 }
 
-/* =========================================
-   4. SOBRE NÓS
-========================================= */
-.sobre {
-    padding: clamp(3rem, 8vw, 6rem) 0;
-    background: var(--cinza-escuro);
+/* ============ SOBRE ============ */
+.lema {
+  margin-top: 1rem;
+  font: 400 clamp(1.3rem, 2.6vw, 1.9rem)/1.25 var(--t)
 }
 
-.sobre-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: center;
+.lema span {
+  display: block;
+  color: var(--a)
 }
 
-.sobre-texto {
-    margin-top: 1rem;
-    color: var(--texto-secundario);
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
-    line-height: 1.6;
+.sobre p {
+  max-width: 36rem;
+  margin-top: 1rem;
+  color: var(--c);
+  line-height: 1.8
 }
 
-.logo-principal-container {
-    display: flex;
-    justify-content: center;
+.logo-principal img {
+  width: min(100%, 22rem);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border-radius: 50%
 }
 
-.logo-principal-img {
-    width: 100%;
-    max-width: clamp(180px, 30vw, 260px);
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    border: clamp(3px, 0.5vw, 5px) solid var(--amarelo);
-    object-fit: cover;
+/* ============ CARROSSEL (espaço e avaliações) ============ */
+.carrossel {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: 2.5rem
 }
 
-/* =========================================
-   5. NOSSO ESPAÇO (CARROSSEL ADAPTÁVEL)
-========================================= */
-.espaco {
-    padding: clamp(3rem, 8vw, 6rem) 0;
-    border-top: 1px solid var(--borda);
-    border-bottom: 1px solid var(--borda);
+.trilho {
+  --n: 4;
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none
 }
 
-.espaco-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: clamp(1.5rem, 4vw, 2.5rem);
-    align-items: center;
+.trilho::-webkit-scrollbar {
+  display: none
 }
 
-.carrossel-espaco-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
+.trilho>* {
+  flex: 0 0 calc((100% - (var(--n) - 1) * 1rem) / var(--n));
+  scroll-snap-align: start
 }
 
-.carrossel-espaco-container {
-    width: 100%;
-    height: clamp(200px, 35vw, 350px);
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--cinza-card);
+#lista-avaliacoes {
+  --n: 3
 }
 
-.carrossel-espaco-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.slide {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: .75rem;
+  background: #111
 }
 
-/* =========================================
-   6. LOCALIZAÇÃO
-========================================= */
-.localizacao {
-    padding: clamp(3rem, 8vw, 6rem) 0;
-    background: var(--cinza-escuro);
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover
 }
 
-.localizacao-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: clamp(1.5rem, 4vw, 2.5rem);
-    align-items: center;
-    margin-top: 2rem;
+.seta {
+  flex: none;
+  width: clamp(1.5rem, 3vw, 2.2rem);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: var(--a);
+  cursor: pointer;
+  clip-path: polygon(100% 8%, 100% 92%, 0 50%);
+  transition: background .2s
 }
 
-.mapa-container iframe {
-    width: 100%;
-    height: clamp(220px, 30vw, 320px);
-    border-radius: 12px;
-    border: 2px solid var(--borda);
+.seta.prox {
+  transform: scaleX(-1)
 }
 
-.localizacao-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.seta:hover,
+.seta:focus-visible {
+  outline: 0;
+  background: #fff
 }
 
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+.pontos {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1.25rem
 }
 
-.info-item .icone {
-    font-size: clamp(1.2rem, 2vw, 1.6rem);
-    background: var(--cinza-card);
-    border-radius: 50%;
-    border: 1px solid var(--amarelo);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(40px, 5vw, 50px);
-    height: clamp(40px, 5vw, 50px);
-    flex-shrink: 0;
+.pontos button {
+  width: .7rem;
+  height: .7rem;
+  padding: 0;
+  border: 0;
+  border-radius: 1rem;
+  background: rgba(255, 200, 0, .35);
+  cursor: pointer;
+  transition: width .25s, background .25s
 }
 
-.info-item p {
-    font-weight: bold;
-    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
-    line-height: 1.4;
+.pontos .on {
+  width: 1.6rem;
+  background: var(--a)
 }
 
-/* =========================================
-   7. AVALIAÇÕES (ADAPTÁVEL)
-========================================= */
-.avaliacoes {
-    padding: clamp(3rem, 8vw, 6rem) 0;
+/* ============ LOCALIZAÇÃO ============ */
+.loc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+  margin-top: 2.5rem
 }
 
-.avaliacoes-carrossel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+.ic {
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--a)
 }
 
-.avaliacoes-container {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 0.8rem 0;
-    width: 100%;
-    max-width: 850px;
+.end {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  overflow-wrap: anywhere
 }
 
-.avaliacoes-container::-webkit-scrollbar {
-    display: none;
+.horario {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--b);
+  border-radius: 1.25rem
 }
 
-.card-avaliacao {
-    background: var(--cinza-card);
-    border: 1px solid var(--borda);
-    border-radius: 12px;
-    padding: clamp(1rem, 2.5vw, 1.5rem);
-    width: clamp(230px, 70vw, 280px);
-    flex: 0 0 auto;
+.horario h3 {
+  font: 400 clamp(.95rem, 1.6vw, 1.15rem) var(--t);
+  text-transform: uppercase;
+  color: var(--a)
 }
 
-.card-avaliacao .header-cliente {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 0.8rem;
+.horario div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .8rem
 }
 
-.avatar-cliente {
-    width: clamp(35px, 4vw, 45px);
-    height: clamp(35px, 4vw, 45px);
-    border-radius: 50%;
-    background: var(--amarelo);
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-    flex-shrink: 0;
+.horario .ic {
+  width: 2.6rem;
+  height: 2.6rem;
+  fill: var(--a);
+  stroke: #000
 }
 
-.card-avaliacao .nome-cliente {
-    font-weight: bold;
-    font-size: clamp(0.8rem, 1.3vw, 0.9rem);
+.horario b {
+  display: block;
+  color: var(--a);
+  font-size: 1.15rem
 }
 
-.card-avaliacao .estrelas {
-    color: var(--amarelo);
-    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+.mapa iframe {
+  display: block;
+  width: 100%;
+  min-height: 15rem;
+  aspect-ratio: 4/3;
+  border: 0;
+  border-radius: .6rem
 }
 
-.card-avaliacao .comentario {
-    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
-    color: var(--texto-secundario);
-    line-height: 1.4;
+/* ============ AVALIAÇÕES ============ */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.25rem 1rem;
+  border: 1px solid var(--b);
+  border-radius: 1.1rem;
+  background: #090909;
+  text-align: center
 }
 
-/* Formulário de Avaliação */
-.form-avaliacao-box {
-    margin-top: 3rem;
-    background: var(--cinza-escuro);
-    padding: clamp(1.2rem, 3vw, 2rem);
-    border-radius: 12px;
-    width: min(100%, 500px);
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid var(--borda);
+.avatar {
+  width: 4.2rem;
+  aspect-ratio: 1;
+  border: 3px solid var(--a);
+  border-radius: 50%;
+  background: #fff3d4 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='11' fill='%23d4a900'/%3E%3Cpath d='M10 62c0-14 10-22 22-22s22 8 22 22z' fill='%23d4a900'/%3E%3C/svg%3E") center/cover
 }
 
-.form-avaliacao-box h3 {
-    margin-bottom: 1.2rem;
-    text-align: center;
-    color: var(--amarelo);
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
+.card h3 {
+  margin-top: .8rem;
+  font: 400 1.15rem var(--t);
+  overflow-wrap: anywhere
 }
 
-.form-avaliacao-box form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.estrelas {
+  margin: .3rem 0 .8rem;
+  color: var(--a);
+  letter-spacing: .12em
 }
 
-.form-avaliacao-box input,
-.form-avaliacao-box select,
-.form-avaliacao-box textarea {
-    width: 100%;
-    padding: 0.8rem;
-    background: #000;
-    border: 1px solid var(--borda);
-    color: #fff;
-    border-radius: 6px;
-    font-size: 16px; /* Evita que o iPhone dê zoom automático ao focar no campo */
-    font-family: inherit;
+.card p {
+  color: #ececec;
+  font-size: .95rem;
+  overflow-wrap: anywhere
 }
 
-/* =========================================
-   8. CONTATO E FOOTER
-========================================= */
-.contato {
-    padding: clamp(3rem, 8vw, 6rem) 0;
-    background: var(--cinza-escuro);
-    border-top: 1px solid var(--borda);
+.card::after {
+  content: "”";
+  margin-top: auto;
+  padding-top: .6rem;
+  font: 2.6rem/1 var(--t);
+  color: var(--a)
 }
 
-.contato-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-    gap: clamp(1.5rem, 4vw, 2.5rem);
-    align-items: center;
+.form-av {
+  width: min(100%, 34rem);
+  margin: 2.5rem auto 0
 }
 
-.botoes {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
+.form-av summary {
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: .8em 1.6em;
+  border: 2px solid var(--a);
+  border-radius: .9rem;
+  color: var(--a);
+  font-weight: 800;
+  text-align: center;
+  list-style: none;
+  cursor: pointer
 }
 
-.botao-contato {
-    display: inline-block;
-    padding: clamp(0.8rem, 2vw, 1.1rem) clamp(1.2rem, 3vw, 1.8rem);
-    background: var(--amarelo);
-    color: #000;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: clamp(0.8rem, 1.3vw, 0.95rem);
-    text-align: center;
-    transition: background 0.2s, transform 0.2s;
+.form-av summary::-webkit-details-marker {
+  display: none
 }
 
-.botao-contato:hover {
-    background: #fff;
-    transform: scale(1.02);
+.form-av[open] summary {
+  background: var(--a);
+  color: #000
+}
+
+.form-av form {
+  display: grid;
+  gap: .8rem;
+  margin-top: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--b);
+  border-radius: 1.1rem;
+  background: #090909
+}
+
+.form-av input,
+.form-av select,
+.form-av textarea {
+  width: 100%;
+  padding: .8rem;
+  border: 1px solid #444;
+  border-radius: .5rem;
+  background: #000;
+  color: #fff;
+  font: inherit
+}
+
+.form-av textarea {
+  min-height: 6rem;
+  resize: vertical
+}
+
+#msg {
+  min-height: 1.4em;
+  color: var(--a);
+  text-align: center
+}
+
+/* ============ CONTATO ============ */
+.contato p {
+  max-width: 30rem;
+  margin-top: 1.1rem;
+  color: #eee
+}
+
+.canais {
+  display: grid;
+  gap: 1rem
+}
+
+.canal {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .9rem 1.2rem;
+  border: 1px solid var(--b);
+  border-radius: 1.2rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: border-color .2s, background .2s
+}
+
+.canal:hover {
+  border-color: var(--a);
+  background: rgba(255, 200, 0, .08)
+}
+
+.canal small {
+  display: block;
+  font: 400 clamp(.9rem, 1.4vw, 1.05rem) var(--t);
+  color: var(--a);
+  text-transform: uppercase
+}
+
+.canal b {
+  display: block;
+  font-size: clamp(.9rem, 1.4vw, 1.05rem)
 }
 
 footer {
-    padding: 1.5rem 0;
-    text-align: center;
-    color: var(--texto-secundario);
-    font-size: clamp(0.7rem, 1.1vw, 0.8rem);
-    border-top: 1px solid var(--borda);
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--l);
+  color: #aaa;
+  font-size: .9rem;
+  text-align: center
 }
 
-/* =========================================
-   9. REGRA ESPECÍFICA PARA DISPOSITIVOS MÓVEIS
-========================================= */
-@media (max-width: 768px) {
-    .menu {
-        flex-direction: column;
-    }
+/* ============ RESPONSIVO (em "em": acompanha zoom e fonte do usuário) ============ */
+@media (max-width:64em) {
+  #lista-espaco {
+    --n: 3
+  }
+}
 
-    .sobre-grid,
-    .espaco-grid,
-    .localizacao-grid,
-    .contato-grid {
-        text-align: center;
-    }
+@media (max-width:56em) {
+  #lista-avaliacoes {
+    --n: 2
+  }
+}
 
-    .localizacao-info {
-        align-items: center;
-    }
+@media (max-width:48em) {
+  #lista-espaco {
+    --n: 2
+  }
 
-    .info-item {
-        text-align: left;
-    }
+  .menu-mobile {
+    display: block
+  }
+
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 1rem;
+    right: 1rem;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: .4rem 1rem;
+    border: 1px solid var(--b);
+    border-radius: 1rem;
+    background: rgba(5, 5, 5, .98)
+  }
+
+  .nav.active {
+    display: flex
+  }
+
+  .nav a {
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--l);
+    font-size: 1.2rem
+  }
+
+  .nav a:last-child {
+    border: 0
+  }
+
+  .hero {
+    align-items: flex-end;
+    padding-bottom: 2.5rem
+  }
+
+  .hero-bg {
+    object-position: 70% 25%
+  }
+
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .55) 40%, rgba(0, 0, 0, .95))
+  }
+
+  .hero .btn {
+    width: 100%;
+    max-width: 24rem
+  }
+}
+
+@media (max-width:40em) {
+  #lista-avaliacoes {
+    --n: 1
+  }
+}
+
+@media (max-width:30em) {
+  #lista-espaco {
+    --n: 1
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+  html,
+  .trilho {
+    scroll-behavior: auto
+  }
+
+  * {
+    transition: none !important
+  }
 }

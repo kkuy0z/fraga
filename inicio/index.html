@@ -2,169 +2,186 @@
 <html lang="pt-BR">
 
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Fraga Lanches</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description"
+    content="Fraga Lanches: hambúrgueres artesanais e porções em Betim - MG. Faça seu pedido pelo WhatsApp.">
+  <title>Fraga Lanches</title>
+  <link rel="icon" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Rozha+One&display=swap">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
-        <div class="menu container">
-            <a href="#inicio" class="logo-link">
-                <img src="/img/logo.png" alt="Fraga Lanches Logo" class="logo-img-mini"
-                    onerror="this.src='https://via.placeholder.com/60/000000/ffffff?text=LOGO'">
-            </a>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-pin" viewBox="0 0 24 24">
+        <path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" />
+        <circle cx="12" cy="10" r="2.6" />
+      </symbol>
+      <symbol id="i-rel" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10.5" />
+        <path d="M12 6.5V12l3.5 2" />
+      </symbol>
+      <symbol id="i-fone" viewBox="0 0 24 24">
+        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z" />
+      </symbol>
+      <symbol id="i-insta" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.3" cy="6.7" r=".5" />
+      </symbol>
+    </defs>
+  </svg>
 
-            <nav>
-                <ul>
-                    <li><a href="#inicio">Início</a></li>
-                    <li><a href="#sobre">Sobre nós</a></li>
-                    <li><a href="#espaco">Espaço</a></li>
-                    <li><a href="#localizacao">Localização</a></li>
-                    <li><a href="#avaliacoes">Avaliações</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+  <header class="header">
+    <div class="header-container">
+      <a href="#inicio" class="logo-link" aria-label="Fraga Lanches - início"><img src="/fraga/img/logo.png"
+          alt="Fraga Lanches" class="logo-img"></a>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <a href="#sobre">SOBRE</a><a href="#espaco">ESPAÇO</a><a href="#avaliacoes">AVALIAÇÕES</a><a
+          href="#contato">CONTATO</a>
+      </nav>
+      <button class="menu-mobile" id="menu-mobile" aria-label="Abrir menu" aria-expanded="false"
+        aria-controls="nav"><span></span><span></span><span></span></button>
+    </div>
+  </header>
 
-    <!-- ================= HERO ================= -->
+  <main>
     <section class="hero" id="inicio">
-        <img src="/img/img_fundo.png" alt="Hambúrguer Artesanal" class="hero-bg" onerror="this.style.display='none'">
-
-        <div class="hero-conteudo container">
-            <h1>A MELHOR<br><span>HAMBURGUERIA</span><br>DA REGIÃO!</h1>
-            <p>Hambúrguer artesanal, ingredientes selecionados e muito sabor em cada mordida.</p>
-            <a href="#contato" class="botao">Peça agora &rsaquo;</a>
-        </div>
+      <img src="/fraga/img/img_fundo.png" alt="Hambúrguer artesanal de duas carnes com queijo e bacon" class="hero-bg"
+        fetchpriority="high">
+      <div class="hero-overlay"></div>
+      <div class="container">
+        <h1>A melhor <span>hamburgueria</span> da região!</h1>
+        <a href="#contato" class="btn">Faça um pedido <span aria-hidden="true">›</span></a>
+      </div>
     </section>
 
-    <!-- ================= SOBRE NÓS ================= -->
     <section class="sobre" id="sobre">
-        <div class="container sobre-grid">
-            <div class="sobre-texto-box">
-                <h2 class="titulo">SOBRE <span>NÓS</span></h2>
-                <p class="sobre-texto">
-                    O Fraga Lanches vai se tornar o seu novo destino favorito para matar a fome com muito sabor e
-                    qualidade! Especializados em hambúrgueres artesanais suculentos, oferecemos também as melhores e
-                    mais generosas porções do bairro. Seja para curtir no aconchego da sua casa ou para aproveitar o
-                    nosso atendimento, garantimos praticidade e ingredientes caprichados em cada pedido.
-                </p>
-            </div>
-
-            <div class="logo-principal-container">
-                <img src="/img/logo.png" alt="Fraga Lanches Logo Principal" class="logo-principal-img"
-                    onerror="this.src='https://via.placeholder.com/250/111111/ffd900?text=FRAGA+LANCHES'">
-            </div>
+      <div class="container duas">
+        <div>
+          <h2 class="titulo com-seta">Sobre <span>nós</span></h2>
+          <h3 class="lema">Feito à mão.<span>Pensado para você.</span></h3>
+          <span class="linha esq" aria-hidden="true"></span>
+          <p>O Fraga Lanches vai se tornar o seu novo destino favorito para matar a fome com muito sabor e qualidade!
+          </p>
+          <p>Somos especializados em hambúrgueres artesanais suculentos e também oferecemos porções generosas, sempre
+            utilizando ingredientes selecionados.</p>
+          <p>Seja para aproveitar em casa ou em nosso espaço, garantimos praticidade, qualidade e muito sabor em cada
+            pedido.</p>
         </div>
+        <div class="logo-principal"><img src="/fraga/img/logo.png" alt="Logo Fraga Lanches Delivery" loading="lazy"></div>
+      </div>
     </section>
 
-    <!-- ================= NOSSO ESPAÇO ================= -->
     <section class="espaco" id="espaco">
-        <div class="container espaco-grid">
-            <div>
-                <h2 class="titulo">NOSSO <span>ESPAÇO</span></h2>
-            </div>
-
-            <div class="carrossel-espaco-wrapper">
-                <button class="seta" id="anterior-espaco" aria-label="Anterior">&lsaquo;</button>
-                <div class="carrossel-espaco-container">
-                    <img id="imagemEspaco" src="images/espaco1.jpg" alt="Nosso Espaço"
-                        onerror="this.src='https://via.placeholder.com/500x300/222222/ffffff?text=Espaco+Fraga+Lanches'">
-                </div>
-                <button class="seta" id="proximo-espaco" aria-label="Próximo">&rsaquo;</button>
-            </div>
+      <div class="container">
+        <h2 class="titulo centro">Nosso <span>espaço</span></h2>
+        <p class="sub">Mais do que um espaço para comer, um espaço feito para reunir, celebrar e aproveitar momentos
+          inesquecíveis.</p>
+        <span class="linha" aria-hidden="true"></span>
+        <div class="carrossel" id="c-espaco" role="group" aria-label="Fotos do espaço">
+          <button class="seta" data-dir="-1" aria-label="Foto anterior"></button>
+          <div class="trilho" id="lista-espaco" tabindex="0"></div>
+          <button class="seta prox" data-dir="1" aria-label="Próxima foto"></button>
         </div>
+        <div class="pontos" id="pontos-espaco"></div>
+      </div>
     </section>
 
-    <!-- ================= LOCALIZAÇÃO ================= -->
     <section class="localizacao" id="localizacao">
-        <div class="container">
-            <h2 class="titulo centro">LOCALIZAÇÃO</h2>
-
-            <div class="localizacao-grid">
-                <div class="mapa-container">
-                    <iframe
-                        src="https://maps.google.com/maps?q=Rua+Simon%C3%A9sia,+5,+Marimb%C3%A1,+Betim+-+MG&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-
-                <div class="localizacao-info">
-                    <div class="info-item">
-                        <span class="icone">📍</span>
-                        <p>R. SIMONÉSIA, 5 - MARIMBÁ<br>BETIM-MG</p>
-                    </div>
-                    <div class="info-item">
-                        <span class="icone">⏰</span>
-                        <p>ABERTO DAS 18H00 ÀS 23H30<br>SEGUNDA A SÁBADO</p>
-                    </div>
-                </div>
+      <div class="container">
+        <h2 class="titulo"><span>Localização</span></h2>
+        <span class="linha esq" aria-hidden="true"></span>
+        <div class="loc">
+          <div>
+            <p class="end"><svg class="ic">
+                <use href="#i-pin" />
+              </svg><span>R. Simonésia, 5 - Marimbá<br>Betim - MG</span></p>
+            <div class="horario">
+              <h3>Horário de funcionamento</h3>
+              <div><svg class="ic">
+                  <use href="#i-rel" />
+                </svg>
+                <p>Segunda a sábado<b>18:00 - 23:30</b></p>
+              </div>
             </div>
+            <a class="btn cheio"
+              href="https://www.google.com/maps/dir/?api=1&destination=R.+Simon%C3%A9sia%2C+5%2C+Marimb%C3%A1%2C+Betim+-+MG"
+              target="_blank" rel="noopener">Como chegar <span aria-hidden="true">›</span></a>
+          </div>
+          <div class="mapa"><iframe title="Mapa com a localização do Fraga Lanches"
+              src="https://maps.google.com/maps?q=Rua+Simonesia,+5,+Marimba,+Betim+-+MG&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>
         </div>
+      </div>
     </section>
 
-    <!-- ================= AVALIAÇÕES ================= -->
     <section class="avaliacoes" id="avaliacoes">
-        <div class="container">
-            <h2 class="titulo centro">VEJA AS <span>AVALIAÇÕES</span></h2>
-            <p class="subtitulo">Confira o que os nossos clientes têm a dizer sobre nosso serviço.</p>
-
-            <div class="avaliacoes-carrossel">
-                <button class="seta" id="prev-review" aria-label="Anterior">&lsaquo;</button>
-                <div class="avaliacoes-container" id="avaliacoes-list">
-                    <!-- Inserido dinamicamente via JS -->
-                </div>
-                <button class="seta" id="next-review" aria-label="Próximo">&rsaquo;</button>
-            </div>
-
-            <div class="form-avaliacao-box">
-                <h3>Deixe sua Avaliação</h3>
-                <form id="form-avaliacao">
-                    <input type="text" id="nome-cliente" placeholder="Seu Nome" required>
-                    <select id="nota-cliente" required>
-                        <option value="5">★★★★★ (5/5)</option>
-                        <option value="4">★★★★☆ (4/5)</option>
-                        <option value="3">★★★☆☆ (3/5)</option>
-                        <option value="2">★★☆☆☆ (2/5)</option>
-                        <option value="1">★☆☆☆☆ (1/5)</option>
-                    </select>
-                    <textarea id="comentario-cliente" placeholder="Escreva seu comentário..." rows="3" required></textarea>
-                    <button type="submit" class="botao">Enviar Avaliação</button>
-                </form>
-            </div>
+      <div class="container">
+        <h2 class="titulo centro">Veja as <span>avaliações</span></h2>
+        <p class="sub">Confira o que nossos clientes têm a dizer sobre o Fraga Lanches.</p>
+        <span class="linha" aria-hidden="true"></span>
+        <div class="carrossel" id="c-aval" role="group" aria-label="Avaliações de clientes">
+          <button class="seta" data-dir="-1" aria-label="Avaliação anterior"></button>
+          <div class="trilho" id="lista-avaliacoes" tabindex="0"></div>
+          <button class="seta prox" data-dir="1" aria-label="Próxima avaliação"></button>
         </div>
+        <div class="pontos" id="pontos-aval"></div>
+        <details class="form-av">
+          <summary>Deixe sua avaliação</summary>
+          <form id="form-avaliacao">
+            <input name="nome" placeholder="Seu nome" aria-label="Seu nome" maxlength="40" autocomplete="name" required>
+            <select name="nota" aria-label="Nota">
+              <option value="5">★★★★★ - 5/5</option>
+              <option value="4">★★★★☆ - 4/5</option>
+              <option value="3">★★★☆☆ - 3/5</option>
+              <option value="2">★★☆☆☆ - 2/5</option>
+              <option value="1">★☆☆☆☆ - 1/5</option>
+            </select>
+            <textarea name="comentario" rows="4" maxlength="280" placeholder="Escreva seu comentário..."
+              aria-label="Comentário" required></textarea>
+            <button class="btn cheio" type="submit">Enviar avaliação</button>
+            <p id="msg" role="status"></p>
+          </form>
+        </details>
+      </div>
     </section>
 
-    <!-- ================= CONTATO ================= -->
     <section class="contato" id="contato">
-        <div class="container contato-grid">
-            <div>
-                <h2 class="titulo">ENTRE EM CONTATO<br>E Faça seu <span>PEDIDO!</span></h2>
-            </div>
-
-            <div class="botoes">
-                <a href="https://wa.me/5531987677197" target="_blank" class="botao-contato">
-                    📞 (31) 98767-7197
-                </a>
-                <a href="https://instagram.com/fraga_lanches" target="_blank" class="botao-contato">
-                    📷 @fraga_lanches
-                </a>
-            </div>
+      <div class="container duas">
+        <div>
+          <h2 class="titulo"><span>Entre em contato e</span> faça seu pedido!</h2>
+          <p>Estamos prontos para preparar uma refeição com todo o sabor que você merece. Faça seu pedido agora!</p>
+          <span class="linha esq" aria-hidden="true"></span>
         </div>
+        <div class="canais">
+          <a class="canal" href="https://wa.me/5531987677197" target="_blank" rel="noopener"><svg class="ic">
+              <use href="#i-fone" />
+            </svg><span><small>Telefone</small><b>(31) 98767-7197</b></span></a>
+          <a class="canal" href="https://instagram.com/fraga_lanches" target="_blank" rel="noopener"><svg class="ic">
+              <use href="#i-insta" />
+            </svg><span><small>Instagram</small><b>@fraga_lanches</b></span></a>
+          <a class="canal"
+            href="https://www.google.com/maps/search/?api=1&query=R.+Simon%C3%A9sia%2C+5%2C+Marimb%C3%A1%2C+Betim+-+MG"
+            target="_blank" rel="noopener"><svg class="ic">
+              <use href="#i-pin" />
+            </svg><span><small>Endereço</small><b>R. Simonésia, 5 - Marimbá, Betim - MG</b></span></a>
+          <a class="btn cheio" href="https://wa.me/5531987677197?text=Ol%C3%A1!%20Quero%20fazer%20um%20pedido."
+            target="_blank" rel="noopener">Faça seu pedido pelo WhatsApp <span aria-hidden="true">›</span></a>
+        </div>
+      </div>
     </section>
+  </main>
 
-    <!-- ================= FOOTER ================= -->
-    <footer>
-        <div class="container">
-            © 2026 Fraga Lanches - Todos os direitos reservados.
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+  <footer>
+    <div class="container">© 2026 Fraga Lanches - Todos os direitos reservados.</div>
+  </footer>
+  <script src="script.js"></script>
 </body>
 
 </html>
