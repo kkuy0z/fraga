@@ -39,7 +39,9 @@ function carrossel(box, pontos) {
     ir(i < 0 ? n - 1 : i >= n ? 0 : i);
   }));
   trilho.addEventListener('scroll', marcar, { passive: true });
-  addEventListener('resize', montar);
+  /* observa o tamanho real do trilho: zoom, fonte e quebras de coluna mudam a largura sem 'resize' da janela */
+  let larg = trilho.clientWidth;
+  new ResizeObserver(() => { if (trilho.clientWidth !== larg) { larg = trilho.clientWidth; montar(); } }).observe(trilho);
   montar();
   return montar;
 }

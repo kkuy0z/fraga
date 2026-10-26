@@ -6,7 +6,12 @@
   --b: rgba(255, 200, 0, .32);
   --l: rgba(255, 255, 255, .18);
   --t: 'Rozha One', Georgia, serif;
-  --h: 'Anton', Impact, 'Arial Narrow', sans-serif
+  --h: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  /* largura útil: igual ao original em telas até ~1920px e cresce junto com monitores
+     maiores ou zoom reduzido, evitando um miolo estreito cercado de vazio */
+  --max: clamp(74rem, 62vw, 100rem);
+  /* altura real do cabeçalho (logo + padding), usada p/ rolagem e hero */
+  --cab: calc(clamp(3.5rem, 8vw, 5.5rem) + 1.2rem)
 }
 
 *,
@@ -17,7 +22,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: calc(var(--cab) + .5rem);
   -webkit-text-size-adjust: 100%
 }
 
@@ -25,8 +30,7 @@ body {
   margin: 0;
   background: var(--p);
   color: #fff;
-  font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  overflow-x: hidden
+  font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif
 }
 
 img,
@@ -53,7 +57,7 @@ a {
 }
 
 .container {
-  width: min(100% - 2rem, 74rem);
+  width: min(100% - 2rem, var(--max));
   margin-inline: auto
 }
 
@@ -159,7 +163,7 @@ section {
 }
 
 .header-container {
-  width: min(100% - 2rem, 74rem);
+  width: min(100% - 2rem, var(--max));
   margin-inline: auto;
   padding: .6rem 0;
   display: flex;
@@ -230,7 +234,8 @@ section {
   align-items: center;
   min-height: clamp(34rem, 100vh, 58rem);
   min-height: clamp(34rem, 100svh, 58rem);
-  padding: 7rem 0 3rem;
+  min-height: clamp(34rem, 100dvh, 58rem);
+  padding: calc(var(--cab) + 1.5rem) 0 3rem;
   border: 0
 }
 
@@ -253,8 +258,9 @@ section {
 
 .hero h1 {
   max-width: 9em;
-  font: 400 clamp(2.6rem, 7.2vw, 5.6rem)/1 var(--h);
-  text-transform: uppercase
+  font: 400 clamp(2.2rem, 7.2vw, 5.6rem)/1 var(--h);
+  text-transform: uppercase;
+  overflow-wrap: anywhere
 }
 
 .hero h1 span {
@@ -293,6 +299,7 @@ section {
 
 /* ============ CARROSSEL (espaço e avaliações) ============ */
 .carrossel {
+  container-type: inline-size;
   display: flex;
   align-items: center;
   gap: .5rem;
@@ -323,6 +330,38 @@ section {
 
 #lista-avaliacoes {
   --n: 3
+}
+
+/* Colunas decididas pela largura REAL do carrossel (e não da janela): reage a zoom,
+   tamanho de fonte e qualquer container, mantendo cada item com ~12rem ou mais. */
+@container (width < 58rem) {
+  #lista-espaco {
+    --n: 3
+  }
+}
+
+@container (width < 53rem) {
+  #lista-avaliacoes {
+    --n: 2
+  }
+}
+
+@container (width < 44rem) {
+  #lista-espaco {
+    --n: 2
+  }
+}
+
+@container (width < 37rem) {
+  #lista-avaliacoes {
+    --n: 1
+  }
+}
+
+@container (width < 32rem) {
+  #lista-espaco {
+    --n: 1
+  }
 }
 
 .slide {
@@ -612,23 +651,7 @@ footer {
 }
 
 /* ============ RESPONSIVO (em "em": acompanha zoom e fonte do usuário) ============ */
-@media (max-width:64em) {
-  #lista-espaco {
-    --n: 3
-  }
-}
-
-@media (max-width:56em) {
-  #lista-avaliacoes {
-    --n: 2
-  }
-}
-
 @media (max-width:48em) {
-  #lista-espaco {
-    --n: 2
-  }
-
   .menu-mobile {
     display: block
   }
@@ -644,7 +667,10 @@ footer {
     padding: .4rem 1rem;
     border: 1px solid var(--b);
     border-radius: 1rem;
-    background: rgba(5, 5, 5, .98)
+    background: rgba(5, 5, 5, .98);
+    max-height: calc(100dvh - var(--cab));
+    overflow-y: auto;
+    overscroll-behavior: contain
   }
 
   .nav.active {
@@ -677,18 +703,6 @@ footer {
   .hero .btn {
     width: 100%;
     max-width: 24rem
-  }
-}
-
-@media (max-width:40em) {
-  #lista-avaliacoes {
-    --n: 1
-  }
-}
-
-@media (max-width:30em) {
-  #lista-espaco {
-    --n: 1
   }
 }
 
