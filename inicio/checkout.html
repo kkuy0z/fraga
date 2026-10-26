@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Checkout - Fraga Lanches</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-pages.css">
+</head>
+
+<body>
+    <!-- Header Fixo -->
+    <header class="header-fixed" role="banner">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
+                </a>
+            </div>
+
+            <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
+                <a href="index.html">INÍCIO</a>
+                <a href="cardapio.html">CARDÁPIO</a>
+                <a href="index.html#sobre">SOBRE</a>
+                <a href="index.html#espaco">ESPAÇO</a>
+                <a href="index.html#avaliacoes">AVALIAÇÕES</a>
+                <a href="index.html#contato">CONTATO</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="carrinho.html" class="cart-button" id="cartButton" aria-label="Carrinho de compras">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span>Carrinho</span>
+                    <span class="cart-count" id="cartCount" aria-label="Itens no carrinho">0</span>
+                </a>
+
+                <div class="user-menu" id="userMenu">
+                    <button class="user-button" id="userButton" aria-expanded="false" aria-haspopup="true" aria-label="Menu do usuário">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <span id="userName">Minha Conta</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown" role="menu">
+                        <a href="meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
+                        <a href="perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">Sair</button>
+                    </div>
+                </div>
+
+                <a href="admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Steps -->
+    <section class="checkout-progress" aria-label="Progresso do checkout">
+        <div class="container" style="max-width: 1450px; margin: 0 auto; padding: 20px 4%;">
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="progress-step-circle">1</div>
+                    <span class="progress-step-label">Endereço</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="2">
+                    <div class="progress-step-circle">2</div>
+                    <span class="progress-step-label">Pagamento</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="3">
+                    <div class="progress-step-circle">3</div>
+                    <span class="progress-step-label">Confirmação</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero da Página -->
+    <section class="page-header">
+        <div class="page-header-inner">
+            <h1 class="page-title">FINALIZAR <span class="accent">PEDIDO</span></h1>
+            <p class="page-subtitle">Preencha os dados abaixo para concluir sua compra</p>
+            <div class="yellow-line"></div>
+        </div>
+    </section>
+
+    <!-- Conteúdo do Checkout -->
+    <main class="checkout-main" role="main">
+        <div class="container" style="max-width: 1450px; margin: 0 auto; padding: 60px 4%;">
+            <form id="checkoutForm" novalidate>
+                <div class="checkout-layout" style="display: grid; grid-template-columns: 1fr 400px; gap: 40px;">
+
+                    <!-- Formulário Principal -->
+                    <section class="checkout-form-section" aria-label="Formulário de checkout">
+                        <!-- Etapa 1: Endereço -->
+                        <fieldset class="checkout-step" id="step1" data-step="1">
+                            <legend class="step-title">Endereço de Entrega</legend>
+
+                            <div class="form-group">
+                                <label class="form-label" for="cep">CEP <span class="required" aria-hidden="true">*</span></label>
+                                <div style="display: flex; gap: 12px;">
+                                    <input type="text" id="cep" name="cep" class="form-input" placeholder="00000-000" maxlength="9" required autocomplete="postal-code" style="flex: 1;">
+                                    <button type="button" id="btnBuscarCep" class="btn btn-secondary" style="height: fit-content; align-self: flex-end;">Buscar</button>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="rua">Rua <span class="required" aria-hidden="true">*</span></label>
+                                    <input type="text" id="rua" name="rua" class="form-input" placeholder="Nome da rua" required autocomplete="street-address" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="numero">Número <span class="required" aria-hidden="true">*</span></label>
+                                    <input type="text" id="numero" name="numero" class="form-input" placeholder="Nº" required autocomplete="address-line1">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="complemento">Complemento</label>
+                                <input type="text" id="complemento" name="complemento" class="form-input" placeholder="Apto, bloco, casa, etc." autocomplete="address-line2">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="bairro">Bairro <span class="required" aria-hidden="true">*</span></label>
+                                    <input type="text" id="bairro" name="bairro" class="form-input" placeholder="Bairro" required autocomplete="address-level2" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cidade">Cidade <span class="required" aria-hidden="true">*</span></label>
+                                    <input type="text" id="cidade" name="cidade" class="form-input" placeholder="Cidade" required autocomplete="address-level1" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="estado">Estado <span class="required" aria-hidden="true">*</span></label>
+                                    <select id="estado" name="estado" class="form-select" required autocomplete="address-level1" disabled>
+                                        <option value="">Selecione</option>
+                                        <option value="AC">Acre</option>
+                                        <option value="AL">Alagoas</option>
+                                        <option value="AP">Amapá</option>
+                                        <option value="AM">Amazonas</option>
+                                        <option value="BA">Bahia</option>
+                                        <option value="CE">Ceará</option>
+                                        <option value="DF">Distrito Federal</option>
+                                        <option value="ES">Espírito Santo</option>
+                                        <option value="GO">Goiás</option>
+                                        <option value="MA">Maranhão</option>
+                                        <option value="MT">Mato Grosso</option>
+                                        <option value="MS">Mato Grosso do Sul</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PA">Pará</option>
+                                        <option value="PB">Paraíba</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="PE">Pernambuco</option>
+                                        <option value="PI">Piauí</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="RN">Rio Grande do Norte</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                        <option value="RO">Rondônia</option>
+                                        <option value="RR">Roraima</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="SE">Sergipe</option>
+                                        <option value="TO">Tocantins</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="referencia">Ponto de Referência</label>
+                                    <input type="text" id="referencia" name="referencia" class="form-input" placeholder="Próximo a..., esquina com..., etc.">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="tipoEndereco">Tipo de Endereço</label>
+                                <select id="tipoEndereco" name="tipoEndereco" class="form-select">
+                                    <option value="casa">Casa</option>
+                                    <option value="apartamento">Apartamento</option>
+                                    <option value="trabalho">Trabalho</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-secondary" id="btnVoltar1" style="display: none;">Voltar</button>
+                                <button type="button" class="btn btn-primary" id="btnProximo1">Próximo: Pagamento</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Etapa 2: Pagamento -->
+                        <fieldset class="checkout-step hidden" id="step2" data-step="2">
+                            <legend class="step-title">Forma de Pagamento</legend>
+
+                            <div class="payment-methods" role="radiogroup" aria-label="Selecione a forma de pagamento">
+                                <!-- Métodos serão inseridos via JS -->
+                            </div>
+
+                            <div class="form-group" id="trocoGroup" style="display: none;">
+                                <label class="form-label" for="troco">Troco para <span class="required" aria-hidden="true">*</span></label>
+                                <input type="text" id="troco" name="troco" class="form-input" placeholder="Ex: 50,00" inputmode="decimal">
+                                <p class="form-help">Informe o valor para o qual precisa de troco</p>
+                            </div>
+
+                            <div class="form-group" id="observacaoGroup">
+                                <label class="form-label" for="observacao">Observações do Pedido</label>
+                                <textarea id="observacao" name="observacao" class="form-textarea" rows="3" placeholder="Ex: Sem cebola, bem passado, entregar na portaria..."></textarea>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-secondary" id="btnVoltar2">Voltar</button>
+                                <button type="button" class="btn btn-primary" id="btnProximo2">Próximo: Confirmação</button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Etapa 3: Confirmação -->
+                        <fieldset class="checkout-step hidden" id="step3" data-step="3">
+                            <legend class="step-title">Confirmar Pedido</legend>
+
+                            <div class="confirmacao-resumo">
+                                <h3 style="font-family: var(--font-title); font-size: 20px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle);">Resumo do Pedido</h3>
+
+                                <div id="confirmacaoItens" style="margin-bottom: 24px;">
+                                    <!-- Itens serão inseridos via JS -->
+                                </div>
+
+                                <div class="confirmacao-totais" style="padding: 20px; background: var(--bg-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                                    <div class="d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Subtotal</span>
+                                        <span id="confSubtotal" style="font-family: var(--font-display); color: var(--text-primary);">R$ 0,00</span>
+                                    </div>
+                                    <div class="d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Taxa de Entrega</span>
+                                        <span id="confTaxaEntrega" style="font-family: var(--font-display); color: var(--text-primary);">R$ 0,00</span>
+                                    </div>
+                                    <div class="d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Desconto</span>
+                                        <span id="confDesconto" style="font-family: var(--font-display); color: #4caf50;">R$ 0,00</span>
+                                    </div>
+                                    <div class="d-flex justify-between" style="padding-top: 16px; border-top: 2px solid var(--accent);">
+                                        <span style="font-family: var(--font-title); font-size: 18px; color: var(--text-primary);">Total</span>
+                                        <span id="confTotal" style="font-family: var(--font-display); font-size: 24px; color: var(--accent);">R$ 0,00</span>
+                                    </div>
+                                </div>
+
+                                <div id="confirmacaoEndereco" style="margin-top: 24px; padding: 20px; background: var(--bg-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                                    <h4 style="font-family: var(--font-title); font-size: 16px; margin-bottom: 12px; color: var(--accent);">Endereço de Entrega</h4>
+                                    <p id="confEnderecoTexto" style="color: var(--text-secondary); line-height: 1.8;">Endereço não preenchido</p>
+                                </div>
+
+                                <div id="confirmacaoPagamento" style="margin-top: 16px; padding: 20px; background: var(--bg-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                                    <h4 style="font-family: var(--font-title); font-size: 16px; margin-bottom: 12px; color: var(--accent);">Forma de Pagamento</h4>
+                                    <p id="confPagamentoTexto" style="color: var(--text-secondary);">Não selecionado</p>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="button" class="btn btn-secondary" id="btnVoltar3">Voltar</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="btnFinalizarPedido">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    Confirmar Pedido
+                                </button>
+                            </div>
+                        </fieldset>
+                    </section>
+
+                    <!-- Resumo do Pedido (Sidebar) -->
+                    <aside class="checkout-resumo" aria-label="Resumo do pedido" style="position: sticky; top: 120px; height: fit-content;">
+                        <div class="card" style="padding: 0;">
+                            <div class="card-content" style="padding: 24px;">
+                                <h3 class="card-title" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle);">Resumo do Pedido</h3>
+
+                                <div id="checkoutItens" style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+                                    <!-- Itens serão inseridos via JS -->
+                                </div>
+
+                                <div class="resumo-linhas" style="margin-bottom: 20px;">
+                                    <div class="resumo-linha d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Subtotal (produtos)</span>
+                                        <span id="checkoutSubtotal" style="font-family: var(--font-display); font-size: 20px; color: var(--text-primary);">R$ 0,00</span>
+                                    </div>
+                                    <div class="resumo-linha d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Taxa de entrega</span>
+                                        <span id="checkoutTaxaEntrega" style="font-family: var(--font-display); font-size: 20px; color: var(--text-primary);">R$ 0,00</span>
+                                    </div>
+                                    <div class="resumo-linha d-flex justify-between" style="margin-bottom: 12px;">
+                                        <span style="color: var(--text-secondary);">Desconto</span>
+                                        <span id="checkoutDesconto" style="font-family: var(--font-display); font-size: 20px; color: #4caf50;">R$ 0,00</span>
+                                    </div>
+                                </div>
+
+                                <div class="resumo-total d-flex justify-between" style="padding-top: 16px; border-top: 2px solid var(--accent); margin-bottom: 24px;">
+                                    <span style="font-family: var(--font-title); font-size: 18px; color: var(--text-primary);">Total</span>
+                                    <span id="checkoutTotal" style="font-family: var(--font-display); font-size: 28px; color: var(--accent);">R$ 0,00</span>
+                                </div>
+
+                                <div class="resumo-info" style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6;">
+                                    <p>O valor final será confirmado antes do pagamento.</p>
+                                    <p>Taxa de entrega pode variar conforme o bairro.</p>
+                                </div>
+
+                                <button type="button" class="btn btn-primary btn-block btn-lg" id="btnIrParaPagamento" disabled style="display: none;">
+                                    Ir para Pagamento
+                                </button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="loading-message">Processando...</p>
+    </div>
+
+    <!-- Modal de Sucesso -->
+    <div class="modal-overlay" id="sucessoModal" role="dialog" aria-modal="true" aria-labelledby="sucessoModalTitle" aria-hidden="true">
+        <div class="modal" style="max-width: 450px; text-align: center;">
+            <div class="modal-body" style="padding: 40px 28px;">
+                <div class="sucesso-icon" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(76, 175, 80, 0.2); border: 2px solid #4caf50; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <h2 id="sucessoModalTitle" style="font-family: var(--font-title); font-size: 28px; margin-bottom: 12px; color: var(--text-primary);">Pedido Confirmado!</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 8px;">Seu pedido foi realizado com sucesso.</p>
+                <p id="sucessoNumero" style="font-family: var(--font-display); font-size: 22px; color: var(--accent); margin-bottom: 24px;">Nº <span id="pedidoNumero">#0000</span></p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Você receberá uma confirmação via WhatsApp.</p>
+                <a href="meus-pedidos.html" class="btn btn-primary btn-block btn-lg">Ver Meus Pedidos</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <p class="footer-text">© 2026 Fraga Lanches - Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/checkout.js"></script>
+</body>
+
+</html>
