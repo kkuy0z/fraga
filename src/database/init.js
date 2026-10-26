@@ -2,7 +2,7 @@ import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -165,10 +165,43 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
     email TEXT NOT NULL UNIQUE,
     senha_hash TEXT NOT NULL,
     nome TEXT NOT NULL,
+    perfil TEXT NOT NULL DEFAULT 'atendente' CHECK (perfil IN ('administrador', 'atendente', 'cozinha', 'entregador')),
     ativo INTEGER DEFAULT 1,
     ultimo_login DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Clientes
+CREATE TABLE IF NOT EXISTS clientes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    telefone TEXT NOT NULL UNIQUE,
+    senha_hash TEXT NOT NULL,
+    cep TEXT,
+    logradouro TEXT,
+    numero TEXT,
+    bairro TEXT,
+    complemento TEXT,
+    ativo INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Endereços do cliente
+CREATE TABLE IF NOT EXISTS enderecos_cliente (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    cep TEXT NOT NULL,
+    logradouro TEXT NOT NULL,
+    numero TEXT NOT NULL,
+    bairro TEXT NOT NULL,
+    complemento TEXT,
+    principal INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
 );
 
 -- Índices
@@ -179,6 +212,10 @@ CREATE INDEX IF NOT EXISTS idx_pedidos_data ON pedidos(data_pedido);
 CREATE INDEX IF NOT EXISTS idx_pedido_itens_pedido ON pedido_itens(pedido_id);
 CREATE INDEX IF NOT EXISTS idx_personalizacao_grupos_produto ON personalizacao_grupos(produto_id);
 CREATE INDEX IF NOT EXISTS idx_personalizacao_opcoes_grupo ON personalizacao_opcoes(grupo_id);
+CREATE INDEX IF NOT EXISTS idx_clientes_email ON clientes(email);
+CREATE INDEX IF NOT EXISTS idx_clientes_telefone ON clientes(telefone);
+CREATE INDEX IF NOT EXISTS idx_clientes_ativo ON clientes(ativo);
+CREATE INDEX IF NOT EXISTS idx_enderecos_cliente ON enderecos_cliente(cliente_id);
 `;
 
     await db.exec(schema);
@@ -235,9 +272,9 @@ CREATE INDEX IF NOT EXISTS idx_personalizacao_opcoes_grupo ON personalizacao_opc
 
     const adminCount = (await db.get('SELECT COUNT(*) as count FROM usuarios_admin')).count;
     if (adminCount === 0) {
-        const senhaHash = await bcrypt.hash('admin123', 10);
-        const insertAdmin = await db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome) VALUES (?, ?, ?)');
-        await insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador');
+        const senhaHash = await argon2.hash('admin123', { type: argon2.argon2id });
+        const insertAdmin = await db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome, perfil) VALUES (?, ?, ?, ?)');
+        await insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador', 'administrador');
         console.log('Default admin user inserted (email: admin@fragalanches.com, senha: admin123)');
     }
 

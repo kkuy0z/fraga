@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { join, resolve } from 'path';
 
 import authRoutes from './routes/auth.js';
+import clientesRoutes from './routes/clientes.js';
 import categoriasRoutes from './routes/categorias.js';
 import produtosRoutes from './routes/produtos.js';
 import horariosRoutes from './routes/horarios.js';
@@ -39,6 +40,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/clientes', clientesRoutes);
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/horarios', horariosRoutes);

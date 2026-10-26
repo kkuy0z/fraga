@@ -4,7 +4,7 @@
 import Database from 'better-sqlite3';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
     email TEXT NOT NULL UNIQUE,
     senha_hash TEXT NOT NULL,
     nome TEXT NOT NULL,
+    perfil TEXT NOT NULL DEFAULT 'atendente' CHECK (perfil IN ('administrador', 'atendente', 'cozinha', 'entregador')),
     ativo INTEGER DEFAULT 1,
     ultimo_login DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -232,9 +233,9 @@ if (horariosCount === 0) {
 
 const adminCount = db.prepare('SELECT COUNT(*) as count FROM usuarios_admin').get().count;
 if (adminCount === 0) {
-    const senhaHash = await bcrypt.hash('admin123', 10);
-    const insertAdmin = db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome) VALUES (?, ?, ?)');
-    insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador');
+    const senhaHash = await argon2.hash('admin123', { type: argon2.argon2id });
+    const insertAdmin = db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome, perfil) VALUES (?, ?, ?, ?)');
+    insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador', 'administrador');
     console.log('Default admin user inserted (email: admin@fragalanches.com, senha: admin123)');
 }
 

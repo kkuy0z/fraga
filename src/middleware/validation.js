@@ -235,3 +235,69 @@ export const authValidators = {
         handleValidationErrors
     ]
 };
+
+// Client validators
+export const clienteValidators = {
+    register: [
+        body('nome').trim().notEmpty().withMessage('Nome é obrigatório')
+            .isLength({ max: 150 }).withMessage('Nome deve ter no máximo 150 caracteres'),
+        body('email').trim().notEmpty().withMessage('E-mail é obrigatório')
+            .isEmail().withMessage('E-mail inválido'),
+        body('telefone').trim().notEmpty().withMessage('Telefone é obrigatório')
+            .matches(/^[\d\s\(\)\-\+]{10,}$/).withMessage('Telefone inválido'),
+        body('senha').notEmpty().withMessage('Senha é obrigatória')
+            .isLength({ min: 6 }).withMessage('Senha deve ter no mínimo 6 caracteres'),
+        body('cep').optional().trim().matches(/^\d{5}-?\d{3}$/).withMessage('CEP inválido (formato: 00000-000)'),
+        body('logradouro').optional().trim().isLength({ max: 200 }).withMessage('Logradouro deve ter no máximo 200 caracteres'),
+        body('numero').optional().trim().isLength({ max: 20 }).withMessage('Número deve ter no máximo 20 caracteres'),
+        body('bairro').optional().trim().isLength({ max: 100 }).withMessage('Bairro deve ter no máximo 100 caracteres'),
+        body('complemento').optional().trim().isLength({ max: 100 }).withMessage('Complemento deve ter no máximo 100 caracteres'),
+        handleValidationErrors
+    ],
+    login: [
+        body('email').trim().notEmpty().withMessage('E-mail é obrigatório')
+            .isEmail().withMessage('E-mail inválido'),
+        body('senha').notEmpty().withMessage('Senha é obrigatória'),
+        handleValidationErrors
+    ],
+    update: [
+        body('nome').optional().trim().notEmpty().withMessage('Nome não pode ser vazio')
+            .isLength({ max: 150 }).withMessage('Nome deve ter no máximo 150 caracteres'),
+        body('telefone').optional().trim().notEmpty().withMessage('Telefone não pode ser vazio')
+            .matches(/^[\d\s\(\)\-\+]{10,}$/).withMessage('Telefone inválido'),
+        body('cep').optional().trim().matches(/^\d{5}-?\d{3}$/).withMessage('CEP inválido (formato: 00000-000)'),
+        body('logradouro').optional().trim().isLength({ max: 200 }).withMessage('Logradouro deve ter no máximo 200 caracteres'),
+        body('numero').optional().trim().isLength({ max: 20 }).withMessage('Número deve ter no máximo 20 caracteres'),
+        body('bairro').optional().trim().isLength({ max: 100 }).withMessage('Bairro deve ter no máximo 100 caracteres'),
+        body('complemento').optional().trim().isLength({ max: 100 }).withMessage('Complemento deve ter no máximo 100 caracteres'),
+        handleValidationErrors
+    ],
+    changePassword: [
+        body('senha_atual').notEmpty().withMessage('Senha atual é obrigatória'),
+        body('nova_senha').notEmpty().withMessage('Nova senha é obrigatória')
+            .isLength({ min: 6 }).withMessage('Nova senha deve ter no mínimo 6 caracteres'),
+        handleValidationErrors
+    ],
+    enderecoCreate: [
+        body('cep').trim().notEmpty().withMessage('CEP é obrigatório')
+            .matches(/^\d{5}-?\d{3}$/).withMessage('CEP inválido (formato: 00000-000)'),
+        body('logradouro').trim().notEmpty().withMessage('Logradouro é obrigatório')
+            .isLength({ max: 200 }).withMessage('Logradouro deve ter no máximo 200 caracteres'),
+        body('numero').trim().notEmpty().withMessage('Número é obrigatório')
+            .isLength({ max: 20 }).withMessage('Número deve ter no máximo 20 caracteres'),
+        body('bairro').trim().notEmpty().withMessage('Bairro é obrigatório')
+            .isLength({ max: 100 }).withMessage('Bairro deve ter no máximo 100 caracteres'),
+        body('complemento').optional().trim().isLength({ max: 100 }).withMessage('Complemento deve ter no máximo 100 caracteres'),
+        body('principal').optional().isBoolean().withMessage('Principal deve ser verdadeiro ou falso'),
+        handleValidationErrors
+    ],
+    enderecoUpdate: [
+        body('cep').optional().trim().matches(/^\d{5}-?\d{3}$/).withMessage('CEP inválido (formato: 00000-000)'),
+        body('logradouro').optional().trim().isLength({ max: 200 }).withMessage('Logradouro deve ter no máximo 200 caracteres'),
+        body('numero').optional().trim().isLength({ max: 20 }).withMessage('Número deve ter no máximo 20 caracteres'),
+        body('bairro').optional().trim().isLength({ max: 100 }).withMessage('Bairro deve ter no máximo 100 caracteres'),
+        body('complemento').optional().trim().isLength({ max: 100 }).withMessage('Complemento deve ter no máximo 100 caracteres'),
+        body('principal').optional().isBoolean().withMessage('Principal deve ser verdadeiro ou falso'),
+        handleValidationErrors
+    ]
+};
