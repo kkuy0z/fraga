@@ -1,24 +1,102 @@
 /* ============ TELA DE CADASTRO ============
-   Complementa style.css (cores, fontes, .btn, cabeçalho, rodapé e --max/--cab vêm de lá).
-   Tamanhos em rem/vw/clamp: o layout cresce com zoom reduzido e se reorganiza com zoom aumentado. */
+   Self-contained: all tokens, fonts, and components defined here.
+   Uses rem/vw/clamp for fluid scaling; no external CSS dependency. */
 :root {
-  --erro: #ff6b6b;
-  --ok: #5fd38a;
-  --campo: #0b0b0d
+  /* Cores */
+  --bg: #0c0c0c;
+  --bg-elev: #090909;
+  --fg: #ffffff;
+  --fg-muted: #b8b8c0;
+  --fg-dim: #8a8a92;
+  --accent: #ffc107;
+  --accent-weak: rgba(255, 193, 7, 0.15);
+  --accent-focus: rgba(255, 193, 7, 0.25);
+  --border: #2a2a2e;
+  --border-hover: #3a3a40;
+  --error: #ff6b6b;
+  --error-focus: rgba(255, 107, 107, 0.25);
+  --success: #5fd38a;
+  --success-bg: rgba(95, 211, 138, 0.1);
+  --success-border: #5fd38a;
+  --campo: #0b0b0d;
+
+  /* Tipografia */
+  --font-heading: "Anton", sans-serif;
+  --font-ui: "Cinzel", "Times New Roman", serif;
+  --font-body: "Montserrat", system-ui, -apple-system, sans-serif;
+
+  /* Espaçamentos do header (para padding do main) */
+  --cab: 4.5rem;  /* altura aproximada do header fixo */
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ============ LAYOUT GERAL ============ */
 .pg-cadastro {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-height: 100dvh
+  min-height: 100dvh;
 }
 
 .cad {
   flex: 1;
-  padding: calc(var(--cab) + clamp(1.25rem, 3vw, 3rem)) 0 clamp(2rem, 4vw, 4rem)
+  padding: calc(var(--cab) + clamp(1.5rem, 3vw, 3rem)) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
 }
 
+/* Grade: [intro | card] [extras | card] -> empilha em telas estreitas */
+.cad-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, clamp(28rem, 40vw, 42rem));
+  grid-template-areas: "intro card" "extras card";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(2rem, 5vw, 6rem);
+  row-gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cad-intro { grid-area: intro; }
+.cad-card  { grid-area: card; align-self: start; }
+.cad-extras { grid-area: extras; display: flex; flex-direction: column; gap: clamp(1.5rem, 3vw, 2rem); min-width: 0; }
+
+@media (max-width: 62em) {
+  .cad-grid {
+    grid-template-columns: minmax(0, 42rem);
+    grid-template-areas: "intro" "card" "extras";
+    grid-template-rows: auto auto auto;
+    justify-content: center;
+    row-gap: clamp(2rem, 4vw, 3rem);
+  }
+  .cad-intro { text-align: center; }
+  .cad-logo { margin-inline: auto; }
+  .cad-lead { margin-inline: auto; }
+  .cad-card-topo { justify-content: center; text-align: center; }
+  .cad-divisor { justify-content: center; }
+}
+
+/* ============ ÍCONES SVG ============ */
 .cad-ic {
   flex: none;
   width: 1.25rem;
@@ -27,387 +105,424 @@
   stroke: currentColor;
   stroke-width: 1.7;
   stroke-linecap: round;
-  stroke-linejoin: round
+  stroke-linejoin: round;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-/* ---------- grade: [intro | form] [extras | form] -> empilha em telas estreitas ---------- */
-.cad-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, clamp(26rem, 38vw, 40rem));
-  grid-template-areas: "intro card" "extras card";
-  grid-template-rows: auto 1fr;
-  column-gap: clamp(2rem, 5vw, 6rem);
-  row-gap: clamp(1.25rem, 2.5vw, 2.5rem)
-}
-
-.cad-intro {
-  grid-area: intro
-}
-
-.cad-card {
-  grid-area: card;
-  align-self: start
-}
-
-.cad-extras {
-  grid-area: extras;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
-  min-width: 0
-}
-
-@media (max-width:62em) {
-  .cad-grid {
-    grid-template-columns: minmax(0, 40rem);
-    grid-template-areas: "intro" "card" "extras";
-    grid-template-rows: none;
-    justify-content: center
-  }
-
-  .cad-intro {
-    text-align: center
-  }
-
-  .cad-logo {
-    margin-inline: auto
-  }
-}
-
-/* ---------- apresentação ---------- */
+/* ============ APRESENTAÇÃO (LADO ESQUERDO) ============ */
 .cad-logo {
-  width: clamp(7rem, 13vw, 12rem);
+  width: clamp(7rem, 14vw, 13rem);
   aspect-ratio: 1;
-  border-radius: 50%
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border), 0 20px 40px -10px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.cad-logo:hover { transform: scale(1.02); box-shadow: 0 0 0 1px var(--border), 0 25px 50px -10px rgba(255,193,7,0.2); }
 
 .cad-eyebrow {
   margin-top: clamp(1rem, 2vw, 1.75rem);
-  color: var(--a);
+  color: var(--accent);
+  font-family: var(--font-ui);
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: clamp(.8rem, 1.1vw, 1rem)
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
 }
 
 .cad h1 {
-  margin-top: .4rem;
-  font: 400 clamp(2.2rem, 4.6vw, 4.4rem)/1.05 var(--h);
+  margin-top: 0.5rem;
+  font: 400 clamp(2.4rem, 5vw, 4.8rem)/1.05 var(--font-heading);
   text-transform: uppercase;
-  overflow-wrap: anywhere
+  overflow-wrap: anywhere;
+  color: var(--fg);
+  letter-spacing: 0.02em;
 }
-
-.cad h1 span {
-  display: block;
-  color: var(--a)
-}
+.cad h1 span { display: block; color: var(--accent); }
 
 .cad-lead {
-  max-width: 28rem;
-  margin-top: 1.1rem;
-  color: var(--c);
-  font-size: clamp(1rem, 1.4vw, 1.25rem)
+  max-width: 30rem;
+  margin-top: 1.25rem;
+  color: var(--fg-muted);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.7;
 }
 
-@media (max-width:62em) {
-  .cad-lead {
-    margin-inline: auto
-  }
-}
-
-/* ---------- benefícios e foto ---------- */
+/* ============ BENEFÍCIOS E FOTO ============ */
 .cad-beneficios {
   display: grid;
   gap: 1rem;
   margin: 0;
   padding: 0;
-  list-style: none
+  list-style: none;
 }
 
 .cad-beneficios li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  max-width: 26rem;
-  color: #ececec;
-  font-size: clamp(.95rem, 1.2vw, 1.1rem);
-  line-height: 1.35
+  max-width: 28rem;
+  color: var(--fg-muted);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  line-height: 1.45;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
+.cad-beneficios li:hover { color: var(--fg); transform: translateX(4px); }
 
 .cad-beneficios .cad-ic {
   width: 2.2rem;
   height: 2.2rem;
-  color: var(--a)
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
 .cad-foto {
   position: relative;
   flex: 1;
-  min-height: clamp(14rem, 26vw, 26rem)
+  min-height: clamp(16rem, 28vw, 28rem);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
 }
-
 .cad-foto img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 72% center;
-  border-radius: .9rem;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 40%)
+  object-position: 70% center;
+  border-radius: 1rem;
+  opacity: 0.85;
+  transition: opacity 0.4s ease, transform 0.6s ease;
+  transform: scale(1.02);
 }
+.cad-foto:hover img { opacity: 1; transform: scale(1); }
 
-/* ---------- cartão do formulário ---------- */
+/* ============ CARTÃO DO FORMULÁRIO ============ */
 .cad-card {
-  padding: clamp(1.25rem, 3vw, 2.5rem);
-  border: 1px solid var(--b);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--border);
   border-radius: 1.25rem;
-  background: #090909
+  background: var(--bg-elev);
+  box-shadow: 0 4px 24px -4px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
+.cad-card:hover { box-shadow: 0 8px 32px -4px rgba(0,0,0,0.5), 0 0 0 1px var(--border-hover); }
 
 .cad-card-topo {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.25rem
+  margin-bottom: 1.5rem;
 }
 
 .cad-badge {
   display: grid;
   place-items: center;
   flex: none;
-  width: clamp(3.2rem, 5vw, 4.4rem);
+  width: clamp(3.5rem, 5vw, 4.8rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(255, 200, 0, .1);
-  color: var(--a)
+  background: var(--accent-weak);
+  color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-weak);
 }
+.cad-badge .cad-ic { width: 55%; height: 55%; }
 
-.cad-badge .cad-ic {
-  width: 55%;
-  height: 55%
-}
-
-.cad-card-topo>div {
-  min-width: 0
-}
+.cad-card-topo > div { min-width: 0; }
 
 .cad-card h2 {
   overflow-wrap: anywhere;
-  font: 400 clamp(1.6rem, 2.6vw, 2.2rem)/1.1 var(--h);
-  text-transform: uppercase
+  font: 400 clamp(1.7rem, 2.8vw, 2.4rem)/1.1 var(--font-heading);
+  text-transform: uppercase;
+  color: var(--fg);
+  letter-spacing: 0.01em;
 }
 
-.cad-card-topo p {
-  color: var(--c)
-}
+.cad-card-topo p { color: var(--fg-muted); font-size: clamp(0.95rem, 1.1vw, 1rem); }
 
 .cad-legenda {
-  margin-bottom: .75rem;
-  color: var(--c);
-  font-size: .85rem
+  margin-bottom: 1rem;
+  color: var(--fg-dim);
+  font-size: 0.85rem;
 }
 
-.obrig {
-  color: var(--erro)
-}
+.obrig { color: var(--error); }
 
 form {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1rem
+  gap: 1.1rem;
 }
 
-/* ---------- campos ---------- */
+/* ============ CAMPOS DO FORMULÁRIO ============ */
 .campo label:not(.termos) {
   display: block;
-  margin-bottom: .4rem;
-  font-weight: 700;
-  font-size: .95rem
+  margin-bottom: 0.45rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  color: var(--fg);
+  letter-spacing: 0.01em;
 }
 
 .entrada {
   display: flex;
   align-items: center;
-  gap: .75rem;
-  padding: 0 .9rem;
-  border: 1px solid #3a3a40;
-  border-radius: .7rem;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
   background: var(--campo);
-  color: var(--c);
-  transition: border-color .2s, box-shadow .2s
+  color: var(--fg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
-
-.entrada:hover {
-  border-color: #5a5a62
-}
-
+.entrada:hover { border-color: var(--border-hover); }
 .entrada:focus-within {
-  border-color: var(--a);
-  box-shadow: 0 0 0 3px rgba(255, 200, 0, .22);
-  color: var(--a)
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-focus);
+  background: #0d0d10;
 }
+.entrada:focus-within .cad-ic { color: var(--accent); transform: scale(1.1); }
 
 .entrada input {
   flex: 1;
   min-width: 0;
-  padding: .85rem 0;
+  padding: 0.95rem 0;
   border: 0;
   background: none;
-  color: #fff;
-  font: inherit
+  color: var(--fg);
+  font: inherit;
+  font-family: var(--font-body);
 }
+.entrada input::placeholder { color: var(--fg-dim); }
+.entrada input:focus-visible { outline: 0; }
 
-.entrada input::placeholder {
-  color: #8a8a92
-}
-
-.entrada input:focus-visible {
-  outline: 0
-}
-
+/* Estados de validação */
 .campo.invalido .entrada {
-  border-color: var(--erro);
-  color: var(--erro)
+  border-color: var(--error);
+  color: var(--error);
 }
-
 .campo.invalido .entrada:focus-within {
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, .25)
+  box-shadow: 0 0 0 3px var(--error-focus);
 }
+.campo.invalido .entrada:focus-within .cad-ic { color: var(--error); transform: scale(1.1); }
 
 .campo.valido .entrada {
-  border-color: var(--ok);
-  color: var(--ok)
+  border-color: var(--success);
+  color: var(--success);
 }
-
-.ajuda,
-.erro {
-  margin-top: .35rem;
-  font-size: .85rem
+.campo.valido .entrada:focus-within {
+  box-shadow: 0 0 0 3px rgba(95, 211, 138, 0.25);
 }
+.campo.valido .entrada:focus-within .cad-ic { color: var(--success); transform: scale(1.1); }
 
-.ajuda {
-  color: #9a9aa2
+.ajuda, .erro {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  min-height: 1.2em; /* evita salto de layout */
 }
+.ajuda { color: var(--fg-dim); }
+.erro { color: var(--error); font-weight: 600; }
+.erro:empty { display: none; }
 
-.erro {
-  color: var(--erro);
-  font-weight: 600
-}
+.campo.invalido .ajuda { display: none; }
 
-.erro:empty {
-  display: none
-}
-
-.campo.invalido .ajuda {
-  display: none
-}
-
+/* Botão mostrar/ocultar senha */
 .ver-senha {
   display: grid;
   place-items: center;
   flex: none;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-right: -.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: -0.5rem;
   padding: 0;
   border: 0;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   background: none;
-  color: var(--c);
-  cursor: pointer
+  color: var(--fg-dim);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
 }
+.ver-senha:hover { color: var(--accent); background: var(--accent-weak); }
+.ver-senha:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; color: var(--accent); }
+.ver-senha .cad-ic { transition: color 0.2s ease; }
 
-.ver-senha:hover {
-  color: var(--a)
-}
-
+/* Checkbox termos */
+.campo-termos { margin-top: 0.25rem; }
 .termos {
   display: flex;
   align-items: flex-start;
-  gap: .7rem;
-  font-size: .95rem;
-  cursor: pointer
+  gap: 0.7rem;
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  cursor: pointer;
 }
-
 .termos input {
   flex: none;
-  width: 1.2rem;
-  height: 1.2rem;
-  margin: .2rem 0 0;
-  accent-color: var(--a);
-  cursor: pointer
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
+.termos input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 0.2rem; }
+.termos input:hover { transform: scale(1.1); }
+.termos a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s ease; }
+.termos a:hover { color: #ffd54f; }
+.campo.invalido .termos input { outline: 2px solid var(--error); outline-offset: 2px; }
 
-.termos a {
-  color: var(--a)
+/* ============ BOTÕES, DIVISOR E SUCESSO ============ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
+.btn .cad-ic { width: 1.4rem; height: 1.4rem; }
 
-.campo.invalido .termos input {
-  outline: 2px solid var(--erro);
-  outline-offset: 2px
-}
-
-/* ---------- botões, divisor e sucesso ---------- */
-.cad-enviar {
+.btn.cheio {
   width: 100%;
-  gap: .6rem;
-  text-transform: uppercase
+  background: var(--accent);
+  color: #121212;
+  border-color: var(--accent);
 }
-
-.cad-enviar .cad-ic {
-  width: 1.4rem;
-  height: 1.4rem
+.btn.cheio:hover {
+  background: #ffd54f;
+  border-color: #ffd54f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(255, 193, 7, 0.5);
 }
+.btn.cheio:active { transform: translateY(0); box-shadow: none; }
+.btn.cheio:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .sucesso {
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--ok);
-  border-radius: .8rem;
-  background: rgba(95, 211, 138, .08);
-  color: #d9f7e5
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--success-border);
+  border-radius: 0.85rem;
+  background: var(--success-bg);
+  color: #c8f5dc;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  animation: slideIn 0.3s ease-out;
 }
+.sucesso b { color: var(--success); }
+.sucesso[hidden] { display: none; }
 
-.sucesso b {
-  color: var(--ok)
-}
-
-.sucesso[hidden] {
-  display: none
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .cad-divisor {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 1.5rem 0 1rem;
-  color: #ddd;
-  font-size: .9rem
+  margin: 1.75rem 0 1.25rem;
+  color: var(--fg-dim);
+  font-size: 0.9rem;
 }
-
 .cad-divisor::before,
 .cad-divisor::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--l)
+  background: var(--border);
 }
 
 .cad-entrar {
   display: flex;
   width: 100%;
-  text-transform: uppercase
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border);
 }
+.cad-entrar:hover {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.cad-entrar:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .cad-voltar {
   display: block;
-  margin-top: 1.1rem;
-  color: var(--c);
+  margin-top: 1.25rem;
+  color: var(--fg-dim);
   text-align: center;
-  font-size: .95rem
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.cad-voltar:hover { color: var(--accent); }
+.cad-voltar:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 0.25rem; }
+
+/* ============ HEADER (compatibilidade com style.css) ============ */
+.header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; padding: 1rem clamp(1rem, 4vw, 3rem); background: rgba(12,12,12,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+.header-container { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; gap: 1.5rem; }
+.logo-link { display: block; text-decoration: none; }
+.logo-img { height: clamp(48px, 6vw, 72px); width: auto; display: block; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5)); transition: transform 0.3s ease; }
+.logo-img:hover { transform: scale(1.03); }
+.nav { display: flex; gap: clamp(1.5rem, 3vw, 2.5rem); }
+.nav a { font-family: var(--font-ui); color: var(--fg-muted); text-decoration: none; font-size: clamp(0.85rem, 1vw, 0.95rem); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s ease; position: relative; }
+.nav a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s ease; }
+.nav a:hover { color: var(--accent); }
+.nav a:hover::after { width: 100%; }
+.nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 0.25rem; }
+
+.menu-mobile { display: none; flex-direction: column; gap: 5px; width: 44px; height: 44px; padding: 0; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--bg-elev); cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; }
+.menu-mobile:hover { border-color: var(--accent); background: var(--accent-weak); }
+.menu-mobile span { display: block; width: 22px; height: 2px; background: var(--fg); border-radius: 1px; transition: all 0.3s ease; transform-origin: center; }
+.menu-mobile[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); background: var(--accent); }
+.menu-mobile[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-mobile[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); background: var(--accent); }
+
+@media (max-width: 48rem) {
+  .menu-mobile { display: flex; }
+  .nav { position: fixed; top: 0; right: 0; bottom: 0; width: min(280px, 85vw); padding: calc(var(--cab) + 2rem) 2rem 2rem; background: var(--bg-elev); border-left: 1px solid var(--border); flex-direction: column; gap: 1.5rem; transform: translateX(100%); transition: transform 0.35s ease; box-shadow: -8px 0 24px rgba(0,0,0,0.4); }
+  .nav.active { transform: translateX(0); }
+  .nav a { font-size: 1.1rem; }
 }
 
-.cad-voltar:hover {
-  color: var(--a)
+/* ============ FOOTER ============ */
+footer { padding: 2rem clamp(1rem, 4vw, 3rem); text-align: center; color: var(--fg-dim); font-size: 0.85rem; border-top: 1px solid var(--border); background: var(--bg-elev); margin-top: auto; }
+
+/* ============ UTILIDADES ============ */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* Redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: more) {
+  :root {
+    --border: #444;
+    --border-hover: #666;
+    --fg-muted: #ddd;
+    --fg-dim: #bbb;
+  }
+  .entrada:focus-within { box-shadow: 0 0 0 3px var(--accent); }
+  .campo.invalido .entrada:focus-within { box-shadow: 0 0 0 3px var(--error); }
 }
