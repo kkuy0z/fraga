@@ -1,129 +1,122 @@
-/* =========================================
-   1. CARROSSEL DE IMAGENS DO ESPAÇO
-========================================= */
-const imagensEspaco = [
-    "images/espaco1.jpg",
-    "images/espaco2.jpg",
-    "images/espaco3.jpg"
-];
-
-let indiceEspaco = 0;
-const imgEspacoEl = document.getElementById("imagemEspaco");
-const btnPrevEspaco = document.getElementById("anterior-espaco");
-const btnNextEspaco = document.getElementById("proximo-espaco");
-
-function atualizarImagemEspaco() {
-    if (imgEspacoEl) {
-        imgEspacoEl.src = imagensEspaco[indiceEspaco];
-    }
-}
-
-if (btnNextEspaco && btnPrevEspaco) {
-    btnNextEspaco.addEventListener("click", () => {
-        indiceEspaco = (indiceEspaco + 1) % imagensEspaco.length;
-        atualizarImagemEspaco();
-    });
-
-    btnPrevEspaco.addEventListener("click", () => {
-        indiceEspaco = (indiceEspaco - 1 + imagensEspaco.length) % imagensEspaco.length;
-        atualizarImagemEspaco();
-    });
-}
-
-/* =========================================
-   2. SISTEMA DINÂMICO DE AVALIAÇÕES (LOCALSTORAGE)
-========================================= */
-
-const avaliacoesIniciais = [
+document.addEventListener("DOMContentLoaded", function () {
+  const avaliacoes = [
     {
-        nome: "João Costa",
-        nota: 5,
-        comentario: "Simplesmente o melhor hambúrguer da região! Entrega rápida e produto super quente."
+      nome: "Júlio Costa",
+      comentario: "Simplesmente o melhor hambúrguer da região! Carne suculenta, ponto perfeito e o pão é super macio. Sem contar que pedi entrega e chegou quentinho e super rápido. Nota 10!",
+      estrelas: "★★★★★"
     },
     {
-        nome: "Samuel Wellington",
-        nota: 5,
-        comentario: "Impressionado pela qualidade dos lanches. Muito recheado e bom atendimento."
+      nome: "Samuel Welington",
+      comentario: "Surpreendido pela qualidade! Além do lanche artesanal maravilhoso, pedi uma marmita durante a semana e a comida é caseira, muito saborosa e bem servida. Parabéns à equipe!",
+      estrelas: "★★★★★"
     },
     {
-        nome: "Maria Gabriela",
-        nota: 5,
-        comentario: "Atendimento impecável! O lanche chegou rápido e o sabor é maravilhoso."
+      nome: "Maria Gabriela",
+      comentario: "Atendimento impecável e comida excelente. As porções são generosas e o preço é justo. Virou o meu delivery favorito de fim de semana!",
+      estrelas: "★★★★★"
+    },
+    {
+      nome: "Carlos Silva",
+      comentario: "O melhor hambúrguer da região sem dúvida! Carne suculenta, ponto perfeito e entrega super rápida. Recomendo demais!",
+      estrelas: "★★★★★"
+    },
+    {
+      nome: "Mariana Souza",
+      comentario: "Ambiente extremamente agradável, atendimento impecável e os lanches são verdadeiras obras de arte. Com certeza voltaremos mais vezes!",
+      estrelas: "★★★★★"
     }
-];
+  ];
 
-function obterAvaliacoes() {
-    const salvas = localStorage.getItem("avaliacoes_fraga");
-    if (!salvas) {
-        localStorage.setItem("avaliacoes_fraga", JSON.stringify(avaliacoesIniciais));
-        return avaliacoesIniciais;
-    }
-    return JSON.parse(salvas);
-}
+  let currentIndex = 0;
+  const cardContainer = document.getElementById("avaliacoes-list");
+  const dotsContainer = document.querySelector(".carrossel-dots-av");
 
-function renderizarAvaliacoes() {
-    const lista = document.getElementById("avaliacoes-list");
-    if (!lista) return;
+  function renderizarCarrossel(index) {
+    if (!cardContainer) return;
 
-    const avaliacoes = obterAvaliacoes();
-    lista.innerHTML = "";
+    // Calcula os índices anterior, central e seguinte de forma circular
+    const prevIndex = (index - 1 + avaliacoes.length) % avaliacoes.length;
+    const nextIndex = (index + 1) % avaliacoes.length;
 
-    avaliacoes.forEach(item => {
-        const estrelasStr = "★".repeat(item.nota) + "☆".repeat(5 - item.nota);
-        const inicial = item.nome ? item.nome.charAt(0).toUpperCase() : "A";
+    const avPrev = avaliacoes[prevIndex];
+    const avCentral = avaliacoes[index];
+    const avNext = avaliacoes[nextIndex];
 
-        const card = document.createElement("div");
-        card.className = "card-avaliacao";
-        card.innerHTML = `
-            <div class="header-cliente">
-                <div class="avatar-cliente">${inicial}</div>
-                <div>
-                    <div class="nome-cliente">${item.nome}</div>
-                    <div class="estrelas">${estrelasStr}</div>
-                </div>
-            </div>
-            <p class="comentario">"${item.comentario}"</p>
-        `;
-        lista.appendChild(card);
+    const svgIcon = `<svg class="avatar-svg" viewBox="0 0 24 24" fill="#ffd900"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+
+    cardContainer.innerHTML = `
+      <!-- Cartão Esquerdo (Borrado) -->
+      <div class="avaliacao-card lateral">
+        <div class="avatar-box">${svgIcon}</div>
+        <h4 class="cliente-nome">${avPrev.nome}</h4>
+        <div class="estrelas">${avPrev.estrelas}</div>
+        <p class="cliente-comentario">"${avPrev.comentario}"</p>
+        <div class="aspas-rodape">“</div>
+      </div>
+
+      <!-- Cartão Central (Nítido e Destacado) -->
+      <div class="avaliacao-card central">
+        <div class="avatar-box">${svgIcon}</div>
+        <h4 class="cliente-nome">${avCentral.nome}</h4>
+        <div class="estrelas">${avCentral.estrelas}</div>
+        <p class="cliente-comentario">"${avCentral.comentario}"</p>
+        <div class="aspas-rodape">“</div>
+      </div>
+
+      <!-- Cartão Direito (Borrado) -->
+      <div class="avaliacao-card lateral">
+        <div class="avatar-box">${svgIcon}</div>
+        <h4 class="cliente-nome">${avNext.nome}</h4>
+        <div class="estrelas">${avNext.estrelas}</div>
+        <p class="cliente-comentario">"${avNext.comentario}"</p>
+        <div class="aspas-rodape">“</div>
+      </div>
+    `;
+
+    atualizarDots(index);
+  }
+
+  function atualizarDots(index) {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll(".dot");
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === index);
     });
-}
+  }
 
-const formAvaliacao = document.getElementById("form-avaliacao");
+  // Eventos de clique nas setas
+  const btnPrev = document.getElementById("prev-review");
+  const btnNext = document.getElementById("next-review");
 
-if (formAvaliacao) {
-    formAvaliacao.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const nome = document.getElementById("nome-cliente").value;
-        const nota = parseInt(document.getElementById("nota-cliente").value);
-        const comentario = document.getElementById("comentario-cliente").value;
-
-        const novasAvaliacoes = obterAvaliacoes();
-        novasAvaliacoes.unshift({ nome, nota, comentario });
-
-        localStorage.setItem("avaliacoes_fraga", JSON.stringify(novasAvaliacoes));
-        renderizarAvaliacoes();
-
-        formAvaliacao.reset();
-        alert("Obrigado pela sua avaliação!");
+  if (btnPrev && btnNext) {
+    btnPrev.addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + avaliacoes.length) % avaliacoes.length;
+      renderizarCarrossel(currentIndex);
     });
-}
 
-const avaliacoesListEl = document.getElementById("avaliacoes-list");
-const btnNextReview = document.getElementById("next-review");
-const btnPrevReview = document.getElementById("prev-review");
-
-if (btnNextReview && avaliacoesListEl) {
-    btnNextReview.addEventListener("click", () => {
-        avaliacoesListEl.scrollBy({ left: 260, behavior: 'smooth' });
+    btnNext.addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % avaliacoes.length;
+      renderizarCarrossel(currentIndex);
     });
-}
+  }
 
-if (btnPrevReview && avaliacoesListEl) {
-    btnPrevReview.addEventListener("click", () => {
-        avaliacoesListEl.scrollBy({ left: -260, behavior: 'smooth' });
+  // Eventos de clique nos pontos (dots)
+  if (dotsContainer) {
+    const dots = dotsContainer.querySelectorAll(".dot");
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => {
+        currentIndex = i;
+        renderizarCarrossel(currentIndex);
+      });
     });
-}
+  }
 
-// Inicializar na carga da página
-renderizarAvaliacoes();
+  // Inicializa o carrossel
+  renderizarCarrossel(currentIndex);
+
+  // Rotação automática a cada 5 segundos
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % avaliacoes.length;
+    renderizarCarrossel(currentIndex);
+  }, 5000);
+});

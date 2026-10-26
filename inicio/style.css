@@ -10,9 +10,10 @@ body {
   background-color: #121212;
   color: #ffffff;
   overflow-x: hidden;
+  width: 100%;
 }
 
-/* Cabeçalho fixo no topo cobrindo toda a largura de ponta a ponta */
+/* ================= CABEÇALHO ================= */
 .header {
   position: absolute;
   top: 0;
@@ -22,25 +23,25 @@ body {
   padding: 20px 4%;
 }
 
-/* Container flexível interno alinhando logo na esq. e menu na dir. */
 .header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-/* Logotipo grande e colado perfeitamente na margem esquerda */
 .logo img {
   height: 110px;
   width: auto;
   display: block;
 }
 
-/* Menu de navegação (Estilo Le Jour Serif) */
 .nav-menu {
   display: flex;
   gap: 35px;
+  flex-wrap: wrap;
 }
 
 .nav-menu a {
@@ -57,11 +58,11 @@ body {
   color: #ffc107;
 }
 
-/* Seção Hero */
+/* ================= SEÇÃO HERO (FIXO E NA POSIÇÃO EXATA) ================= */
 .hero {
   position: relative;
   height: 100vh;
-  width: 100vw;
+  width: 100%; /* Mudado de 100vw para 100% para evitar barra de rolagem lateral indesejada */
   display: flex;
   align-items: center;
   background-color: #0c0c0c;
@@ -96,30 +97,31 @@ body {
   z-index: 2;
 }
 
-/* Conteúdo Hero alinhado com a mesma margem da logo (4%) */
+/* Conteúdo Hero travado e forçado à esquerda */
 .hero-conteudo {
-  position: relative;
-  z-index: 3;
-  max-width: 750px;
-  margin-left: 4%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  position: relative !important;
+  z-index: 3 !important;
+  max-width: 750px !important;
+  margin-left: 4% !important;
+  margin-right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
 }
 
-/* Título Gigante com Anton */
+/* Título Gigante forçado à esquerda */
 .hero-conteudo h1 {
-  font-family: "Anton", sans-serif;
-  font-size: 78px;
-  font-weight: 400;
-  line-height: 1.2;
-  color: #ffffff;
-  margin-bottom: 35px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-align: left;
+  font-family: "Anton", sans-serif !important;
+  font-size: 78px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  margin-bottom: 35px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
 }
-
 .hero-conteudo h1 .destaque {
   color: #ffc107;
 }
@@ -158,329 +160,816 @@ body {
   color: #121212;
 }
 
-/* ================= PADRÃO DE TAMANHO PARA TODAS AS SEÇÕES ================= */
+/* Efeito de degradê mais forte e suave na transição do Hero */
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250px; /* Aumentámos a altura para o degradê começar mais cedo */
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 12, 12, 0) 0%,
+    rgba(12, 12, 12, 0.6) 50%,
+    #0c0c0c 100%
+  );
+  z-index: 4;
+  pointer-events: none;
+}
+/* ================= PADRÃO DE SEÇÕES ================= */
 section {
-    position: relative;
-    height: 100vh;        /* Garante que cada seção ocupe a altura exata da tela */
-    width: 100vw;         /* Ocupa toda a largura da tela */
-    display: flex;
-    align-items: center;  /* Centraliza o conteúdo verticalmente */
-    overflow: hidden;
-    background-color: #0c0c0c;
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0c0c0c;
+  padding: 80px 4%;
 }
 
-/* ================= SEÇÃO SOBRE NÓS (TEXTOS E LOGO MAIORES) ================= */
+/* ================= SEÇÃO SOBRE NÓS ================= */
 .sobre {
-    background-color: #0c0c0c;
-    color: #ffffff;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
+  background-color: #0c0c0c;
+  color: #ffffff;
+  width: 100%;
 }
 
 .sobre-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1450px; /* Aumentado para expandir o layout */
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 5%;
-    gap: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1450px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 60px;
+  flex-wrap: wrap;
 }
 
 .sobre-texto-box {
-    flex: 1.2;
-    max-width: 750px;
+  flex: 1.2;
+  min-width: 280px;
+  max-width: 750px;
 }
 
-/* Título SOBRE NÓS maior */
 .titulo-sobre {
-    font-family: 'Cinzel', 'Times New Roman', serif;
-    font-size: 52px; /* Aumentado */
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    text-transform: uppercase;
+  font-family: "Cinzel", "Times New Roman", serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  flex-wrap: wrap;
 }
 
 .traco-horizontal {
-    display: inline-block;
-    width: 55px; /* Traço maior */
-    height: 3px;
-    background-color: #ffc107;
-    margin-right: 20px;
+  display: inline-block;
+  width: 55px;
+  height: 3px;
+  background-color: #ffc107;
+  margin-right: 20px;
 }
 
 .titulo-sobre .destaque-sobre {
-    color: #ffc107;
-    margin-left: 12px;
+  color: #ffc107;
+  margin-left: 12px;
 }
 
-/* Subtítulo: Feito a mão. Pensado para você. (Bem maior) */
 .subtitulo-sobre {
-    font-family: 'Cinzel', 'Times New Roman', serif;
-    font-size: 46px; /* Aumentado */
-    font-weight: 600;
-    line-height: 1.2;
-    color: #ffffff;
-    margin-bottom: 20px;
+  font-family: "Cinzel", "Times New Roman", serif;
+  font-size: clamp(26px, 3vw, 46px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 20px;
 }
 
 .subtitulo-sobre .destaque-subtitulo {
-    color: #ffc107;
+  color: #ffc107;
 }
 
-/* Linha decorativa amarela maior */
 .linha-amarela {
-    width: 80px;
-    height: 4px;
-    background-color: #ffc107;
-    margin-bottom: 30px;
+  width: 80px;
+  height: 4px;
+  background-color: #ffc107;
+  margin-bottom: 30px;
 }
 
-/* Parágrafo de descrição maior e mais legível */
 .sobre-texto {
-    font-family: 'Montserrat', sans-serif, Arial, Helvetica;
-    font-size: 19px; /* Aumentado de 16px para 19px */
-    line-height: 1.65;
-    color: #e0e0e0;
-    letter-spacing: 0.5px;
+  font-family: "Montserrat", sans-serif, Arial, Helvetica;
+  font-size: 19px;
+  line-height: 1.65;
+  color: #e0e0e0;
+  letter-spacing: 0.5px;
 }
 
-/* Container da Logo Grande à Direita (Bem maior) */
 .logo-principal-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo-principal-img {
-    width: 100%;
-    max-width: 480px; /* Aumentado consideravelmente para destacar bem a logo */
-    height: auto;
-    display: block;
-    filter: drop-shadow(0px 15px 30px rgba(0,0,0,0.9));
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0px 15px 30px rgba(0, 0, 0, 0.9));
 }
 
-/* ================= SEÇÃO NOSSO ESPAÇO ================= --> */
+/* ================= SEÇÃO NOSSO ESPAÇO (FOTOS MAIORES) ================= */
 .espaco {
-    background-color: #0c0c0c;
-    color: #ffffff;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    padding: 0 4%;
+  flex-direction: column;
 }
 
 .espaco-container {
-    max-width: 1350px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  max-width: 1350px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Cabeçalho centralizado */
 .espaco-header {
-    text-align: center;
-    margin-bottom: 35px;
+  text-align: center;
+  margin-bottom: 45px;
+  width: 100%;
 }
 
-.titulo-espaco {
-    font-family: 'Cinzel', 'Times New Roman', serif;
-    font-size: 48px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #ffffff;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.titulo-espaco .destaque-espaco {
-    color: #ffc107;
-}
-
-.subtitulo-espaco {
-    font-family: 'Montserrat', sans-serif, Arial, Helvetica;
-    font-size: 18px;
-    color: #dcdcdc;
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
-}
-
-/* Linha amarela abaixo do subtítulo */
-.linha-amarela-espaco {
-    width: 120px;
-    height: 3px;
-    background-color: #ffc107;
-    margin: 0 auto;
-}
-
-/* Wrapper do Carrossel */
 .carrossel-espaco-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 20px;
-    margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 25px;
+  margin-bottom: 25px;
 }
 
-/* Container de imagens lado a lado */
 .carrossel-espaco-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    justify-content: center;
+  display: flex;
+  gap: 25px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
+/* Tamanho das fotos aumentado significativamente */
 .espaco-card {
-    flex: 1;
-    max-width: 280px;
-    height: 220px;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    background-color: #1a1a1a;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+  flex: 1;
+  min-width: 340px;
+  max-width: 400px;
+  height: 280px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background-color: #1a1a1a;
+  transition:
+    transform 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
 }
 
 .espaco-card:hover {
-    transform: translateY(-5px);
-    border-color: #ffc107;
+  transform: translateY(-8px);
+  border-color: #ffc107;
+  box-shadow: 0px 15px 35px rgba(255, 193, 7, 0.2);
 }
 
 .espaco-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-/* Setas laterais estilo imagem */
-.seta-espaco {
-    background: transparent;
-    border: none;
-    color: #ffc107;
-    font-size: 36px;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0 10px;
-    transition: opacity 0.3s ease, transform 0.2s ease;
-    user-select: none;
+/* ================= SEÇÃO AVALIAÇÕES (CARROSSEL COM ANIMAÇÃO) ================= */
+.avaliacoes {
+  flex-direction: column;
 }
 
-.seta-espaco:hover {
-    transform: scale(1.2);
-    opacity: 0.8;
+.avaliacoes-container-geral {
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Bolinhas Indicadoras (Dots) */
-.carrossel-dots {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
+.avaliacoes-carrossel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 25px;
+  position: relative;
+  min-height: 380px; /* Altura mínima fixa para evitar que a página balance ou trema */
 }
 
-.carrossel-dots .dot {
-    width: 8px;
-    height: 8px;
-    background-color: #555555;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.avaliacoes-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
-.carrossel-dots .dot.active {
-    background-color: #ffc107;
-    width: 10px;
-    height: 10px;
+.avaliacao-card {
+  background-color: #0f0f0f;
+  border: 2px solid rgba(255, 193, 7, 0.4);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.9);
+  /* Removida a animação constante que causava o piscar/tremor */
 }
 
-/* Responsividade para Telas Menores */
-@media (max-width: 992px) {
-    .espaco {
-        height: auto;
-        min-height: 100vh;
-        padding: 80px 20px;
-    }
-    .titulo-espaco {
-        font-size: 34px;
-    }
-    .subtitulo-espaco {
-        font-size: 15px;
-    }
-    .carrossel-espaco-container {
-        flex-wrap: wrap;
-    }
-    .espaco-card {
-        max-width: 45%;
-        height: 180px;
-    }
+/* Cartão com animação de transição suave */
+.avaliacao-card {
+  background-color: #0f0f0f;
+  border: 2px solid rgba(255, 193, 7, 0.4);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.9);
+  animation: fadeInOut 0.5s ease-in-out;
 }
 
-@media (max-width: 576px) {
-    .espaco-card {
-        max-width: 100%;
-        height: 200px;
-    }
+@keyframes fadeInOut {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-/* Responsividade para Telas Menores */
-@media (max-width: 900px) {
-    .sobre {
-        height: auto;
-        min-height: 100vh;
-        padding: 80px 0;
-    }
-    .sobre-container {
-        flex-direction: column-reverse;
-        text-align: left;
-        gap: 40px;
-    }
-    .titulo-sobre {
-        font-size: 36px;
-    }
-    .subtitulo-sobre {
-        font-size: 32px;
-    }
-    .sobre-texto {
-        font-size: 16px;
-    }
-    .logo-principal-img {
-        max-width: 300px;
-    }
+.avatar-box {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 3px solid #ffc107;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  margin-bottom: 15px;
 }
 
+.cliente-nome {
+  font-family: "Cinzel", "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.estrelas {
+  color: #ffc107;
+  font-size: 20px;
+  letter-spacing: 4px;
+  margin-bottom: 15px;
+}
+
+.cliente-comentario {
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #dcdcdc;
+  margin-bottom: 15px;
+}
+
+/* ================= SEÇÃO LOCALIZAÇÃO ================= */
+.localizacao {
+  flex-direction: column;
+}
+
+.localizacao-container {
+  max-width: 1350px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.localizacao-header {
+  text-align: left;
+  margin-bottom: 50px;
+  width: 100%;
+}
+
+.titulo-localizacao {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #ffc107;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.linha-amarela-loc {
+  width: min(100%, 350px);
+  height: 3px;
+  background-color: #ffc107;
+}
+
+.localizacao-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.localizacao-info {
+  flex: 1.1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.endereco-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icone-loc {
+  font-size: 40px;
+  color: #ffc107;
+}
+
+.endereco-item p {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffffff;
+  letter-spacing: 1.5px;
+}
+
+.horario-box {
+  border: 2px solid rgba(255, 193, 7, 0.4);
+  border-radius: 16px;
+  padding: 22px 28px;
+  background-color: rgba(18, 18, 18, 0.6);
+  max-width: 500px;
+  width: 100%;
+}
+
+.horario-titulo {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffc107;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.horario-conteudo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icone-relogio {
+  font-size: 38px;
+  color: #ffc107;
+}
+
+.horario-texto {
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 16px;
+  color: #e0e0e0;
+  gap: 4px;
+}
+
+.destaque-horas {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: 22px;
+  color: #ffc107;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.botao-como-chegar {
+  font-family: "Anton", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background-color: #ffc107;
+  color: #121212;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  max-width: 240px;
+  width: 100%;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.botao-como-chegar:hover {
+  background-color: #e0a800;
+  transform: translateY(-3px);
+}
+
+.seta-btn {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.mapa-container {
+  flex: 1;
+  min-width: 280px;
+  height: 370px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 193, 7, 0.3);
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.8);
+  width: 100%;
+}
+
+/* ================= SEÇÃO AVALIAÇÕES ================= */
+.avaliacoes {
+  flex-direction: column;
+}
+
+.avaliacoes-container-geral {
+  max-width: 1350px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avaliacoes-header {
+  text-align: center;
+  margin-bottom: 45px;
+  width: 100%;
+}
+
+.titulo-avaliacoes {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: clamp(32px, 3.5vw, 46px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.titulo-avaliacoes .destaque-av {
+  color: #ffc107;
+}
+
+.subtitulo-avaliacoes {
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 17px;
+  color: #dcdcdc;
+  letter-spacing: 0.5px;
+  margin-bottom: 18px;
+}
+
+.linha-amarela-av {
+  width: min(100%, 320px);
+  height: 3px;
+  background-color: #ffc107;
+  margin: 0 auto;
+}
+
+.avaliacoes-carrossel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.avaliacoes-container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.avaliacao-card {
+  background-color: #0f0f0f;
+  border: 2px solid rgba(255, 193, 7, 0.35);
+  border-radius: 20px;
+  padding: 35px 25px;
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.9);
+  transition: transform 0.3s ease;
+}
+
+.avaliacao-card:hover {
+  transform: translateY(-5px);
+  border-color: #ffc107;
+}
+
+.avatar-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #ffc107;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  margin-bottom: 15px;
+}
+
+.avatar-svg {
+  width: 50px;
+  height: 50px;
+}
+
+.cliente-nome {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.estrelas {
+  color: #ffc107;
+  font-size: 18px;
+  letter-spacing: 3px;
+  margin-bottom: 15px;
+}
+
+.cliente-comentario {
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #dcdcdc;
+  margin-bottom: 15px;
+}
+
+.aspas-rodape {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  color: #ffc107;
+  line-height: 1;
+  margin-top: auto;
+  font-weight: bold;
+}
+
+.seta-av {
+  background: transparent;
+  border: none;
+  color: #ffc107;
+  font-size: 30px;
+  cursor: pointer;
+  padding: 10px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.3s ease;
+  user-select: none;
+}
+
+.seta-av:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+.carrossel-dots-av {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.carrossel-dots-av .dot {
+  width: 8px;
+  height: 8px;
+  background-color: #555555;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carrossel-dots-av .dot.active {
+  background-color: #ffc107;
+  width: 10px;
+  height: 10px;
+}
+
+/* ================= SEÇÃO CONTATO ================= */
+.contato {
+  flex-direction: column;
+}
+
+.contato-container-geral {
+  max-width: 1350px;
+  width: 100%;
+}
+
+.contato-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.contato-info-texto {
+  flex: 1.2;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titulo-contato {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: clamp(32px, 3.5vw, 46px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  color: #ffc107;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.titulo-contato .destaque-contato {
+  color: #ffffff;
+}
+
+.subtitulo-contato {
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: #dcdcdc;
+  margin-bottom: 30px;
+  max-width: 520px;
+}
+
+.linha-amarela-contato {
+  width: min(100%, 350px);
+  height: 3px;
+  background-color: #ffc107;
+}
+
+.contato-botoes-coluna {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  width: 100%;
+}
+
+.bloco-contato-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: #121212;
+  border: 2px solid rgba(255, 193, 7, 0.4);
+  border-radius: 16px;
+  padding: 16px 22px;
+  text-decoration: none;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.bloco-contato-item:hover {
+  transform: translateY(-3px);
+  border-color: #ffc107;
+}
+
+.icone-circulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.svg-icone {
+  width: 32px;
+  height: 32px;
+}
+
+.texto-bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label-topo {
+  font-family: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffc107;
+  letter-spacing: 1px;
+}
+
+.valor-info {
+  font-family: "Montserrat", sans-serif, Arial;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.botao-pedir-whatsapp {
+  font-family: "Anton", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #ffc107;
+  color: #121212;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  margin-top: 5px;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+  box-shadow: 0px 5px 15px rgba(255, 193, 7, 0.3);
+}
+
+.botao-pedir-whatsapp:hover {
+  background-color: #e0a800;
+  transform: translateY(-3px);
+}
+
+.seta-contato {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ================= MEDIA QUERY PARA AJUSTE RESPONSIVO ================= */
 @media (max-width: 768px) {
   .header-inner {
     flex-direction: column;
-    gap: 15px;
-  }
-  .logo img {
-    height: 80px;
-  }
-  .nav-menu {
     gap: 12px;
-    font-size: 12px;
+    text-align: center;
   }
+
+  .nav-menu {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .hero-bg {
+    width: 100%;
+    opacity: 0.35;
+  }
+
   .hero-conteudo {
-    margin-left: 5%;
+    margin-left: 0;
+    padding: 0 5%;
+    align-items: center;
+    text-align: center;
   }
+
   .hero-conteudo h1 {
-    font-size: 44px;
+    text-align: center;
+    font-size: 42px;
   }
 }
