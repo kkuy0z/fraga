@@ -872,6 +872,237 @@
     color: var(--text-muted);
 }
 
+/* ===== INDEX PAGE WITH FIXED HEADER ===== */
+body:has(.header-fixed) .hero {
+    padding-top: 90px;
+    height: calc(100vh + 90px);
+}
+
+/* ===== CHECKOUT SPECIFIC STYLES ===== */
+.checkout-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: rgba(18, 18, 18, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 4%;
+}
+
+.progress-steps {
+    max-width: 1450px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--bg-elevated);
+    border: 2px solid var(--border-subtle);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+.progress-step-label {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.progress-step.active .progress-step-circle {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg-primary);
+    box-shadow: var(--shadow-accent);
+}
+
+.progress-step.active .progress-step-label {
+    color: var(--accent);
+}
+
+.progress-step.completed .progress-step-circle {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: white;
+}
+
+.progress-step.completed .progress-step-circle::before {
+    content: '✓';
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.progress-line {
+    flex: 1;
+    max-width: 120px;
+    height: 2px;
+    background-color: var(--border-subtle);
+    position: relative;
+}
+
+.progress-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-step.completed + .progress-line::after {
+    width: 100%;
+}
+
+.checkout-main {
+    padding-top: 160px;
+}
+
+.checkout-layout {
+    align-items: start;
+}
+
+.checkout-step {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.checkout-step:hover {
+    border-color: var(--border-accent);
+}
+
+.step-title {
+    font-family: var(--font-title);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.step-title::before {
+    content: attr(data-step);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    color: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.step-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.payment-method input[type="radio"]:checked + div {
+    border-color: var(--accent) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
+}
+
+.confirmacao-resumo h3 {
+    font-family: var(--font-title);
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+#confirmacaoItens {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#confirmacaoItens > div:last-child {
+    border-bottom: none !important;
+}
+
+@media (max-width: 1024px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-resumo {
+        position: static;
+        order: -1;
+    }
+
+    .checkout-main {
+        padding-top: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .progress-steps {
+        gap: 8px;
+    }
+
+    .progress-step-label {
+        display: none;
+    }
+
+    .progress-line {
+        max-width: 60px;
+    }
+
+    .checkout-step {
+        padding: 20px;
+    }
+
+    .step-actions {
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+
+    .step-actions .btn {
+        width: 100%;
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
     .page-header {

@@ -278,6 +278,85 @@ CREATE INDEX IF NOT EXISTS idx_enderecos_cliente ON enderecos_cliente(cliente_id
         console.log('Default admin user inserted (email: admin@fragalanches.com, senha: admin123)');
     }
 
+    // Insert fictional products if none exist
+    const produtosCount = (await db.get('SELECT COUNT(*) as count FROM produtos')).count;
+    if (produtosCount === 0) {
+        const insertProduto = await db.prepare(`
+            INSERT INTO produtos (categoria_id, nome, descricao, preco_base, imagem_url, disponivel)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `);
+        const insertGrupo = await db.prepare(`
+            INSERT INTO personalizacao_grupos (produto_id, nome, tipo, obrigatorio, min_selecoes, max_selecoes)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `);
+        const insertOpcao = await db.prepare(`
+            INSERT INTO personalizacao_opcoes (grupo_id, nome, preco_adicional, ativo)
+            VALUES (?, ?, ?, ?)
+        `);
+
+        const produtos = [
+            // Hambúrgueres (categoria_id: 1)
+            { categoria_id: 1, nome: 'X-Burger Clássico', descricao: 'Hambúrguer artesanal 180g, queijo cheddar, alface, tomate, cebola e molho especial', preco_base: 24.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 1, nome: 'X-Bacon', descricao: 'Hambúrguer artesanal 180g, queijo cheddar, bacon crocante, alface, tomate e molho barbacue', preco_base: 28.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 1, nome: 'X-Egg', descricao: 'Hambúrguer artesanal 180g, queijo cheddar, ovo frito, bacon, alface, tomate e maionese', preco_base: 29.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 1, nome: 'X-Tudo', descricao: 'Hambúrguer artesanal 180g, queijo cheddar, bacon, ovo, calabresa, alface, tomate, cebola e molho especial', preco_base: 34.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 1, nome: 'Duplo Cheese', descricao: 'Dois hambúrgueres artesanais 180g, queijo cheddar duplo, alface, tomate e molho da casa', preco_base: 32.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 1, nome: 'Vegetariano', descricao: 'Hambúrguer de grão-de-bico e quinoa, queijo cheddar, alface, tomate, cebola caramelizada e molho pesto', preco_base: 26.90, imagem_url: '', disponivel: 1 },
+
+            // Marmitas (categoria_id: 2)
+            { categoria_id: 2, nome: 'Marmita Executiva', descricao: 'Arroz, feijão, bife acebolado, batata frita, salada e farofa', preco_base: 22.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 2, nome: 'Marmita Frango', descricao: 'Arroz, feijão, frango grelhado, batata frita, salada e farofa', preco_base: 20.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 2, nome: 'Marmita Carne de Panela', descricao: 'Arroz, feijão, carne de panela com batatas, salada e farofa', preco_base: 24.90, imagem_url: '', disponivel: 1 },
+
+            // Porções (categoria_id: 3)
+            { categoria_id: 3, nome: 'Batata Frita', descricao: 'Porção generosa de batatas fritas crocantes', preco_base: 16.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 3, nome: 'Batata Frita c/ Cheddar e Bacon', descricao: 'Batatas fritas cobertas com queijo cheddar cremoso e bacon crocante', preco_base: 24.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 3, nome: 'Onion Rings', descricao: 'Anéis de cebola empanados e fritos', preco_base: 18.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 3, nome: 'Mandioca Frita', descricao: 'Porção de mandioca (aipim) frita na hora', preco_base: 15.90, imagem_url: '', disponivel: 1 },
+
+            // Bebidas (categoria_id: 4)
+            { categoria_id: 4, nome: 'Refrigerante Lata 350ml', descricao: 'Coca-Cola, Guaraná, Sprite, Fanta', preco_base: 5.00, imagem_url: '', disponivel: 1 },
+            { categoria_id: 4, nome: 'Refrigerante 2L', descricao: 'Coca-Cola, Guaraná, Sprite, Fanta', preco_base: 12.00, imagem_url: '', disponivel: 1 },
+            { categoria_id: 4, nome: 'Suco Natural 300ml', descricao: 'Laranja, Maracujá, Abacaxi, Limão', preco_base: 7.00, imagem_url: '', disponivel: 1 },
+            { categoria_id: 4, nome: 'Água Mineral 500ml', descricao: 'Água mineral sem gás', preco_base: 3.00, imagem_url: '', disponivel: 1 },
+
+            // Sobremesas (categoria_id: 5)
+            { categoria_id: 5, nome: 'Petit Gateau', descricao: 'Bolinho de chocolate com sorvete de creme', preco_base: 18.90, imagem_url: '', disponivel: 1 },
+            { categoria_id: 5, nome: 'Sorvete 2 Bolas', descricao: 'Sabores: chocolate, creme, morango, flocos', preco_base: 10.00, imagem_url: '', disponivel: 1 },
+        ];
+
+        for (const prod of produtos) {
+            const result = await insertProduto.run(prod.categoria_id, prod.nome, prod.descricao, prod.preco_base, prod.imagem_url, prod.disponivel);
+            const produtoId = result.lastInsertRowid;
+
+            // Add customization options for hambúrgueres
+            if (prod.categoria_id === 1) {
+                // Grupo: Ponto da carne
+                const grupoPonto = await insertGrupo.run(produtoId, 'Ponto da Carne', 'escolha_unica', 1, 1, 1);
+                await insertOpcao.run(grupoPonto.lastInsertRowid, 'Mal passado', 0, 1);
+                await insertOpcao.run(grupoPonto.lastInsertRowid, 'Ao ponto', 0, 1);
+                await insertOpcao.run(grupoPonto.lastInsertRowid, 'Bem passado', 0, 1);
+
+                // Grupo: Adicionais
+                const grupoAdicionais = await insertGrupo.run(produtoId, 'Adicionais', 'escolha_multipla', 0, 0, 3);
+                await insertOpcao.run(grupoAdicionais.lastInsertRowid, 'Bacon extra', 4.00, 1);
+                await insertOpcao.run(grupoAdicionais.lastInsertRowid, 'Queijo extra', 3.00, 1);
+                await insertOpcao.run(grupoAdicionais.lastInsertRowid, 'Ovo', 2.50, 1);
+                await insertOpcao.run(grupoAdicionais.lastInsertRowid, 'Cebola caramelizada', 2.00, 1);
+                await insertOpcao.run(grupoAdicionais.lastInsertRowid, 'Picles', 1.50, 1);
+
+                // Grupo: Molhos
+                const grupoMolhos = await insertGrupo.run(produtoId, 'Molhos', 'escolha_multipla', 0, 0, 2);
+                await insertOpcao.run(grupoMolhos.lastInsertRowid, 'Maionese', 0, 1);
+                await insertOpcao.run(grupoMolhos.lastInsertRowid, 'Ketchup', 0, 1);
+                await insertOpcao.run(grupoMolhos.lastInsertRowid, 'Mostarda', 0, 1);
+                await insertOpcao.run(grupoMolhos.lastInsertRowid, 'Barbacue', 0, 1);
+                await insertOpcao.run(grupoMolhos.lastInsertRowid, 'Molho da casa', 0, 1);
+            }
+        }
+        console.log('Fictional products inserted successfully!');
+    }
+
     await db.close();
     console.log('Database initialization complete!');
 }
