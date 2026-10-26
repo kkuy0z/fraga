@@ -1,0 +1,413 @@
+/* ============ TELA DE CADASTRO ============
+   Complementa style.css (cores, fontes, .btn, cabeçalho, rodapé e --max/--cab vêm de lá).
+   Tamanhos em rem/vw/clamp: o layout cresce com zoom reduzido e se reorganiza com zoom aumentado. */
+:root {
+  --erro: #ff6b6b;
+  --ok: #5fd38a;
+  --campo: #0b0b0d
+}
+
+.pg-cadastro {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh
+}
+
+.cad {
+  flex: 1;
+  padding: calc(var(--cab) + clamp(1.25rem, 3vw, 3rem)) 0 clamp(2rem, 4vw, 4rem)
+}
+
+.cad-ic {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round
+}
+
+/* ---------- grade: [intro | form] [extras | form] -> empilha em telas estreitas ---------- */
+.cad-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, clamp(26rem, 38vw, 40rem));
+  grid-template-areas: "intro card" "extras card";
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(2rem, 5vw, 6rem);
+  row-gap: clamp(1.25rem, 2.5vw, 2.5rem)
+}
+
+.cad-intro {
+  grid-area: intro
+}
+
+.cad-card {
+  grid-area: card;
+  align-self: start
+}
+
+.cad-extras {
+  grid-area: extras;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  min-width: 0
+}
+
+@media (max-width:62em) {
+  .cad-grid {
+    grid-template-columns: minmax(0, 40rem);
+    grid-template-areas: "intro" "card" "extras";
+    grid-template-rows: none;
+    justify-content: center
+  }
+
+  .cad-intro {
+    text-align: center
+  }
+
+  .cad-logo {
+    margin-inline: auto
+  }
+}
+
+/* ---------- apresentação ---------- */
+.cad-logo {
+  width: clamp(7rem, 13vw, 12rem);
+  aspect-ratio: 1;
+  border-radius: 50%
+}
+
+.cad-eyebrow {
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+  color: var(--a);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: clamp(.8rem, 1.1vw, 1rem)
+}
+
+.cad h1 {
+  margin-top: .4rem;
+  font: 400 clamp(2.2rem, 4.6vw, 4.4rem)/1.05 var(--h);
+  text-transform: uppercase;
+  overflow-wrap: anywhere
+}
+
+.cad h1 span {
+  display: block;
+  color: var(--a)
+}
+
+.cad-lead {
+  max-width: 28rem;
+  margin-top: 1.1rem;
+  color: var(--c);
+  font-size: clamp(1rem, 1.4vw, 1.25rem)
+}
+
+@media (max-width:62em) {
+  .cad-lead {
+    margin-inline: auto
+  }
+}
+
+/* ---------- benefícios e foto ---------- */
+.cad-beneficios {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none
+}
+
+.cad-beneficios li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 26rem;
+  color: #ececec;
+  font-size: clamp(.95rem, 1.2vw, 1.1rem);
+  line-height: 1.35
+}
+
+.cad-beneficios .cad-ic {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--a)
+}
+
+.cad-foto {
+  position: relative;
+  flex: 1;
+  min-height: clamp(14rem, 26vw, 26rem)
+}
+
+.cad-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+  border-radius: .9rem;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 40%)
+}
+
+/* ---------- cartão do formulário ---------- */
+.cad-card {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--b);
+  border-radius: 1.25rem;
+  background: #090909
+}
+
+.cad-card-topo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem
+}
+
+.cad-badge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(3.2rem, 5vw, 4.4rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 200, 0, .1);
+  color: var(--a)
+}
+
+.cad-badge .cad-ic {
+  width: 55%;
+  height: 55%
+}
+
+.cad-card-topo>div {
+  min-width: 0
+}
+
+.cad-card h2 {
+  overflow-wrap: anywhere;
+  font: 400 clamp(1.6rem, 2.6vw, 2.2rem)/1.1 var(--h);
+  text-transform: uppercase
+}
+
+.cad-card-topo p {
+  color: var(--c)
+}
+
+.cad-legenda {
+  margin-bottom: .75rem;
+  color: var(--c);
+  font-size: .85rem
+}
+
+.obrig {
+  color: var(--erro)
+}
+
+form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem
+}
+
+/* ---------- campos ---------- */
+.campo label:not(.termos) {
+  display: block;
+  margin-bottom: .4rem;
+  font-weight: 700;
+  font-size: .95rem
+}
+
+.entrada {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 0 .9rem;
+  border: 1px solid #3a3a40;
+  border-radius: .7rem;
+  background: var(--campo);
+  color: var(--c);
+  transition: border-color .2s, box-shadow .2s
+}
+
+.entrada:hover {
+  border-color: #5a5a62
+}
+
+.entrada:focus-within {
+  border-color: var(--a);
+  box-shadow: 0 0 0 3px rgba(255, 200, 0, .22);
+  color: var(--a)
+}
+
+.entrada input {
+  flex: 1;
+  min-width: 0;
+  padding: .85rem 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit
+}
+
+.entrada input::placeholder {
+  color: #8a8a92
+}
+
+.entrada input:focus-visible {
+  outline: 0
+}
+
+.campo.invalido .entrada {
+  border-color: var(--erro);
+  color: var(--erro)
+}
+
+.campo.invalido .entrada:focus-within {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, .25)
+}
+
+.campo.valido .entrada {
+  border-color: var(--ok);
+  color: var(--ok)
+}
+
+.ajuda,
+.erro {
+  margin-top: .35rem;
+  font-size: .85rem
+}
+
+.ajuda {
+  color: #9a9aa2
+}
+
+.erro {
+  color: var(--erro);
+  font-weight: 600
+}
+
+.erro:empty {
+  display: none
+}
+
+.campo.invalido .ajuda {
+  display: none
+}
+
+.ver-senha {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: -.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: .5rem;
+  background: none;
+  color: var(--c);
+  cursor: pointer
+}
+
+.ver-senha:hover {
+  color: var(--a)
+}
+
+.termos {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  font-size: .95rem;
+  cursor: pointer
+}
+
+.termos input {
+  flex: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: .2rem 0 0;
+  accent-color: var(--a);
+  cursor: pointer
+}
+
+.termos a {
+  color: var(--a)
+}
+
+.campo.invalido .termos input {
+  outline: 2px solid var(--erro);
+  outline-offset: 2px
+}
+
+/* ---------- botões, divisor e sucesso ---------- */
+.cad-enviar {
+  width: 100%;
+  gap: .6rem;
+  text-transform: uppercase
+}
+
+.cad-enviar .cad-ic {
+  width: 1.4rem;
+  height: 1.4rem
+}
+
+.sucesso {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ok);
+  border-radius: .8rem;
+  background: rgba(95, 211, 138, .08);
+  color: #d9f7e5
+}
+
+.sucesso b {
+  color: var(--ok)
+}
+
+.sucesso[hidden] {
+  display: none
+}
+
+.cad-divisor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 1rem;
+  color: #ddd;
+  font-size: .9rem
+}
+
+.cad-divisor::before,
+.cad-divisor::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--l)
+}
+
+.cad-entrar {
+  display: flex;
+  width: 100%;
+  text-transform: uppercase
+}
+
+.cad-voltar {
+  display: block;
+  margin-top: 1.1rem;
+  color: var(--c);
+  text-align: center;
+  font-size: .95rem
+}
+
+.cad-voltar:hover {
+  color: var(--a)
+}
