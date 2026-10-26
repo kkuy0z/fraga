@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="Crie sua conta no Fraga Lanches e peça seus hambúrgueres artesanais com mais praticidade.">
+  <title>Cadastre-se | Fraga Lanches</title>
+  <link rel="icon" href="img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Rozha+One&display=swap">
+  <link rel="stylesheet" href="cadastro.css">
+</head>
+
+<body class="pg-cadastro">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6.5L20.5 7" /></symbol>
+      <symbol id="i-zap" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0-7.7-4.3L3 21l4.5-1.2A9 9 0 0 0 12 21z" /><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-2-2.3-1-1 1a4.5 4.5 0 0 1-2-2l1-1-1-2.3z" /></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5" /></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2" /></symbol>
+      <symbol id="i-add" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4" /><path d="M2 21c0-4 3-6.5 7-6.5M18 9v6M15 12h6" /></symbol>
+      <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 5h11v11H2zM13 9h4.5l3.5 4v3h-8" /><circle cx="6.5" cy="17.5" r="2" /><circle cx="16.5" cy="17.5" r="2" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.2 6.4 20.3l1.2-6.3L3 9.6l6.3-.8z" /></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z" /></symbol>
+    </defs>
+  </svg>
+
+  <header class="header solido">
+    <div class="header-container">
+      <a href="index.html" class="logo-link" aria-label="Fraga Lanches - página inicial"><img src="/fraga/img/logo.png"
+          alt="Fraga Lanches" class="logo-img"></a>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <a href="index.html#sobre">SOBRE</a><a href="index.html#espaco">ESPAÇO</a><a
+          href="index.html#avaliacoes">AVALIAÇÕES</a><a href="index.html#contato">CONTATO</a>
+      </nav>
+      <button class="menu-mobile" id="menu-mobile" aria-label="Abrir menu" aria-expanded="false"
+        aria-controls="nav"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main class="cad">
+    <div class="container cad-grid">
+
+      <!-- Apresentação -->
+      <div class="cad-intro">
+        <img class="cad-logo" src="/fraga/img/logo.png" alt="Logo Fraga Lanches Delivery">
+        <p class="cad-eyebrow">Seja bem-vindo(a)</p>
+        <h1>Junte-se à <span>nossa família!</span></h1>
+        <p class="cad-lead">Crie sua conta e aproveite todas as vantagens de pedir no Fraga Lanches.</p>
+      </div>
+
+      <!-- Formulário -->
+      <div class="cad-card">
+        <div class="cad-card-topo">
+          <span class="cad-badge" aria-hidden="true"><svg class="cad-ic"><use href="#i-user" /></svg></span>
+          <div>
+            <h2>Cadastre-se</h2>
+            <p>É rápido e fácil!</p>
+          </div>
+        </div>
+
+        <!-- novalidate: a validação é feita em cadastro.js. Para integrar o backend, veja os comentários [BACKEND] -->
+        <form id="form-cadastro" action="#" novalidate>
+          <p class="cad-legenda"><span class="obrig" aria-hidden="true">*</span> Campos obrigatórios</p>
+
+          <div class="campo">
+            <label for="nome">Nome completo <span class="obrig" aria-hidden="true">*</span></label>
+            <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-user" /></svg>
+              <input id="nome" name="nome" type="text" autocomplete="name" placeholder="Digite seu nome completo"
+                maxlength="80" required aria-describedby="erro-nome"></div>
+            <p class="erro" id="erro-nome"></p>
+          </div>
+
+          <div class="campo">
+            <label for="email">E-mail <span class="obrig" aria-hidden="true">*</span></label>
+            <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-mail" /></svg>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="email"
+                placeholder="exemplo@seuemail.com" maxlength="120" required aria-describedby="erro-email"></div>
+            <p class="erro" id="erro-email"></p>
+          </div>
+
+          <div class="campo">
+            <label for="telefone">Telefone / WhatsApp <span class="obrig" aria-hidden="true">*</span></label>
+            <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-zap" /></svg>
+              <input id="telefone" name="telefone" type="tel" inputmode="tel" autocomplete="tel-national"
+                placeholder="(31) 98767-7197" maxlength="15" required aria-describedby="erro-telefone"></div>
+            <p class="erro" id="erro-telefone"></p>
+          </div>
+
+          <div class="campo">
+            <label for="senha">Senha <span class="obrig" aria-hidden="true">*</span></label>
+            <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-lock" /></svg>
+              <input id="senha" name="senha" type="password" autocomplete="new-password"
+                placeholder="Digite sua senha" maxlength="64" required aria-describedby="ajuda-senha erro-senha">
+              <button type="button" class="ver-senha" data-alvo="senha" aria-label="Mostrar senha" aria-pressed="false">
+                <svg class="cad-ic" aria-hidden="true"><use href="#i-eye" /></svg></button></div>
+            <p class="ajuda" id="ajuda-senha">Use pelo menos 8 caracteres.</p>
+            <p class="erro" id="erro-senha"></p>
+          </div>
+
+          <div class="campo">
+            <label for="confirmar">Confirmar senha <span class="obrig" aria-hidden="true">*</span></label>
+            <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-lock" /></svg>
+              <input id="confirmar" name="confirmarSenha" type="password" autocomplete="new-password"
+                placeholder="Confirme sua senha" maxlength="64" required aria-describedby="erro-confirmar">
+              <button type="button" class="ver-senha" data-alvo="confirmar" aria-label="Mostrar senha"
+                aria-pressed="false"><svg class="cad-ic" aria-hidden="true"><use href="#i-eye" /></svg></button></div>
+            <p class="erro" id="erro-confirmar"></p>
+          </div>
+
+          <div class="campo campo-termos">
+            <label class="termos" for="termos">
+              <input id="termos" name="termos" type="checkbox" required aria-describedby="erro-termos">
+              <span>Li e aceito os <a href="#" data-pendente>Termos de Uso</a> e a <a href="#" data-pendente>Política de
+                  Privacidade</a>. <span class="obrig" aria-hidden="true">*</span></span>
+            </label>
+            <p class="erro" id="erro-termos"></p>
+          </div>
+
+          <button class="btn cheio cad-enviar" type="submit"><svg class="cad-ic" aria-hidden="true"><use href="#i-add" /></svg>Criar conta</button>
+
+          <div class="sucesso" id="sucesso" role="status" tabindex="-1" hidden>
+            <b>Dados válidos!</b>
+            <p>Esta é apenas uma demonstração: seu cadastro ainda <u>não foi salvo</u> em nenhum servidor.</p>
+          </div>
+        </form>
+
+        <div class="cad-divisor"><span>Já tem uma conta?</span></div>
+        <a class="btn cad-entrar" href="login.html">Entrar</a>
+        <a class="cad-voltar" href="index.html"><span aria-hidden="true">‹</span> Voltar para a página inicial</a>
+      </div>
+
+      <!-- Benefícios + foto -->
+      <div class="cad-extras">
+        <ul class="cad-beneficios">
+          <li><svg class="cad-ic" aria-hidden="true"><use href="#i-truck" /></svg><span>Acompanhe seus pedidos em tempo real</span></li>
+          <li><svg class="cad-ic" aria-hidden="true"><use href="#i-star" /></svg><span>Receba ofertas exclusivas e descontos especiais</span></li>
+          <li><svg class="cad-ic" aria-hidden="true"><use href="#i-heart" /></svg><span>Mais praticidade e agilidade na hora de pedir</span></li>
+        </ul>
+        <figure class="cad-foto">
+          <img src="/fraga/img/img_fundo.png" alt="Hambúrguer artesanal de duas carnes com queijo e bacon">
+        </figure>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Fraga Lanches - Todos os direitos reservados.</div>
+  </footer>
+  <script src="cadastro.js"></script>
+</body>
+
+</html>
