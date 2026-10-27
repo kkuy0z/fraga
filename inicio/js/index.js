@@ -4,12 +4,18 @@ import { showToast } from './utils.js';
 
 // Elementos DOM
 const cartCount = document.getElementById('cartCount');
+const statusBadge = document.getElementById('statusBadge');
+const statusText = document.querySelector('.status-text');
+const statusIndicator = document.querySelector('.status-indicator');
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     atualizarContadorCarrinho();
     verificarAuth();
     configurarEventListeners();
+    verificarStatusEstabelecimento();
+    // Verificar status a cada 30 segundos
+    setInterval(verificarStatusEstabelecimento, 30000);
 });
 
 function configurarEventListeners() {
@@ -28,6 +34,45 @@ function atualizarContadorCarrinho() {
     if (cartCount) {
         cartCount.textContent = total;
         cartCount.style.display = total > 0 ? 'flex' : 'none';
+    }
+}
+
+async function verificarStatusEstabelecimento() {
+    if (!statusBadge) return;
+
+    try {
+        const response = await api.getStatusFuncionamento();
+
+        statusBadge.classList.remove('hidden', 'verificando');
+        statusBadge.classList.remove('aberto', 'fechado');
+
+        if (response.aberto) {
+            statusBadge.classList.add('aberto');
+            statusText.textContent = 'ABERTO AGORA';
+            statusIndicator.style.backgroundColor = '#4caf50';
+        } else {
+            statusBadge.classList.add('fechado');
+            const horarioAtual = response.horario_atual ? ` (${response.horario_atual})` : '';
+            statusText.textContent = `FECHADO${horarioAtual}`;
+            statusIndicator.style.backgroundColor = '#ff6b6b';
+        }
+    } catch (error) {
+        console.error('Erro ao verificar status:', error);
+        statusBadge.classList.remove('hidden');
+        statusBadge.classList.add('verificando');
+        statusText.textContent = 'Verificando status...';
+    }
+}
+
+// Função para decodificar JWT e obter payload
+function decodificarJWT(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
     }
 }
 
@@ -50,11 +95,14 @@ async function verificarAuth() {
         if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
         if (adminLink) adminLink.style.display = 'none';
     } else if (token && user) {
-        // Admin logado
+        // Admin logado - verificar role
+        const payload = decodificarJWT(token);
+        const isAdmin = payload && payload.role === 'administrador';
+
         if (userButton) userButton.style.display = 'flex';
         if (userName) userName.textContent = user.nome;
         if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'inline-flex';
+        if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
     } else {
         // Não logado
         if (userButton) userButton.style.display = 'none';

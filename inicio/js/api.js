@@ -6,8 +6,11 @@ class ApiClient {
         this.baseUrl = '/api';
         this.token = localStorage.getItem('auth_token') || null;
         this.user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+        this.clienteToken = localStorage.getItem('cliente_token') || null;
+        this.clienteUser = JSON.parse(localStorage.getItem('cliente_user') || 'null');
     }
 
+    // ===== ADMIN AUTH =====
     setAuth(token, user) {
         this.token = token;
         this.user = user;
@@ -26,6 +29,40 @@ class ApiClient {
         return !!this.token;
     }
 
+    // ===== CLIENTE AUTH =====
+    setClienteAuth(token, user) {
+        this.clienteToken = token;
+        this.clienteUser = user;
+        localStorage.setItem('cliente_token', token);
+        localStorage.setItem('cliente_user', JSON.stringify(user));
+    }
+
+    clearClienteAuth() {
+        this.clienteToken = null;
+        this.clienteUser = null;
+        localStorage.removeItem('cliente_token');
+        localStorage.removeItem('cliente_user');
+    }
+
+    isClienteAuthenticated() {
+        return !!this.clienteToken;
+    }
+
+    getClienteUser() {
+        return this.clienteUser;
+    }
+
+    // Get current auth header based on context
+    getAuthHeader() {
+        if (this.clienteToken) {
+            return `Bearer ${this.clienteToken}`;
+        }
+        if (this.token) {
+            return `Bearer ${this.token}`;
+        }
+        return null;
+    }
+
     async request(endpoint, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
         const headers = {
@@ -33,8 +70,9 @@ class ApiClient {
             ...options.headers
         };
 
-        if (this.token) {
-            headers['Authorization'] = `Bearer ${this.token}`;
+        const authHeader = this.getAuthHeader();
+        if (authHeader) {
+            headers['Authorization'] = authHeader;
         }
 
         const config = {
@@ -51,15 +89,21 @@ class ApiClient {
             const data = await response.json();
 
             if (!response.ok) {
+                // Handle 401 for both admin and cliente
+                if (response.status === 401) {
+                    if (this.clienteToken && endpoint.startsWith('/clientes')) {
+                        this.clearClienteAuth();
+                        window.location.href = '/inicio/index.html';
+                    } else if (this.token && !endpoint.startsWith('/clientes')) {
+                        this.clearAuth();
+                        window.location.href = '/inicio/admin-login.html';
+                    }
+                }
                 throw new Error(data.error || `Erro ${response.status}`);
             }
 
             return data;
         } catch (error) {
-            if (error.message.includes('401') || error.message.includes('Token')) {
-                this.clearAuth();
-                window.location.href = '/admin-login.html';
-            }
             throw error;
         }
     }
@@ -85,6 +129,11 @@ class ApiClient {
         return this.get(`/categorias?ativo=${ativo}`);
     }
 
+    async getCategoriasAdmin(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/categorias?${query}`);
+    }
+
     async getCategoria(id) {
         return this.get(`/categorias/${id}`);
     }
@@ -105,6 +154,11 @@ class ApiClient {
     async getProdutos(params = {}) {
         const query = new URLSearchParams(params).toString();
         return this.get(`/produtos?${query}`);
+    }
+
+    async getProdutosAdmin(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/produtos/admin?${query}`);
     }
 
     async getProduto(id) {
@@ -128,6 +182,10 @@ class ApiClient {
         return this.get(`/produtos/${produtoId}/personalizacoes`);
     }
 
+    async getGruposPersonalizacao(produtoId) {
+        return this.get(`/produtos/${produtoId}/personalizacoes/grupos`);
+    }
+
     async createGrupoPersonalizacao(produtoId, data) {
         return this.post(`/produtos/${produtoId}/personalizacoes/grupos`, data);
     }
@@ -138,6 +196,10 @@ class ApiClient {
 
     async deleteGrupoPersonalizacao(id) {
         return this.delete(`/personalizacoes/grupos/${id}`);
+    }
+
+    async getOpcoesPersonalizacao(grupoId) {
+        return this.get(`/personalizacoes/grupos/${grupoId}/opcoes`);
     }
 
     async createOpcaoPersonalizacao(grupoId, data) {
@@ -209,7 +271,17 @@ class ApiClient {
         return this.get(`/pedidos?${query}`);
     }
 
-    async getPedido(id) {
+    async getMeusPedidos(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/pedidos/minhas?${query}`);
+    }
+
+    async getPedidosAdmin(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/pedidos/admin?${query}`);
+    }
+
+    async getPedidoById(id) {
         return this.get(`/pedidos/${id}`);
     }
 
@@ -238,6 +310,23 @@ class ApiClient {
         return this.put('/auth/password', data);
     }
 
+    async getUsuariosAdmin(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.get(`/auth/usuarios?${query}`);
+    }
+
+    async updateUsuarioAdmin(id, data) {
+        return this.put(`/auth/usuarios/${id}`, data);
+    }
+
+    async createUsuarioAdmin(data) {
+        return this.post('/auth/register', data);
+    }
+
+    async deleteUsuarioAdmin(id) {
+        return this.delete(`/auth/usuarios/${id}`);
+    }
+
     // ===== CLIENTES =====
     async clienteRegister(data) {
         return this.post('/clientes/register', data);
@@ -255,24 +344,48 @@ class ApiClient {
         return this.put('/clientes/perfil', data);
     }
 
+    async alterarClienteSenha(data) {
+        return this.put('/clientes/senha', data);
+    }
+
     async changeClientePassword(data) {
         return this.put('/clientes/senha', data);
+    }
+
+    async getClienteEnderecos() {
+        return this.get('/clientes/enderecos');
     }
 
     async getEnderecos() {
         return this.get('/clientes/enderecos');
     }
 
+    async criarClienteEndereco(data) {
+        return this.post('/clientes/enderecos', data);
+    }
+
     async createEndereco(data) {
         return this.post('/clientes/enderecos', data);
+    }
+
+    async atualizarClienteEndereco(id, data) {
+        return this.put(`/clientes/enderecos/${id}`, data);
     }
 
     async updateEndereco(id, data) {
         return this.put(`/clientes/enderecos/${id}`, data);
     }
 
+    async excluirClienteEndereco(id) {
+        return this.delete(`/clientes/enderecos/${id}`);
+    }
+
     async deleteEndereco(id) {
         return this.delete(`/clientes/enderecos/${id}`);
+    }
+
+    async getProdutoById(id) {
+        return this.get(`/produtos/${id}`);
     }
 }
 

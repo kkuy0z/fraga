@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     observacoes_pagamento TEXT,
     subtotal_produtos REAL NOT NULL DEFAULT 0 CHECK (subtotal_produtos >= 0),
     taxa_entrega REAL NOT NULL DEFAULT 0 CHECK (taxa_entrega >= 0),
+    taxa_bairro REAL NOT NULL DEFAULT 0 CHECK (taxa_bairro >= 0),
     desconto REAL NOT NULL DEFAULT 0 CHECK (desconto >= 0),
     valor_total REAL NOT NULL DEFAULT 0 CHECK (valor_total >= 0),
     status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'confirmado', 'preparando', 'saiu_entrega', 'entregue', 'cancelado')),
@@ -168,6 +169,7 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
     perfil TEXT NOT NULL DEFAULT 'atendente' CHECK (perfil IN ('administrador', 'atendente', 'cozinha', 'entregador')),
     ativo INTEGER DEFAULT 1,
     ultimo_login DATETIME,
+    forca_troca_senha INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -273,9 +275,9 @@ CREATE INDEX IF NOT EXISTS idx_enderecos_cliente ON enderecos_cliente(cliente_id
     const adminCount = (await db.get('SELECT COUNT(*) as count FROM usuarios_admin')).count;
     if (adminCount === 0) {
         const senhaHash = await argon2.hash('admin123', { type: argon2.argon2id });
-        const insertAdmin = await db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome, perfil) VALUES (?, ?, ?, ?)');
-        await insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador', 'administrador');
-        console.log('Default admin user inserted (email: admin@fragalanches.com, senha: admin123)');
+        const insertAdmin = await db.prepare('INSERT INTO usuarios_admin (email, senha_hash, nome, perfil, forca_troca_senha) VALUES (?, ?, ?, ?, ?)');
+        await insertAdmin.run('admin@fragalanches.com', senhaHash, 'Administrador', 'administrador', 1);
+        console.log('Default admin user inserted (email: admin@fragalanches.com, senha: admin123) - FORÇA TROCA DE SENHA NO PRIMEIRO LOGIN');
     }
 
     // Insert fictional products if none exist

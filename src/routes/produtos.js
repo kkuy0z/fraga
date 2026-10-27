@@ -86,6 +86,84 @@ router.get('/', optionalAuth, produtoValidators.list, async (req, res) => {
     }
 });
 
+// List products for admin (admin only) - shows all products including unavailable
+router.get('/admin', authMiddleware, produtoValidators.list, async (req, res) => {
+    try {
+        const { categoria_id, disponivel, search, page = 1, limit = 50 } = req.query;
+        const offset = (page - 1) * limit;
+
+        let whereClause = 'WHERE 1=1';
+        const params = [];
+
+        if (categoria_id) {
+            whereClause += ' AND p.categoria_id = ?';
+            params.push(categoria_id);
+        }
+
+        if (disponivel !== undefined) {
+            whereClause += ' AND p.disponivel = ?';
+            params.push(disponivel === 'true' ? 1 : 0);
+        }
+
+        if (search) {
+            whereClause += ' AND (p.nome LIKE ? OR p.descricao LIKE ?)';
+            params.push(`%${search}%`, `%${search}%`);
+        }
+
+        // Admin sees all products, no automatic filter by disponivel
+
+        const countSql = `SELECT COUNT(*) as total FROM produtos p ${whereClause}`;
+        const totalResult = await db.queryOne(countSql, params);
+        const total = totalResult.total;
+
+        const sql = `
+            SELECT p.*, c.nome as categoria_nome
+            FROM produtos p
+            LEFT JOIN categorias c ON p.categoria_id = c.id
+            ${whereClause}
+            ORDER BY c.ordem_exibicao, p.nome
+            LIMIT ? OFFSET ?
+        `;
+        params.push(limit, offset);
+
+        const produtos = await db.query(sql, params);
+
+        // Get personalization groups for each product
+        for (const produto of produtos) {
+            const grupos = await db.query(`
+                SELECT pg.*,
+                    (SELECT json_group_array(json_object(
+                        'id', po.id,
+                        'nome', po.nome,
+                        'preco_adicional', po.preco_adicional,
+                        'ativo', po.ativo
+                    )) FROM personalizacao_opcoes po WHERE po.grupo_id = pg.id AND po.ativo = 1) as opcoes
+                FROM personalizacao_grupos pg
+                WHERE pg.produto_id = ?
+                ORDER BY pg.id
+            `, [produto.id]);
+
+            produto.personalizacoes = grupos.map(g => ({
+                ...g,
+                opcoes: g.opcoes ? JSON.parse(g.opcoes) : []
+            }));
+        }
+
+        res.json({
+            data: produtos,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error listing products for admin:', error);
+        res.status(500).json({ error: 'Erro ao listar produtos' });
+    }
+});
+
 // Get single product with personalizations (public)
 router.get('/:id', optionalAuth, async (req, res) => {
     try {

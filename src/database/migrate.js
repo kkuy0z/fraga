@@ -46,6 +46,36 @@ async function migrate() {
         console.error('Error updating admin profile:', error.message);
     }
 
+    // Add forca_troca_senha column to usuarios_admin if it doesn't exist
+    try {
+        await db.exec(`
+            ALTER TABLE usuarios_admin
+            ADD COLUMN forca_troca_senha INTEGER DEFAULT 0
+        `);
+        console.log('Added forca_troca_senha column to usuarios_admin');
+    } catch (error) {
+        if (error.message.includes('duplicate column name')) {
+            console.log('forca_troca_senha column already exists in usuarios_admin');
+        } else {
+            console.error('Error adding forca_troca_senha column:', error.message);
+        }
+    }
+
+    // Add taxa_bairro column to pedidos if it doesn't exist
+    try {
+        await db.exec(`
+            ALTER TABLE pedidos
+            ADD COLUMN taxa_bairro REAL NOT NULL DEFAULT 0 CHECK (taxa_bairro >= 0)
+        `);
+        console.log('Added taxa_bairro column to pedidos');
+    } catch (error) {
+        if (error.message.includes('duplicate column name')) {
+            console.log('taxa_bairro column already exists in pedidos');
+        } else {
+            console.error('Error adding taxa_bairro column:', error.message);
+        }
+    }
+
     await db.close();
     console.log('Migrations complete!');
 }

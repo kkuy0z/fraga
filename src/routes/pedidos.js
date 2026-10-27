@@ -1,6 +1,6 @@
 import express from 'express';
 import db from '../database/connection.js';
-import { authMiddleware, optionalAuth } from '../middleware/auth.js';
+import { authMiddleware, optionalAuth, clienteAuthMiddleware } from '../middleware/auth.js';
 import { pedidoValidators } from '../middleware/validation.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,7 +15,7 @@ function gerarNumeroPedido() {
 }
 
 // Calculate order totals
-async function calcularTotaisPedido(itens, formaPagamentoId) {
+async function calcularTotaisPedido(itens, formaPagamentoId, bairro = null) {
     let subtotal = 0;
 
     for (const item of itens) {
@@ -40,27 +40,46 @@ async function calcularTotaisPedido(itens, formaPagamentoId) {
         subtotal += itemSubtotal;
     }
 
-    // Get delivery fee
-    const configEntrega = await db.queryOne('SELECT taxa_entrega, valor_minimo_pedido FROM configuracoes_entrega ORDER BY id DESC LIMIT 1');
+    // Get delivery fee and extra neighborhood fee
+    const configEntrega = await db.queryOne('SELECT taxa_entrega, valor_minimo_pedido, bairro_taxa_extra FROM configuracoes_entrega ORDER BY id DESC LIMIT 1');
     const taxaEntrega = configEntrega?.taxa_entrega || 0;
+
+    // Calculate extra neighborhood fee
+    let taxaBairro = 0;
+    if (bairro && configEntrega?.bairro_taxa_extra) {
+        try {
+            const bairrosExtra = JSON.parse(configEntrega.bairro_taxa_extra);
+            const bairroNormalizado = bairro.trim().toLowerCase();
+            // bairrosExtra is an array of objects: [{bairro: "...", taxa_extra: ...}]
+            for (const item of bairrosExtra) {
+                if (item.bairro && item.bairro.trim().toLowerCase() === bairroNormalizado) {
+                    taxaBairro = parseFloat(item.taxa_extra) || 0;
+                    break;
+                }
+            }
+        } catch (e) {
+            console.warn('Erro ao parsear bairro_taxa_extra:', e);
+        }
+    }
 
     // Check minimum order value
     if (configEntrega && subtotal < configEntrega.valor_minimo_pedido) {
         throw new Error(`Valor mínimo do pedido é R$ ${configEntrega.valor_minimo_pedido.toFixed(2)}`);
     }
 
-    const valorTotal = subtotal + taxaEntrega;
+    const valorTotal = subtotal + taxaEntrega + taxaBairro;
 
     return {
         subtotal_produtos: subtotal,
         taxa_entrega: taxaEntrega,
+        taxa_bairro: taxaBairro,
         desconto: 0,
         valor_total: valorTotal
     };
 }
 
-// Create order (public)
-router.post('/', optionalAuth, pedidoValidators.create, async (req, res) => {
+// Create order (requires client authentication)
+router.post('/', clienteAuthMiddleware, pedidoValidators.create, async (req, res) => {
     try {
         const {
             cliente_nome, cliente_telefone, cliente_email,
@@ -91,7 +110,7 @@ router.post('/', optionalAuth, pedidoValidators.create, async (req, res) => {
         }
 
         // Calculate totals (validates product availability and prices)
-        const totais = await calcularTotaisPedido(itens, forma_pagamento_id);
+        const totais = await calcularTotaisPedido(itens, forma_pagamento_id, bairro);
 
         // Validate troco for cash payments
         if (formaPagamento.tipo === 'dinheiro' && valor_troco > 0) {
@@ -111,13 +130,13 @@ router.post('/', optionalAuth, pedidoValidators.create, async (req, res) => {
                     numero_pedido, cliente_nome, cliente_telefone, cliente_email,
                     cep, logradouro, numero_endereco, bairro, complemento, referencia,
                     forma_pagamento_id, valor_troco, observacoes_pagamento,
-                    subtotal_produtos, taxa_entrega, desconto, valor_total, status
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendente')
+                    subtotal_produtos, taxa_entrega, taxa_bairro, desconto, valor_total, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendente')
             `, [
                 numeroPedido, cliente_nome, cliente_telefone, cliente_email,
                 cep, logradouro, numero_endereco, bairro, complemento, referencia,
                 forma_pagamento_id, valor_troco, observacoes_pagamento,
-                totais.subtotal_produtos, totais.taxa_entrega, totais.desconto, totais.valor_total
+                totais.subtotal_produtos, totais.taxa_entrega, totais.taxa_bairro, totais.desconto, totais.valor_total
             ]);
 
             const pedidoId = result.lastInsertRowid;
@@ -159,9 +178,9 @@ router.post('/', optionalAuth, pedidoValidators.create, async (req, res) => {
             // Recalculate total to ensure consistency
             const itensSalvos = await db.queryOne('SELECT SUM(subtotal) as total FROM pedido_itens WHERE pedido_id = ?', [pedidoId]);
             const subtotalReal = itensSalvos.total || 0;
-            const valorTotalReal = subtotalReal + totais.taxa_entrega;
+            const valorTotalReal = subtotalReal + totais.taxa_entrega + totais.taxa_bairro;
 
-            await db.query('UPDATE pedidos SET subtotal_produtos = ?, valor_total = ? WHERE id = ?', [subtotalReal, valorTotalReal, pedidoId]);
+            await db.query('UPDATE pedidos SET subtotal_produtos = ?, taxa_bairro = ?, valor_total = ? WHERE id = ?', [subtotalReal, totais.taxa_bairro, valorTotalReal, pedidoId]);
 
             // Get complete order for response
             const pedidoCompleto = await db.queryOne('SELECT * FROM pedidos WHERE id = ?', [pedidoId]);
@@ -194,6 +213,82 @@ router.post('/', optionalAuth, pedidoValidators.create, async (req, res) => {
     } catch (error) {
         console.error('Error creating order:', error);
         res.status(400).json({ error: error.message });
+    }
+});
+
+// List client's own orders (client authenticated)
+router.get('/minhas', clienteAuthMiddleware, async (req, res) => {
+    try {
+        const { status, page = 1, limit = 20, data_inicio, data_fim } = req.query;
+        const offset = (page - 1) * limit;
+
+        let whereClause = 'WHERE p.cliente_email = ?';
+        const params = [req.cliente.email];
+
+        if (status) {
+            whereClause += ' AND p.status = ?';
+            params.push(status);
+        }
+
+        if (data_inicio) {
+            whereClause += ' AND date(p.data_pedido) >= date(?)';
+            params.push(data_inicio);
+        }
+
+        if (data_fim) {
+            whereClause += ' AND date(p.data_pedido) <= date(?)';
+            params.push(data_fim);
+        }
+
+        const countSql = `SELECT COUNT(*) as total FROM pedidos p ${whereClause}`;
+        const totalResult = await db.queryOne(countSql, params);
+        const total = totalResult.total;
+
+        const sql = `
+            SELECT p.*, fp.nome as forma_pagamento_nome, fp.tipo as forma_pagamento_tipo
+            FROM pedidos p
+            LEFT JOIN formas_pagamento fp ON p.forma_pagamento_id = fp.id
+            ${whereClause}
+            ORDER BY p.data_pedido DESC
+            LIMIT ? OFFSET ?
+        `;
+        params.push(limit, offset);
+
+        const pedidos = await db.query(sql, params);
+
+        // Get items for each order
+        for (const pedido of pedidos) {
+            const itens = await db.query(`
+                SELECT pi.*,
+                    (SELECT json_group_array(json_object(
+                        'grupo_id', pip.grupo_id,
+                        'grupo_nome', pip.grupo_nome,
+                        'opcao_id', pip.opcao_id,
+                        'opcao_nome', pip.opcao_nome,
+                        'preco_adicional', pip.preco_adicional
+                    )) FROM pedido_item_personalizacoes pip WHERE pip.pedido_item_id = pi.id) as personalizacoes
+                FROM pedido_itens pi
+                WHERE pi.pedido_id = ?
+            `, [pedido.id]);
+
+            pedido.itens = itens.map(item => ({
+                ...item,
+                personalizacoes: item.personalizacoes ? JSON.parse(item.personalizacoes) : []
+            }));
+        }
+
+        res.json({
+            data: pedidos,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error listing client orders:', error);
+        res.status(500).json({ error: 'Erro ao listar pedidos' });
     }
 });
 
@@ -273,6 +368,87 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
+// List orders for admin (admin only) - alias for /
+router.get('/admin', authMiddleware, async (req, res) => {
+    try {
+        const { status, page = 1, limit = 20, data_inicio, data_fim, search } = req.query;
+        const offset = (page - 1) * limit;
+
+        let whereClause = 'WHERE 1=1';
+        const params = [];
+
+        if (status) {
+            whereClause += ' AND status = ?';
+            params.push(status);
+        }
+
+        if (data_inicio) {
+            whereClause += ' AND date(data_pedido) >= date(?)';
+            params.push(data_inicio);
+        }
+
+        if (data_fim) {
+            whereClause += ' AND date(data_pedido) <= date(?)';
+            params.push(data_fim);
+        }
+
+        if (search) {
+            whereClause += ' AND (numero_pedido LIKE ? OR cliente_nome LIKE ? OR cliente_telefone LIKE ?)';
+            params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        const countSql = `SELECT COUNT(*) as total FROM pedidos ${whereClause}`;
+        const totalResult = await db.queryOne(countSql, params);
+        const total = totalResult.total;
+
+        const sql = `
+            SELECT p.*, fp.nome as forma_pagamento_nome, fp.tipo as forma_pagamento_tipo
+            FROM pedidos p
+            LEFT JOIN formas_pagamento fp ON p.forma_pagamento_id = fp.id
+            ${whereClause}
+            ORDER BY p.data_pedido DESC
+            LIMIT ? OFFSET ?
+        `;
+        params.push(limit, offset);
+
+        const pedidos = await db.query(sql, params);
+
+        // Get items for each order
+        for (const pedido of pedidos) {
+            const itens = await db.query(`
+                SELECT pi.*,
+                    (SELECT json_group_array(json_object(
+                        'grupo_id', pip.grupo_id,
+                        'grupo_nome', pip.grupo_nome,
+                        'opcao_id', pip.opcao_id,
+                        'opcao_nome', pip.opcao_nome,
+                        'preco_adicional', pip.preco_adicional
+                    )) FROM pedido_item_personalizacoes pip WHERE pip.pedido_item_id = pi.id) as personalizacoes
+                FROM pedido_itens pi
+                WHERE pi.pedido_id = ?
+            `, [pedido.id]);
+
+            pedido.itens = itens.map(item => ({
+                ...item,
+                personalizacoes: item.personalizacoes ? JSON.parse(item.personalizacoes) : []
+            }));
+        }
+
+        res.json({
+            data: pedidos,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error listing orders for admin:', error);
+        res.status(500).json({ error: 'Erro ao listar pedidos' });
+    }
+});
+
 // Get single order (admin or order owner)
 router.get('/:id', optionalAuth, async (req, res) => {
     try {
@@ -287,6 +463,16 @@ router.get('/:id', optionalAuth, async (req, res) => {
 
         if (!pedido) {
             return res.status(404).json({ error: 'Pedido não encontrado' });
+        }
+
+        // Verify access: admin can see all, client can only see their own orders
+        if (req.cliente && pedido.cliente_email !== req.cliente.email) {
+            return res.status(403).json({ error: 'Acesso negado: você não tem permissão para ver este pedido' });
+        }
+
+        // If neither admin nor client, deny access
+        if (!req.user && !req.cliente) {
+            return res.status(401).json({ error: 'Autenticação necessária' });
         }
 
         const itens = await db.query(`

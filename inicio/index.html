@@ -7,6 +7,12 @@
     <title>Fraga Lanches</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
 </head>
 
 <body>
@@ -22,7 +28,6 @@
             <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
                 <a href="/inicio/index.html" class="active">INÍCIO</a>
                 <a href="/inicio/cardapio.html">CARDÁPIO</a>
-                <a href="/inicio/carrinho.html">CARRINHO</a>
                 <a href="/inicio/index.html#sobre">SOBRE</a>
                 <a href="/inicio/index.html#espaco">ESPAÇO</a>
                 <a href="/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
@@ -46,14 +51,14 @@
                         <span id="userName">Minha Conta</span>
                     </button>
                     <div class="user-dropdown" id="userDropdown" role="menu">
-                        <a href="meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
-                        <a href="perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
+                        <a href="/inicio/meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
+                        <a href="/inicio/perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
                         <div class="user-dropdown-divider"></div>
                         <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">Sair</button>
                     </div>
                 </div>
 
-                <a href="admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
@@ -63,6 +68,11 @@
         <div class="hero-overlay"></div>
 
         <div class="hero-conteudo">
+            <!-- Status Aberto/Fechado -->
+            <div id="statusBadge" class="status-badge hidden" aria-live="polite">
+                <span class="status-indicator"></span>
+                <span class="status-text">Verificando...</span>
+            </div>
             <h1>
                 A MELHOR<br>
                 <span class="destaque">HAMBURGUERIA</span><br>
@@ -340,6 +350,31 @@
 
     <script src="script.js"></script>
     <script type="module" src="js/index.js"></script>
+    <script>
+      // Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .then(registration => {
+              console.log('[SW] Registrado com sucesso:', registration.scope);
+
+              // Verificar atualizações
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Nova versão disponível
+                    if (confirm('Nova versão disponível. Atualizar?')) {
+                      window.location.reload();
+                    }
+                  }
+                });
+              });
+            })
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
 </body>
 
 </html>

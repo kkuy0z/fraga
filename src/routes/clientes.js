@@ -1,38 +1,10 @@
 import express from 'express';
 import db from '../database/connection.js';
-import { generateToken, verifyToken, verifyPassword, hashPassword } from '../middleware/auth.js';
+import { generateToken, verifyToken, verifyPassword, hashPassword, clienteAuthMiddleware } from '../middleware/auth.js';
 import { clienteValidators } from '../middleware/validation.js';
+import { authLimiter, registerLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
-
-// Customer auth middleware
-async function clienteAuthMiddleware(req, res, next) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ error: 'Token de autenticação não fornecido' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
-
-    if (!decoded || decoded.tipo !== 'cliente') {
-        return res.status(401).json({ error: 'Token inválido ou expirado' });
-    }
-
-    // Verify client still exists and is active
-    const cliente = await db.queryOne(
-        'SELECT id, nome, email, telefone, ativo FROM clientes WHERE id = ?',
-        [decoded.id]
-    );
-
-    if (!cliente || !cliente.ativo) {
-        return res.status(401).json({ error: 'Cliente não encontrado ou inativo' });
-    }
-
-    req.cliente = cliente;
-    next();
-}
 
 // Generate client token
 function generateClienteToken(cliente) {
@@ -40,7 +12,7 @@ function generateClienteToken(cliente) {
 }
 
 // Register new client
-router.post('/register', clienteValidators.register, async (req, res) => {
+router.post('/register', registerLimiter, clienteValidators.register, async (req, res) => {
     try {
         const { nome, email, telefone, senha, cep, logradouro, numero, bairro, complemento } = req.body;
 
@@ -92,7 +64,7 @@ router.post('/register', clienteValidators.register, async (req, res) => {
 });
 
 // Client login
-router.post('/login', clienteValidators.login, async (req, res) => {
+router.post('/login', authLimiter, clienteValidators.login, async (req, res) => {
     try {
         const { email, senha } = req.body;
 

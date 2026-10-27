@@ -720,6 +720,133 @@
     border: 1px solid var(--border-subtle);
 }
 
+/* ===== STATUS BADGE (Aberto/Fechado) ===== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.status-badge.hidden {
+    display: none;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.status-badge.aberto .status-indicator {
+    background-color: #4caf50;
+    box-shadow: 0 0 8px #4caf50;
+}
+
+.status-badge.fechado .status-indicator {
+    background-color: #ff6b6b;
+    box-shadow: 0 0 8px #ff6b6b;
+}
+
+.status-badge.aberto {
+    background-color: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    color: #4caf50;
+}
+
+.status-badge.fechado {
+    background-color: rgba(255, 107, 107, 0.15);
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    color: #ff6b6b;
+}
+
+.status-badge.verificando {
+    background-color: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: var(--accent);
+}
+
+.status-badge.verificando .status-indicator {
+    background-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* ===== CLOSED BANNER ===== */
+.closed-banner {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.95), rgba(220, 53, 69, 0.95));
+    border-bottom: 2px solid #dc3545;
+    padding: 16px 24px;
+    position: relative;
+    z-index: 100;
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.closed-banner.hidden {
+    display: none;
+}
+
+.closed-banner-content {
+    max-width: 1450px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #fff;
+}
+
+.closed-banner-content svg {
+    flex-shrink: 0;
+    color: #ffc107;
+}
+
+.closed-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.closed-banner-text strong {
+    font-family: var(--font-title);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.closed-banner-text span {
+    font-family: var(--font-body);
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+/* Estilo para botões desabilitados quando fechado */
+.cardapio-grid.fechado .btn-primary,
+.cardapio-grid.fechado .btn-sm {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.cardapio-grid.fechado .card {
+    opacity: 0.7;
+}
+
 /* ===== TABLE ===== */
 .table-container {
     overflow-x: auto;

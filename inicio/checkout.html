@@ -7,6 +7,12 @@
     <title>Checkout - Fraga Lanches</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
 </head>
 
 <body>
@@ -45,14 +51,14 @@
                         <span id="userName">Minha Conta</span>
                     </button>
                     <div class="user-dropdown" id="userDropdown" role="menu">
-                        <a href="meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
-                        <a href="perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
+                        <a href="/inicio/meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
+                        <a href="/inicio/perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
                         <div class="user-dropdown-divider"></div>
                         <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">Sair</button>
                     </div>
                 </div>
 
-                <a href="admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
@@ -347,6 +353,14 @@
     </footer>
 
     <script type="module" src="js/checkout.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
 </body>
 
 </html>

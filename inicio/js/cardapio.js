@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     configurarEventListeners();
     atualizarContadorCarrinho();
     verificarAuth();
+    await verificarStatusEstabelecimento();
+    // Verificar status a cada 30 segundos
+    setInterval(verificarStatusEstabelecimento, 30000);
 });
 
 async function inicializarPagina() {
@@ -82,6 +85,18 @@ function configurarEventListeners() {
     cart.subscribe(atualizarContadorCarrinho);
 }
 
+// Função para decodificar JWT e obter payload
+function decodificarJWT(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
+}
+
 async function verificarAuth() {
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
@@ -99,6 +114,7 @@ async function verificarAuth() {
         userButton.style.display = 'flex';
         userName.textContent = clienteUser.nome;
         userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
+        adminLink.style.display = 'none';
 
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('cliente_token');
@@ -107,11 +123,14 @@ async function verificarAuth() {
             setTimeout(() => window.location.reload(), 1000);
         });
     } else if (token && user) {
-        // Admin logado
+        // Admin logado - verificar role
+        const payload = decodificarJWT(token);
+        const isAdmin = payload && payload.role === 'administrador';
+
         userButton.style.display = 'flex';
         userName.textContent = user.nome;
         userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        adminLink.style.display = 'inline-flex';
+        adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
 
         logoutBtn.addEventListener('click', () => {
             api.clearAuth();
@@ -122,6 +141,41 @@ async function verificarAuth() {
         // Não logado
         userButton.style.display = 'none';
         adminLink.style.display = 'none';
+    }
+}
+
+async function verificarStatusEstabelecimento() {
+    const closedBanner = document.getElementById('closedBanner');
+    const closedBannerMessage = document.getElementById('closedBannerMessage');
+    const cardapioGrid = document.getElementById('cardapioGrid');
+
+    if (!closedBanner) return;
+
+    try {
+        const response = await api.getStatusFuncionamento();
+
+        if (response.aberto) {
+            // Estabelecimento aberto - esconder banner, habilitar botões
+            closedBanner.classList.add('hidden');
+            if (cardapioGrid) cardapioGrid.classList.remove('fechado');
+        } else {
+            // Estabelecimento fechado - mostrar banner, desabilitar botões
+            closedBanner.classList.remove('hidden');
+            if (cardapioGrid) cardapioGrid.classList.add('fechado');
+
+            let message = 'No momento não estamos aceitando pedidos.';
+            if (response.horario_atual) {
+                message += ` Próximo horário: ${response.horario_atual}`;
+            } else if (response.dia_semana) {
+                message += ` Horário de funcionamento: ${response.dia_semana}`;
+            }
+            if (closedBannerMessage) closedBannerMessage.textContent = message;
+        }
+    } catch (error) {
+        console.error('Erro ao verificar status:', error);
+        // Em caso de erro, assumir aberto para não bloquear
+        closedBanner.classList.add('hidden');
+        if (cardapioGrid) cardapioGrid.classList.remove('fechado');
     }
 }
 
@@ -225,6 +279,9 @@ function criarCardProduto(produto) {
     card.className = 'card';
     card.setAttribute('role', 'listitem');
 
+    // Verificar se estabelecimento está fechado
+    const estaFechado = cardapioGrid && cardapioGrid.classList.contains('fechado');
+
     const temImagem = produto.imagem_url && produto.imagem_url.trim() !== '';
 
     card.innerHTML = `
@@ -252,35 +309,50 @@ function criarCardProduto(produto) {
             ${produto.descricao ? `<p class="card-description">${produto.descricao}</p>` : ''}
             <div class="d-flex justify-between align-center">
                 <span class="card-price">${formatCurrency(produto.preco_base)}</span>
-                <button class="btn btn-primary btn-sm" data-produto-id="${produto.id}" aria-label="Adicionar ${produto.nome} ao carrinho">
-                    Adicionar
+                <button class="btn btn-primary btn-sm" data-produto-id="${produto.id}" aria-label="Adicionar ${produto.nome} ao carrinho" ${estaFechado ? 'disabled' : ''}>
+                    ${estaFechado ? 'Fechado' : 'Adicionar'}
                 </button>
             </div>
         </div>
     `;
 
-    // Evento de clique no card (abrir modal)
-    card.addEventListener('click', (e) => {
-        if (!e.target.closest('button')) {
-            abrirModalProduto(produto);
-        }
-    });
+    if (!estaFechado) {
+        // Evento de clique no card (abrir modal) - só se aberto
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+                abrirModalProduto(produto);
+            }
+        });
 
-    // Evento do botão adicionar
-    const btnAdicionar = card.querySelector('button[data-produto-id]');
-    btnAdicionar.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (produto.personalizacoes && produto.personalizacoes.length > 0) {
-            abrirModalProduto(produto);
-        } else {
-            adicionarAoCarrinho(produto, []);
+        // Evento do botão adicionar
+        const btnAdicionar = card.querySelector('button[data-produto-id]');
+        btnAdicionar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (produto.personalizacoes && produto.personalizacoes.length > 0) {
+                abrirModalProduto(produto);
+            } else {
+                adicionarAoCarrinho(produto, []);
+            }
+        });
+    } else {
+        // Se fechado, apenas mostrar tooltip ou não fazer nada
+        card.style.cursor = 'not-allowed';
+        const btnAdicionar = card.querySelector('button[data-produto-id]');
+        if (btnAdicionar) {
+            btnAdicionar.title = 'Estabelecimento fechado no momento';
         }
-    });
+    }
 
     return card;
 }
 
 async function abrirModalProduto(produto) {
+    // Verificar se estabelecimento está fechado
+    if (cardapioGrid && cardapioGrid.classList.contains('fechado')) {
+        showToast('Estabelecimento fechado no momento', 'warning');
+        return;
+    }
+
     // Se não tem personalizações carregadas, buscar
     if (!produto.personalizacoes || produto.personalizacoes.length === 0) {
         try {

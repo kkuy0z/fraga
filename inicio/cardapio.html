@@ -7,6 +7,12 @@
     <title>Cardápio - Fraga Lanches</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
 </head>
 
 <body>
@@ -56,6 +62,20 @@
             </div>
         </div>
     </header>
+
+    <!-- Banner Fechado -->
+    <div id="closedBanner" class="closed-banner hidden" role="alert" aria-live="assertive">
+        <div class="closed-banner-content">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+            </svg>
+            <div class="closed-banner-text">
+                <strong>ESTABELECIMENTO FECHADO</strong>
+                <span id="closedBannerMessage">Verificando horário de funcionamento...</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero da Página -->
     <section class="page-header">
@@ -129,6 +149,14 @@
     </footer>
 
     <script type="module" src="js/cardapio.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
 </body>
 
 </html>

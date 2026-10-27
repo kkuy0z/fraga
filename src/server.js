@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { join, resolve } from 'path';
 
@@ -13,13 +15,14 @@ import entregaRoutes from './routes/entrega.js';
 import pagamentosRoutes from './routes/pagamentos.js';
 import pedidosRoutes from './routes/pedidos.js';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Trust proxy for rate limiter (when behind nginx/reverse proxy) - MUST be before rate limiter middleware
+app.set('trust proxy', true);
 
 // Middleware
 app.use(cors({

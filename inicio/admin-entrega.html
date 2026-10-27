@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Configuração de Entrega - Fraga Lanches Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
+</head>
+
+<body>
+    <!-- Header Admin -->
+    <header class="header-fixed admin-header" role="banner">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="/inicio/admin-dashboard.html">
+                    <img src="/img/logo.png" alt="Fraga Lanches Admin" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display: none; font-size: 20px; font-weight: 700; color: var(--primary);">Fraga Admin</span>
+                </a>
+            </div>
+
+            <nav class="admin-nav" id="adminNav" role="navigation" aria-label="Navegação administrativa">
+                <a href="/inicio/admin-dashboard.html" data-page="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/inicio/admin-categorias.html" data-page="categorias">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="4" y1="7" x2="4" y2="21"></line>
+                        <line x1="4" y1="7" x2="20" y2="7"></line>
+                        <line x1="8" y1="7" x2="8" y2="21"></line>
+                        <line x1="12" y1="7" x2="12" y2="21"></line>
+                        <line x1="16" y1="7" x2="16" y2="21"></line>
+                        <line x1="20" y1="7" x2="20" y2="21"></line>
+                    </svg>
+                    Categorias
+                </a>
+                <a href="/inicio/admin-produtos.html" data-page="produtos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    Produtos
+                </a>
+                <a href="/inicio/admin-pedidos.html" data-page="pedidos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M16 11V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"></path>
+                        <path d="M8 7v9"></path>
+                        <path d="M12 7v9"></path>
+                        <path d="M16 7v9"></path>
+                    </svg>
+                    Pedidos
+                </a>
+                <a href="/inicio/admin-horarios.html" data-page="horarios">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Horários
+                </a>
+                <a href="/inicio/admin-entrega.html" class="active" data-page="entrega">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    Entrega
+                </a>
+                <a href="/inicio/admin-pagamentos.html" data-page="pagamentos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="1" y="4" width="22" height="16" rx="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Pagamentos
+                </a>
+                <a href="/inicio/admin-usuarios.html" data-page="usuarios">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Usuários
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="user-menu" id="userMenu">
+                    <button class="user-button" id="userButton" aria-expanded="false" aria-haspopup="true" aria-label="Menu do usuário">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <span id="userName">Admin</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown" role="menu">
+                        <div class="user-dropdown-header">
+                            <span id="dropdownUserName">Admin</span>
+                            <span id="dropdownUserRole" class="badge badge-info">administrador</span>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="/inicio/index.html" class="user-dropdown-item" role="menuitem" target="_blank">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 8px;">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Ver Site
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 8px;">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Nav Toggle -->
+    <button class="admin-nav-toggle" id="adminNavToggle" aria-label="Alternar menu" aria-expanded="false" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="page-main admin-main" role="main">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-inner">
+                    <h1 class="page-title">Configuração de Entrega</h1>
+                    <p class="page-subtitle">Gerencie taxas de entrega, valor mínimo e bairros atendidos</p>
+                    <div class="yellow-line"></div>
+                </div>
+            </div>
+
+            <!-- Configurações Gerais -->
+            <section class="card" style="margin-bottom: 24px;">
+                <h2 class="card-title" style="margin-bottom: 20px;">Configurações Gerais</h2>
+                <form id="formConfigEntrega" class="d-flex flex-col gap-4" style="max-width: 600px;">
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="taxaEntrega" class="form-label">Taxa de Entrega (R$) *</label>
+                            <input type="number" id="taxaEntrega" name="taxa_entrega" class="form-input" required step="0.01" min="0" placeholder="0.00">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="valorMinimoEntrega" class="form-label">Valor Mínimo para Entrega (R$)</label>
+                            <input type="number" id="valorMinimoEntrega" name="valor_minimo_entrega" class="form-input" step="0.01" min="0" placeholder="0.00 (0 = sem mínimo)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="tempoMedioEntrega" class="form-label">Tempo Médio de Entrega (min)</label>
+                            <input type="number" id="tempoMedioEntrega" name="tempo_medio_entrega" class="form-input" min="1" placeholder="30">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-end gap-2">
+                        <button type="submit" class="btn btn-primary" id="btnSalvarConfigEntrega">
+                            <svg class="btn-icon" aria-hidden="true"><use href="#i-save" /></svg>
+                            Salvar Configurações
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Taxas por Bairro -->
+            <section class="card" style="margin-bottom: 24px;">
+                <div class="d-flex justify-between align-center" style="margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+                    <h2 class="card-title" style="margin: 0;">Taxas por Bairro</h2>
+                    <button class="btn btn-primary" id="btnNovoBairro">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
+                        Adicionar Bairro
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="table" id="tabelaBairros">
+                        <thead>
+                            <tr>
+                                <th>Bairro</th>
+                                <th>Taxa Extra (R$)</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyBairros">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state hidden" id="emptyStateBairros" style="padding: 32px;">
+                    <div class="empty-state-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2 class="empty-state-title">Nenhum bairro cadastrado</h2>
+                    <p class="empty-state-message">A taxa de entrega padrão será aplicada. Adicione bairros com taxas diferenciadas.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Novo/Editar Bairro -->
+    <div class="modal-overlay hidden" id="bairroModal" role="dialog" aria-modal="true" aria-labelledby="bairroModalTitulo">
+        <div class="modal modal-md">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bairroModalTitulo">Novo Bairro</h2>
+                <button class="modal-close" id="bairroModalClose" aria-label="Fechar modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="bairroForm" class="modal-body" novalidate>
+                <input type="hidden" id="bairroId" name="id">
+
+                <div class="form-group">
+                    <label for="bairroNome" class="form-label">Nome do Bairro *</label>
+                    <input type="text" id="bairroNome" name="bairro" class="form-input" required maxlength="80" placeholder="Ex: Centro, Jardim América">
+                </div>
+
+                <div class="form-group">
+                    <label for="bairroTaxaExtra" class="form-label">Taxa Extra (R$) *</label>
+                    <input type="number" id="bairroTaxaExtra" name="taxa_extra" class="form-input" required step="0.01" min="0" placeholder="0.00" value="0">
+                    <p class="form-help">Valor adicional à taxa de entrega padrão. Use 0 para taxa normal.</p>
+                </div>
+
+                <div class="form-check" style="margin-top: 16px;">
+                    <input type="checkbox" id="bairroAtivo" name="ativo" class="form-check-input" checked>
+                    <label for="bairroAtivo" class="form-check-label">Bairro ativo (disponível para entrega)</label>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelarBairro">Cancelar</button>
+                <button type="submit" form="bairroForm" class="btn btn-primary" id="btnSalvarBairro">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-save" /></svg>
+                    Salvar Bairro
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div class="modal-overlay hidden" id="deleteBairroModal" role="dialog" aria-modal="true" aria-labelledby="deleteBairroModalTitulo">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title" id="deleteBairroModalTitulo">Confirmar Exclusão</h2>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o bairro <strong id="deleteBairroNome"></strong>?</p>
+                <p class="form-help">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelarDeleteBairro">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarDeleteBairro">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-trash" /></svg>
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="loading-spinner"></div>
+        <p class="loading-message">Carregando...</p>
+    </div>
+
+    <script type="module" src="js/admin-entrega.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
+</body>
+
+</html>

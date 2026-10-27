@@ -2,6 +2,18 @@ import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatCEP, validateCEP, formatPhone, validatePhone, debounce } from './utils.js';
 
+// Função para decodificar JWT e obter payload
+function decodificarJWT(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
+}
+
 // Estado do checkout
 let currentStep = 1;
 let paymentMethods = [];
@@ -501,6 +513,7 @@ async function verificarAuth() {
         userButton.style.display = 'flex';
         userName.textContent = clienteUser.nome;
         userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
+        adminLink.style.display = 'none';
 
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('cliente_token');
@@ -509,10 +522,14 @@ async function verificarAuth() {
             setTimeout(() => window.location.reload(), 1000);
         });
     } else if (token && user) {
+        // Admin logado - verificar role
+        const payload = decodificarJWT(token);
+        const isAdmin = payload && payload.role === 'administrador';
+
         userButton.style.display = 'flex';
         userName.textContent = user.nome;
         userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        adminLink.style.display = 'inline-flex';
+        adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
 
         logoutBtn.addEventListener('click', () => {
             api.clearAuth();

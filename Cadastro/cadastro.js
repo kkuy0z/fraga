@@ -1,4 +1,7 @@
-/* Tela de cadastro: SOMENTE frontend. Nada é enviado, salvo ou guardado (sem localStorage/cookies/API). */
+/* Tela de cadastro: integração com backend via API */
+import api from '../inicio/js/api.js';
+import { showToast, showLoading, hideLoading } from '../inicio/js/utils.js';
+
 const $ = (s, c = document) => c.querySelector(s);
 
 /* ---------- Menu mobile (mesmo comportamento da página inicial) ---------- */
@@ -65,27 +68,78 @@ document.querySelectorAll('.ver-senha').forEach(b => b.addEventListener('click',
 /* Links de Termos/Política ainda não têm página: evita "pular" para o topo. */
 document.querySelectorAll('a[data-pendente]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
-/* ---------- Envio ---------- */
-form.addEventListener('submit', e => {
+/* ---------- Envio para Backend ---------- */
+form.addEventListener('submit', async e => {
   e.preventDefault();
   campos.forEach(el => { el.dataset.tocado = 1; });
   const invalidos = campos.filter(el => !validar(el));
   if (invalidos.length) { sucesso.hidden = true; invalidos[0].focus(); return; }
 
-  /* [BACKEND] Os dados válidos estão aqui. Para integrar, envie `dados` para a API (fetch/POST)
-     e trate sucesso/erro do servidor (ex.: e-mail já cadastrado -> mostrar erro em #erro-email).
-     Hoje NADA é enviado ou guardado. */
-  const dados = {
-    nome: form.elements.nome.value.trim(),
-    email: form.elements.email.value.trim(),
-    telefone: form.elements.telefone.value.replace(/\D/g, ''),
-    senha: form.elements.senha.value,
-    termosAceitos: form.elements.termos.checked
-  };
-  void dados;
+  const btnSubmit = form.querySelector('.cad-enviar');
+  const btnText = btnSubmit.innerHTML;
 
-  sucesso.hidden = false;
-  sucesso.focus();
-  form.reset();   /* limpa os campos (inclusive senhas) após a demonstração */
-  campos.forEach(el => { delete el.dataset.tocado; el.removeAttribute('aria-invalid'); el.closest('.campo').classList.remove('valido', 'invalido'); });
+  // Desabilitar botão e mostrar loading
+  btnSubmit.disabled = true;
+  btnSubmit.innerHTML = '<svg class="cad-ic" aria-hidden="true"><use href="#i-add" /></svg>Criando conta...';
+  showLoading('Criando sua conta...');
+
+  try {
+    const dados = {
+      nome: form.elements.nome.value.trim(),
+      email: form.elements.email.value.trim(),
+      telefone: form.elements.telefone.value.replace(/\D/g, ''),
+      senha: form.elements.senha.value,
+      termosAceitos: form.elements.termos.checked
+    };
+
+    // Chamar API do backend via módulo api
+    const data = await api.clienteRegister(dados);
+
+    // Sucesso! Salvar token e dados do cliente
+    localStorage.setItem('cliente_token', data.token);
+    localStorage.setItem('cliente_user', JSON.stringify(data.cliente));
+
+    // Mostrar sucesso
+    sucesso.hidden = false;
+    sucesso.focus();
+    showToast('Conta criada com sucesso! Bem-vindo ao Fraga Lanches!', 'success');
+
+    // Limpar formulário
+    form.reset();
+    campos.forEach(el => {
+      delete el.dataset.tocado;
+      el.removeAttribute('aria-invalid');
+      el.closest('.campo').classList.remove('valido', 'invalido');
+    });
+
+    // Redirecionar após 2 segundos
+    setTimeout(() => {
+      window.location.href = '/inicio/meus-pedidos.html';
+    }, 2000);
+
+  } catch (error) {
+    console.error('Erro no cadastro:', error);
+    // Tratar erros específicos do backend
+    if (error.message.includes('E-mail já cadastrado')) {
+      const caixa = $('#email').closest('.campo');
+      caixa.classList.add('invalido');
+      caixa.classList.remove('valido');
+      $('#email').setAttribute('aria-invalid', 'true');
+      $('.erro', caixa).textContent = 'Este e-mail já está cadastrado.';
+      $('#email').focus();
+    } else if (error.message.includes('Telefone já cadastrado')) {
+      const caixa = $('#telefone').closest('.campo');
+      caixa.classList.add('invalido');
+      caixa.classList.remove('valido');
+      $('#telefone').setAttribute('aria-invalid', 'true');
+      $('.erro', caixa).textContent = 'Este telefone já está cadastrado.';
+      $('#telefone').focus();
+    } else {
+      showToast(error.message || 'Erro ao criar conta. Tente novamente.', 'error');
+    }
+  } finally {
+    hideLoading();
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnText;
+  }
 });

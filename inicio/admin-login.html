@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Login Admin - Fraga Lanches</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
+</head>
+
+<body>
+    <main class="page-main" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+        <div class="container" style="max-width: 420px; width: 100%;">
+            <!-- Logo -->
+            <div class="text-center" style="margin-bottom: 32px;">
+                <a href="/inicio/index.html" style="display: inline-block;">
+                    <img src="/img/logo.png" alt="Fraga Lanches" style="height: 60px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display: none; font-size: 28px; font-weight: 700; color: var(--primary);">Fraga Lanches</span>
+                </a>
+            </div>
+
+            <!-- Card de Login -->
+            <article class="card" style="padding: 32px;">
+                <header style="text-align: center; margin-bottom: 24px;">
+                    <h1 class="card-title" style="margin-bottom: 8px;">Painel Administrativo</h1>
+                    <p style="color: var(--text-muted);">Faça login para acessar o painel de controle</p>
+                </header>
+
+                <form id="formLogin" novalidate>
+                    <div class="form-group">
+                        <label for="email" class="form-label">E-mail *</label>
+                        <input type="email" id="email" name="email" class="form-input" required autocomplete="email" placeholder="admin@fragalanches.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha" class="form-label">Senha *</label>
+                        <div class="input-with-icon">
+                            <input type="password" id="senha" name="senha" class="form-input" required autocomplete="current-password" placeholder="Digite sua senha">
+                            <button type="button" class="input-icon-btn" id="toggleSenha" aria-label="Mostrar/ocultar senha">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+                        <label class="form-check" style="margin: 0; cursor: pointer;">
+                            <input type="checkbox" id="lembrar" name="lembrar" class="form-check-input">
+                            <span class="form-check-label">Lembrar-me</span>
+                        </label>
+                        <a href="#" class="btn-link" style="font-size: 13px;" data-pendente>Esqueci a senha</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 24px;" id="btnLogin">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-login" /></svg>
+                        Entrar
+                    </button>
+                </form>
+
+                <div class="text-center" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                    <p style="color: var(--text-muted); margin-bottom: 12px;">Não é administrador?</p>
+                    <a href="/inicio/index.html" class="btn btn-outline btn-block">Voltar ao site</a>
+                </div>
+            </article>
+
+            <p class="text-center" style="margin-top: 24px; color: var(--text-muted); font-size: 13px;">
+                © 2026 Fraga Lanches - Todos os direitos reservados.
+            </p>
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="loading-spinner"></div>
+        <p class="loading-message">Entrando...</p>
+    </div>
+
+    <script type="module" src="js/admin-login.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
+</body>
+
+</html>

@@ -6,7 +6,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
-const dbPath = join(__dirname, '..', '..', 'fraga_lanches.db');
+// Use test database in test environment
+const isTest = process.env.NODE_ENV === 'test';
+const dbFileName = isTest ? 'test_fraga_lanches.db' : 'fraga_lanches.db';
+const dbPath = join(__dirname, '..', '..', dbFileName);
 
 // Initialize database connection
 let db = null;

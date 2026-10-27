@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Produtos - Fraga Lanches Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
+</head>
+
+<body>
+    <!-- Header Admin -->
+    <header class="header-fixed admin-header" role="banner">
+        <div class="header-inner">
+            <div class="logo">
+                <a href="/inicio/admin-dashboard.html">
+                    <img src="/img/logo.png" alt="Fraga Lanches Admin" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display: none; font-size: 20px; font-weight: 700; color: var(--primary);">Fraga Admin</span>
+                </a>
+            </div>
+
+            <nav class="admin-nav" id="adminNav" role="navigation" aria-label="Navegação administrativa">
+                <a href="/inicio/admin-dashboard.html" data-page="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/inicio/admin-categorias.html" data-page="categorias">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="4" y1="7" x2="4" y2="21"></line>
+                        <line x1="4" y1="7" x2="20" y2="7"></line>
+                        <line x1="8" y1="7" x2="8" y2="21"></line>
+                        <line x1="12" y1="7" x2="12" y2="21"></line>
+                        <line x1="16" y1="7" x2="16" y2="21"></line>
+                        <line x1="20" y1="7" x2="20" y2="21"></line>
+                    </svg>
+                    Categorias
+                </a>
+                <a href="/inicio/admin-produtos.html" class="active" data-page="produtos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    Produtos
+                </a>
+                <a href="/inicio/admin-pedidos.html" data-page="pedidos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M16 11V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"></path>
+                        <path d="M8 7v9"></path>
+                        <path d="M12 7v9"></path>
+                        <path d="M16 7v9"></path>
+                    </svg>
+                    Pedidos
+                </a>
+                <a href="/inicio/admin-horarios.html" data-page="horarios">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Horários
+                </a>
+                <a href="/inicio/admin-entrega.html" data-page="entrega">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    Entrega
+                </a>
+                <a href="/inicio/admin-pagamentos.html" data-page="pagamentos">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="1" y="4" width="22" height="16" rx="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Pagamentos
+                </a>
+                <a href="/inicio/admin-usuarios.html" data-page="usuarios">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Usuários
+                </a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="user-menu" id="userMenu">
+                    <button class="user-button" id="userButton" aria-expanded="false" aria-haspopup="true" aria-label="Menu do usuário">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <span id="userName">Admin</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown" role="menu">
+                        <div class="user-dropdown-header">
+                            <span id="dropdownUserName">Admin</span>
+                            <span id="dropdownUserRole" class="badge badge-info">administrador</span>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="/inicio/index.html" class="user-dropdown-item" role="menuitem" target="_blank">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 8px;">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Ver Site
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 8px;">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Nav Toggle -->
+    <button class="admin-nav-toggle" id="adminNavToggle" aria-label="Alternar menu" aria-expanded="false" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="page-main admin-main" role="main">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-inner">
+                    <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h1 class="page-title">Produtos</h1>
+                            <p class="page-subtitle">Gerencie os produtos do cardápio</p>
+                        </div>
+                        <button class="btn btn-primary" id="btnNovoProduto">
+                            <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
+                            Novo Produto
+                        </button>
+                    </div>
+                    <div class="yellow-line"></div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="admin-filters" style="margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                <div class="filter-group" style="flex-wrap: wrap; gap: 12px;">
+                    <input type="text" id="buscaProduto" class="form-input" placeholder="Buscar por nome..." style="max-width: 300px; flex: 1; min-width: 200px;">
+                    <select id="filtroCategoria" class="form-select" style="max-width: 200px;">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                    <select id="filtroAtivo" class="form-select" style="max-width: 150px;">
+                        <option value="">Todos</option>
+                        <option value="true">Ativos</option>
+                        <option value="false">Inativos</option>
+                    </select>
+                    <select id="filtroDestaque" class="form-select" style="max-width: 150px;">
+                        <option value="">Todos</option>
+                        <option value="true">Destaque</option>
+                        <option value="false">Normal</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabela de Produtos -->
+            <section class="admin-table-section" aria-label="Lista de produtos">
+                <div class="table-container">
+                    <table class="table" id="tabelaProdutos">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">Imagem</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Status</th>
+                                <th>Destaque</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyProdutos">
+                            <tr>
+                                <td colspan="8" class="text-center py-4">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Estado Vazio -->
+            <div class="empty-state hidden" id="emptyState">
+                <div class="empty-state-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+                <h2 class="empty-state-title">Nenhum produto encontrado</h2>
+                <p class="empty-state-message">Comece adicionando o primeiro produto ao cardápio.</p>
+                <button class="btn btn-primary" id="btnPrimeiroProduto" style="margin-top: 16px;">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
+                    Criar Produto
+                </button>
+            </div>
+
+            <!-- Paginação -->
+            <nav class="pagination" id="pagination" aria-label="Paginação" style="display: none;"></nav>
+        </div>
+    </main>
+
+    <!-- Modal Novo/Editar Produto -->
+    <div class="modal-overlay hidden" id="produtoModal" role="dialog" aria-modal="true" aria-labelledby="produtoModalTitulo">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title" id="produtoModalTitulo">Novo Produto</h2>
+                <button class="modal-close" id="produtoModalClose" aria-label="Fechar modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="produtoForm" class="modal-body" novalidate>
+                <input type="hidden" id="produtoId" name="id">
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="produtoNome" class="form-label">Nome *</label>
+                        <input type="text" id="produtoNome" name="nome" class="form-input" required maxlength="120" placeholder="Ex: X-Bacon Especial">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="produtoCategoria" class="form-label">Categoria *</label>
+                        <select id="produtoCategoria" name="categoria_id" class="form-select" required>
+                            <option value="">Selecione uma categoria</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="produtoDescricao" class="form-label">Descrição</label>
+                    <textarea id="produtoDescricao" name="descricao" class="form-textarea" rows="3" maxlength="500" placeholder="Descrição do produto para o cardápio"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="produtoPreco" class="form-label">Preço (R$) *</label>
+                        <input type="number" id="produtoPreco" name="preco" class="form-input" required step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="produtoEstoque" class="form-label">Estoque</label>
+                        <input type="number" id="produtoEstoque" name="estoque" class="form-input" min="0" value="0" placeholder="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="produtoTempoPreparo" class="form-label">Tempo Preparo (min)</label>
+                        <input type="number" id="produtoTempoPreparo" name="tempo_preparo" class="form-input" min="1" value="15" placeholder="15">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="produtoImagem" class="form-label">URL da Imagem</label>
+                        <input type="url" id="produtoImagem" name="imagem_url" class="form-input" placeholder="https://exemplo.com/imagem.jpg">
+                    </div>
+                </div>
+
+                <div class="form-row" style="gap: 24px;">
+                    <div class="form-check" style="flex: 1;">
+                        <input type="checkbox" id="produtoAtivo" name="ativo" class="form-check-input" checked>
+                        <label for="produtoAtivo" class="form-check-label">Produto ativo (visível no cardápio)</label>
+                    </div>
+                    <div class="form-check" style="flex: 1;">
+                        <input type="checkbox" id="produtoDestaque" name="destaque" class="form-check-input">
+                        <label for="produtoDestaque" class="form-check-label">Produto em destaque</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <label class="form-label">Personalizações</label>
+                    <p class="form-help">Configure grupos de personalização (ex: Adicionais, Molhos, Tamanhos) após salvar o produto.</p>
+                    <button type="button" class="btn btn-outline btn-sm" id="btnGerenciarPersonalizacoes" style="display: none;">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-settings" /></svg>
+                        Gerenciar Personalizações
+                    </button>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelarProduto">Cancelar</button>
+                <button type="submit" form="produtoForm" class="btn btn-primary" id="btnSalvarProduto">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-save" /></svg>
+                    Salvar Produto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div class="modal-overlay hidden" id="deleteProdutoModal" role="dialog" aria-modal="true" aria-labelledby="deleteProdutoModalTitulo">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title" id="deleteProdutoModalTitulo">Confirmar Exclusão</h2>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o produto <strong id="deleteProdutoNome"></strong>?</p>
+                <p class="form-help">Esta ação não pode ser desfeita. Personalizações vinculadas também serão removidas.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelarDeleteProduto">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarDeleteProduto">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-trash" /></svg>
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+        <div class="loading-spinner"></div>
+        <p class="loading-message">Carregando...</p>
+    </div>
+
+    <script type="module" src="js/admin-produtos.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
+</body>
+
+</html>

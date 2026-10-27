@@ -34,32 +34,6 @@ export function formatDateOnly(dateString) {
     }).format(date);
 }
 
-// Status do pedido em português
-export function getStatusLabel(status) {
-    const labels = {
-        'pendente': 'Pendente',
-        'confirmado': 'Confirmado',
-        'preparando': 'Preparando',
-        'saiu_entrega': 'Saiu para Entrega',
-        'entregue': 'Entregue',
-        'cancelado': 'Cancelado'
-    };
-    return labels[status] || status;
-}
-
-// CSS class para status
-export function getStatusClass(status) {
-    const classes = {
-        'pendente': 'status-pendente',
-        'confirmado': 'status-confirmado',
-        'preparando': 'status-preparando',
-        'saiu_entrega': 'status-saiu-entrega',
-        'entregue': 'status-entregue',
-        'cancelado': 'status-cancelado'
-    };
-    return classes[status] || '';
-}
-
 // Mostrar toast notification
 export function showToast(message, type = 'info', duration = 4000) {
     const container = document.getElementById('toast-container') || createToastContainer();
@@ -161,6 +135,31 @@ export function debounce(fn, delay) {
     };
 }
 
+// Escape HTML para prevenir XSS
+export function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Formatar data/hora brasileira
+export function formatDateTime(dateString) {
+    if (!dateString) return '—';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch {
+        return dateString;
+    }
+}
+
 // Gerar ID único simples
 export function generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -169,4 +168,36 @@ export function generateId() {
 // Obter parâmetros da URL
 export function getUrlParams() {
     return new URLSearchParams(window.location.search);
+}
+
+// Status do pedido em português
+export function getStatusLabel(status) {
+    const labels = {
+        'pendente': 'Pendente',
+        'confirmado': 'Confirmado',
+        'preparo': 'Em Preparo',
+        'preparando': 'Preparando',
+        'pronto': 'Pronto',
+        'entrega': 'Saiu para Entrega',
+        'saiu_entrega': 'Saiu para Entrega',
+        'entregue': 'Entregue',
+        'cancelado': 'Cancelado'
+    };
+    return labels[status] || status;
+}
+
+// CSS class para status (usa classes de badge do design system)
+export function getStatusClass(status) {
+    const classes = {
+        'pendente': 'badge-warning',
+        'confirmado': 'badge-info',
+        'preparo': 'badge-info',
+        'preparando': 'badge-info',
+        'pronto': 'badge-info',
+        'entrega': 'badge-primary',
+        'saiu_entrega': 'badge-primary',
+        'entregue': 'badge-success',
+        'cancelado': 'badge-danger'
+    };
+    return classes[status] || 'badge-neutral';
 }

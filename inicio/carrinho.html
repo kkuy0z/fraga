@@ -7,6 +7,12 @@
     <title>Carrinho - Fraga Lanches</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style-pages.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.png">
 </head>
 
 <body>
@@ -29,7 +35,7 @@
             </nav>
 
             <div class="header-actions">
-                <a href="/inicio/carrinho.html" class="cart-button active" id="cartButton" aria-label="Carrinho de compras">
+                <a href="/inicio/carrinho.html" class="cart-button" id="cartButton" aria-label="Carrinho de compras">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -52,7 +58,7 @@
                     </div>
                 </div>
 
-                <a href="admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
@@ -155,6 +161,14 @@
     </footer>
 
     <script type="module" src="js/carrinho.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
 </body>
 
 </html>
