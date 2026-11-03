@@ -49,7 +49,9 @@ router.get('/minhas/pedido/:pedidoId', async (req, res) => {
 
         // Verify order belongs to client
         const pedido = await db.queryOne(`
-            SELECT id, status, cliente_nome, cliente_telefone, endereco_entrega, valor_total
+            SELECT id, status, cliente_nome, cliente_telefone,
+                   cep, logradouro, numero_endereco, bairro, complemento, referencia,
+                   valor_total
             FROM pedidos
             WHERE id = ? AND cliente_id = ?
         `, [pedidoId, clienteId]);
@@ -57,6 +59,9 @@ router.get('/minhas/pedido/:pedidoId', async (req, res) => {
         if (!pedido) {
             return res.status(404).json({ error: 'Pedido não encontrado' });
         }
+
+        // Construct endereco_entrega from separate fields
+        const enderecoEntrega = `${pedido.logradouro}, ${pedido.numero_endereco}${pedido.complemento ? ', ' + pedido.complemento : ''} - ${pedido.bairro}, CEP: ${pedido.cep}${pedido.referencia ? ' (' + pedido.referencia + ')' : ''}`;
 
         const entrega = await db.queryOne(`
             SELECT
@@ -77,7 +82,7 @@ router.get('/minhas/pedido/:pedidoId', async (req, res) => {
             pedido: {
                 id: pedido.id,
                 status: pedido.status,
-                endereco_entrega: pedido.endereco_entrega,
+                endereco_entrega: enderecoEntrega,
                 valor_total: pedido.valor_total
             },
             entrega: {
@@ -111,7 +116,8 @@ router.post('/', entregaValidators.create, async (req, res) => {
 
         // Verify order exists and is ready for delivery
         const pedido = await db.queryOne(`
-            SELECT id, status, cliente_nome, cliente_telefone, endereco_entrega
+            SELECT id, status, cliente_nome, cliente_telefone,
+                   cep, logradouro, numero_endereco, bairro, complemento, referencia
             FROM pedidos
             WHERE id = ?
         `, [pedido_id]);
@@ -259,7 +265,7 @@ router.get('/', entregaValidators.list, async (req, res) => {
                 e.*,
                 u.nome as entregador_nome,
                 p.cliente_nome,
-                p.endereco_entrega,
+                p.cep, p.logradouro, p.numero_endereco, p.bairro, p.complemento, p.referencia,
                 p.valor_total,
                 p.forma_pagamento_id,
                 fp.nome as forma_pagamento
@@ -312,7 +318,7 @@ router.get('/entregador/:entregadorId/ativas', async (req, res) => {
                 e.*,
                 p.cliente_nome,
                 p.cliente_telefone,
-                p.endereco_entrega,
+                p.cep, p.logradouro, p.numero_endereco, p.bairro, p.complemento, p.referencia,
                 p.valor_total,
                 p.observacoes_pagamento,
                 fp.nome as forma_pagamento,
