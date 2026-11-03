@@ -421,10 +421,16 @@ function renderizarDetalhesPedido(pedido) {
                 </dl>
             </div>
 
-            ${pedido.tipo_entrega === 'entrega' && pedido.endereco_entrega ? `
+            ${pedido.tipo_entrega === 'entrega' && (pedido.logradouro || pedido.endereco_entrega) ? `
             <div class="card">
                 <h4 class="card-title" style="margin-bottom: 12px; font-size: 14px;">Endereço de Entrega</h4>
-                <p style="font-size: 14px; color: var(--text-muted);">${escapeHtml(pedido.endereco_entrega.logradouro || '')}, ${escapeHtml(pedido.endereco_entrega.numero || '')}${pedido.endereco_entrega.complemento ? ' - ' + escapeHtml(pedido.endereco_entrega.complemento) : ''}<br>${escapeHtml(pedido.endereco_entrega.bairro || '')}<br>CEP: ${escapeHtml(pedido.endereco_entrega.cep || '')}</p>
+                <p style="font-size: 14px; color: var(--text-muted);">
+                    ${escapeHtml(pedido.logradouro || pedido.endereco_entrega?.logradouro || '')}, ${escapeHtml(pedido.numero_endereco || pedido.endereco_entrega?.numero || '')}
+                    ${(pedido.complemento || pedido.endereco_entrega?.complemento) ? '<br>' + escapeHtml(pedido.complemento || pedido.endereco_entrega?.complemento) : ''}
+                    <br>${escapeHtml(pedido.bairro || pedido.endereco_entrega?.bairro || '')}
+                    <br>CEP: ${escapeHtml(pedido.cep || pedido.endereco_entrega?.cep || '')}
+                    ${pedido.referencia ? '<br>Ref: ' + escapeHtml(pedido.referencia) : ''}
+                </p>
             </div>
             ` : ''}
 
