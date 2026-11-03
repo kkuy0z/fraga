@@ -72,7 +72,7 @@ async function inicializarPagina() {
     // Verificar se cliente está autenticado
     if (!api.isClienteAuthenticated()) {
         showToast('Você precisa estar logado para acessar seu perfil', 'warning');
-        setTimeout(() => window.location.href = '/inicio/index.html', 2000);
+        setTimeout(() => window.location.href = '/index.html', 2000);
         return;
     }
 
@@ -580,5 +580,5 @@ async function handlePushUnsubscribe() {
 function handleLogout() {
     api.clearClienteAuth();
     showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/inicio/index.html', 1000);
+    setTimeout(() => window.location.href = '/index.html', 1000);
 }

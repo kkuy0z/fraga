@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Verificar se token é válido
         api.adminVerify()
             .then(() => {
-                window.location.href = '/inicio/admin-dashboard.html';
+                window.location.href = '/admin-dashboard.html';
             })
             .catch(() => {
                 // Token inválido, limpar e ficar na página de login
@@ -105,7 +105,7 @@ async function handleLogin(e) {
             api.setAuth(data.token, data.usuario);
             showToast('Primeiro acesso: altere sua senha', 'warning');
             setTimeout(() => {
-                window.location.href = '/inicio/admin-login.html?forcePassword=1';
+                window.location.href = '/admin-login.html?forcePassword=1';
             }, 1000);
             return;
         }
@@ -117,7 +117,7 @@ async function handleLogin(e) {
 
         // Redirecionar para dashboard
         setTimeout(() => {
-            window.location.href = '/inicio/admin-dashboard.html';
+            window.location.href = '/admin-dashboard.html';
         }, 1000);
 
     } catch (error) {
@@ -179,7 +179,7 @@ async function handleAlterarSenha(e) {
 
         // Redirecionar para dashboard após sucesso
         setTimeout(() => {
-            window.location.href = '/inicio/admin-dashboard.html';
+            window.location.href = '/admin-dashboard.html';
         }, 1000);
 
     } catch (error) {

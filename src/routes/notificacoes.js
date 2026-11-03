@@ -37,6 +37,27 @@ async function ensurePushSubscriptionsTable() {
     `);
 }
 
+/**
+ * Emit internal notification (for real-time WebSocket/SSE)
+ * Used by other modules to notify kitchen, attendance, deliverers
+ */
+export async function emitNotification({ tipo, titulo, mensagem, pedido_id, destinatario_perfil, destinatario_id, dados }) {
+    try {
+        // Save to database for persistence
+        await db.query(`
+            INSERT INTO notificacoes_internas (tipo, titulo, mensagem, pedido_id, destinatario_perfil, destinatario_id, dados)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [tipo, titulo, mensagem, pedido_id || null, destinatario_perfil || 'todos', destinatario_id || null, dados ? JSON.stringify(dados) : null]);
+
+        // The real-time server will pick this up and broadcast
+        // For now, we just return the notification
+        return { success: true };
+    } catch (error) {
+        console.error('Error emitting notification:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Get VAPID public key (public endpoint)
 router.get('/vapid-public-key', (req, res) => {
     if (!VAPID_PUBLIC_KEY) {
@@ -299,6 +320,72 @@ router.post('/send-order-update', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error('Error sending order update notification:', error);
         res.status(500).json({ error: 'Failed to send notification' });
+    }
+});
+
+// Get internal notifications (admin/kitchen/attendance/deliverer)
+router.get('/internas', authMiddleware, async (req, res) => {
+    try {
+        const { lida, limit = 50 } = req.query;
+
+        let whereClause = 'WHERE 1=1';
+        const params = [];
+
+        // Filter by user profile or "todos"
+        whereClause += ' AND (destinatario_perfil = ? OR destinatario_perfil = ? OR destinatario_id = ?)';
+        params.push(req.user.perfil, 'todos', req.user.id);
+
+        if (lida !== undefined) {
+            whereClause += ' AND lida = ?';
+            params.push(lida === 'true' ? 1 : 0);
+        }
+
+        const notificacoes = await db.query(`
+            SELECT * FROM notificacoes_internas
+            ${whereClause}
+            ORDER BY created_at DESC
+            LIMIT ?
+        `, [...params, parseInt(limit)]);
+
+        res.json(notificacoes);
+    } catch (error) {
+        console.error('Error getting internal notifications:', error);
+        res.status(500).json({ error: 'Erro ao buscar notificações' });
+    }
+});
+
+// Mark notification as read
+router.put('/internas/:id/lida', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await db.query(`
+            UPDATE notificacoes_internas
+            SET lida = 1, lida_em = CURRENT_TIMESTAMP
+            WHERE id = ? AND (destinatario_perfil = ? OR destinatario_perfil = ? OR destinatario_id = ?)
+        `, [id, req.user.perfil, 'todos', req.user.id]);
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        res.status(500).json({ error: 'Erro ao marcar como lida' });
+    }
+});
+
+// Mark all as read
+router.put('/internas/lidas-todas', authMiddleware, async (req, res) => {
+    try {
+        await db.query(`
+            UPDATE notificacoes_internas
+            SET lida = 1, lida_em = CURRENT_TIMESTAMP
+            WHERE (destinatario_perfil = ? OR destinatario_perfil = ? OR destinatario_id = ?)
+            AND lida = 0
+        `, [req.user.perfil, 'todos', req.user.id]);
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error marking all as read:', error);
+        res.status(500).json({ error: 'Erro ao marcar todas como lidas' });
     }
 });
 

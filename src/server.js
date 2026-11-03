@@ -12,9 +12,12 @@ import categoriasRoutes from './routes/categorias.js';
 import produtosRoutes from './routes/produtos.js';
 import horariosRoutes from './routes/horarios.js';
 import entregaRoutes from './routes/entrega.js';
+import entregasRoutes from './routes/entregas.js';
 import pagamentosRoutes from './routes/pagamentos.js';
 import pedidosRoutes from './routes/pedidos.js';
 import notificacoesRoutes from './routes/notificacoes.js';
+import avaliacoesRoutes from './routes/avaliacoes.js';
+import relatoriosRoutes from './routes/relatorios.js';
 import { apiLimiter } from './middleware/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -72,9 +75,9 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Serve static files from public directory
-app.use(express.static(join(__dirname, '..', 'public')));
-app.use('/inicio', express.static(join(__dirname, '..', 'inicio')));
+// Serve static files - serve inicio at root for proper relative paths
+app.use(express.static(join(__dirname, '..', 'inicio')));
+app.use('/img', express.static(join(__dirname, '..', 'img')));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -91,9 +94,12 @@ app.use('/api/categorias', categoriasRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/horarios', horariosRoutes);
 app.use('/api/entrega', entregaRoutes);
+app.use('/api/entregas', entregasRoutes);
 app.use('/api/pagamentos', pagamentosRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/notificacoes', notificacoesRoutes);
+app.use('/api/avaliacoes', avaliacoesRoutes);
+app.use('/api/relatorios', relatoriosRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

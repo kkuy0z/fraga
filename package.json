@@ -1,22 +1,31 @@
 {
   "name": "fraga-lanches",
-  "version": "1.0.0",
-  "description": "Sistema de pedidos para hamburgueria artesanal Fraga Lanches",
+  "version": "2.0.0",
+  "description": "Sistema de pedidos para hamburgueria artesanal Fraga Lanches - Microservices Architecture",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
+    "realtime": "node src/realtime-server.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run realtime\"",
     "db:init": "node src/database/init.js",
     "db:migrate": "node src/database/migrate.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "services:install": "cd services/auth && npm install && cd ../menu && npm install && cd ../order && npm install && cd ../client && npm install && cd ../delivery && npm install && cd ../notification && npm install && cd ../report && npm install && cd ../review && npm install && cd ../payment && npm install && cd ../api-gateway && npm install && cd ../frontend && npm install",
+    "services:start": "concurrently -c concurrently.config.js",
+    "services:dev": "concurrently -c concurrently.config.js --kill-others-on-fail",
+    "gateway:start": "node services/api-gateway/src/index.js",
+    "gateway:dev": "node --watch services/api-gateway/src/index.js",
+    "shared:install": "cd shared && npm install"
   },
   "keywords": [
     "restaurant",
     "orders",
     "hamburgueria",
-    "delivery"
+    "delivery",
+    "microservices"
   ],
   "author": "Fraga Lanches",
   "license": "ISC",
@@ -32,10 +41,12 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "uuid": "^9.0.1",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "concurrently": "^8.2.2"
   }
 }
