@@ -93,10 +93,10 @@ class ApiClient {
                 if (response.status === 401) {
                     if (this.clienteToken && endpoint.startsWith('/clientes')) {
                         this.clearClienteAuth();
-                        window.location.href = '/inicio/index.html';
+                        window.location.href = '/index.html';
                     } else if (this.token && !endpoint.startsWith('/clientes')) {
                         this.clearAuth();
-                        window.location.href = '/inicio/admin-login.html';
+                        window.location.href = '/admin-login.html';
                     }
                 }
                 throw new Error(data.error || `Erro ${response.status}`);

@@ -1,21 +1,25 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 
 const windowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000; // 15 minutos
 const maxRequests = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 10; // 10 requisições por janela
 
-// Custom key generator to properly handle proxied IPs
-const ipKeyGenerator = (req) => {
+// Custom key generator to properly handle proxied IPs with IPv6 support
+const customKeyGenerator = (req) => {
     // Use x-forwarded-for if behind proxy (trust proxy is enabled)
     const forwarded = req.headers['x-forwarded-for'];
     if (forwarded) {
-        return forwarded.split(',')[0].trim();
+        // Get the first IP in the chain (client IP)
+        const clientIp = forwarded.split(',')[0].trim();
+        // Use the library's ipKeyGenerator to properly format IPv6 addresses
+        return ipKeyGenerator({ ip: clientIp });
     }
-    return req.ip || req.connection?.remoteAddress || 'unknown';
+    // Fallback to library's ipKeyGenerator for proper IPv6 handling
+    return ipKeyGenerator(req);
 };
 
 // Custom handler to log rate limit events
 const rateLimitHandler = (req, res, next, options) => {
-    console.warn(`Rate limit exceeded for IP: ${ipKeyGenerator(req)} on ${req.path}`);
+    console.warn(`Rate limit exceeded for IP: ${customKeyGenerator(req)} on ${req.path}`);
     res.status(429).json(options.message);
 };
 

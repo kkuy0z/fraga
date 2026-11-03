@@ -59,7 +59,7 @@ async function inicializarPagina() {
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
 
     if (!token || !user) {
-        window.location.href = '/inicio/admin-login.html';
+        window.location.href = '/admin-login.html';
         return;
     }
 
@@ -67,7 +67,7 @@ async function inicializarPagina() {
         await api.adminVerify();
     } catch (error) {
         api.clearAuth();
-        window.location.href = '/inicio/admin-login.html';
+        window.location.href = '/admin-login.html';
         return;
     }
 
@@ -382,5 +382,5 @@ async function confirmarExcluirHorario() {
 function handleLogout() {
     api.clearAuth();
     showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/inicio/admin-login.html', 1000);
+    setTimeout(() => window.location.href = '/admin-login.html', 1000);
 }

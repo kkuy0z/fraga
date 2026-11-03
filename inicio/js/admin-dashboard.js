@@ -35,7 +35,7 @@ async function inicializarPagina() {
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
 
     if (!token || !user) {
-        window.location.href = '/inicio/admin-login.html';
+        window.location.href = '/admin-login.html';
         return;
     }
 
@@ -44,7 +44,7 @@ async function inicializarPagina() {
         await api.adminVerify();
     } catch (error) {
         api.clearAuth();
-        window.location.href = '/inicio/admin-login.html';
+        window.location.href = '/admin-login.html';
         return;
     }
 
@@ -189,7 +189,7 @@ async function carregarPedidosRecentes() {
                 <td><span class="badge ${getStatusClass(pedido.status)}">${getStatusLabel(pedido.status)}</span></td>
                 <td>${formatCurrency(pedido.total)}</td>
                 <td>
-                    <a href="/inicio/admin-pedidos.html?id=${pedido.id}" class="btn btn-sm btn-outline" style="padding: 4px 8px; font-size: 12px;">
+                    <a href="/admin-pedidos.html?id=${pedido.id}" class="btn btn-sm btn-outline" style="padding: 4px 8px; font-size: 12px;">
                         Ver
                     </a>
                 </td>
@@ -209,5 +209,5 @@ async function carregarPedidosRecentes() {
 function handleLogout() {
     api.clearAuth();
     showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/inicio/admin-login.html', 1000);
+    setTimeout(() => window.location.href = '/admin-login.html', 1000);
 }

@@ -300,3 +300,92 @@ export const clienteValidators = {
         handleValidationErrors
     ]
 };
+
+// Avaliação validators
+export const avaliacaoValidators = {
+    create: [
+        body('estrelas').isInt({ min: 1, max: 5 }).withMessage('Estrelas deve ser entre 1 e 5'),
+        body('comentario').optional().trim().isLength({ max: 1000 }).withMessage('Comentário deve ter no máximo 1000 caracteres'),
+        handleValidationErrors
+    ],
+    update: [
+        param('id').isInt({ min: 1 }).withMessage('ID inválido'),
+        body('estrelas').optional().isInt({ min: 1, max: 5 }).withMessage('Estrelas deve ser entre 1 e 5'),
+        body('comentario').optional().trim().isLength({ max: 1000 }).withMessage('Comentário deve ter no máximo 1000 caracteres'),
+        body('respondido').optional().isBoolean().withMessage('Respondido deve ser verdadeiro ou falso'),
+        body('resposta_admin').optional().trim().isLength({ max: 1000 }).withMessage('Resposta deve ter no máximo 1000 caracteres'),
+        handleValidationErrors
+    ],
+    list: [
+        query('cliente_id').optional().isInt({ min: 1 }).withMessage('Cliente ID inválido'),
+        query('respondido').optional().isBoolean().withMessage('Respondido deve ser verdadeiro ou falso'),
+        query('estrelas_min').optional().isInt({ min: 1, max: 5 }).withMessage('Estrelas mínimas deve ser entre 1 e 5'),
+        query('estrelas_max').optional().isInt({ min: 1, max: 5 }).withMessage('Estrelas máximas deve ser entre 1 e 5'),
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        query('page').optional().isInt({ min: 1 }).withMessage('Página deve ser um número inteiro positivo'),
+        query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limite deve ser entre 1 e 100'),
+        handleValidationErrors
+    ]
+};
+
+// Entrega validators
+export const entregaValidators = {
+    create: [
+        body('pedido_id').isInt({ min: 1 }).withMessage('Pedido ID inválido'),
+        body('entregador_id').optional().isInt({ min: 1 }).withMessage('Entregador ID inválido'),
+        handleValidationErrors
+    ],
+    update: [
+        param('id').isInt({ min: 1 }).withMessage('ID inválido'),
+        body('entregador_id').optional().isInt({ min: 1 }).withMessage('Entregador ID inválido'),
+        body('status').optional().isIn(['pendente', 'aceita', 'retirada', 'em_rota', 'entregue', 'falha']).withMessage('Status inválido'),
+        body('latitude').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitude inválida'),
+        body('longitude').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitude inválida'),
+        body('observacoes').optional().trim().isLength({ max: 500 }).withMessage('Observações deve ter no máximo 500 caracteres'),
+        handleValidationErrors
+    ],
+    list: [
+        query('entregador_id').optional().isInt({ min: 1 }).withMessage('Entregador ID inválido'),
+        query('status').optional().isIn(['pendente', 'aceita', 'retirada', 'em_rota', 'entregue', 'falha']).withMessage('Status inválido'),
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        query('page').optional().isInt({ min: 1 }).withMessage('Página deve ser um número inteiro positivo'),
+        query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limite deve ser entre 1 e 100'),
+        handleValidationErrors
+    ],
+    updateLocation: [
+        param('id').isInt({ min: 1 }).withMessage('ID inválido'),
+        body('latitude').isFloat({ min: -90, max: 90 }).withMessage('Latitude inválida'),
+        body('longitude').isFloat({ min: -180, max: 180 }).withMessage('Longitude inválida'),
+        handleValidationErrors
+    ]
+};
+
+// Report validators
+export const relatorioValidators = {
+    vendas: [
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        query('periodo').optional().isIn(['dia', 'semana', 'mes', 'ano']).withMessage('Período inválido'),
+        handleValidationErrors
+    ],
+    produtos: [
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        query('categoria_id').optional().isInt({ min: 1 }).withMessage('Categoria ID inválido'),
+        query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limite deve ser entre 1 e 100'),
+        handleValidationErrors
+    ],
+    pico: [
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        handleValidationErrors
+    ],
+    entregas: [
+        query('data_inicio').optional().isISO8601().withMessage('Data início inválida'),
+        query('data_fim').optional().isISO8601().withMessage('Data fim inválida'),
+        query('entregador_id').optional().isInt({ min: 1 }).withMessage('Entregador ID inválido'),
+        handleValidationErrors
+    ]
+};
