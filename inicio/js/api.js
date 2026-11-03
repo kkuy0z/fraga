@@ -289,8 +289,10 @@ class ApiClient {
         return this.get(`/pedidos/numero/${numero}`);
     }
 
-    async updatePedidoStatus(id, status) {
-        return this.put(`/pedidos/${id}/status`, { status });
+    async updatePedidoStatus(id, status, motivo = null) {
+        const body = { status };
+        if (motivo) body.motivo_cancelamento = motivo;
+        return this.put(`/pedidos/${id}/status`, body);
     }
 
     // ===== AUTENTICAÇÃO ADMIN =====
