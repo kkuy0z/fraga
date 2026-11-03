@@ -387,6 +387,23 @@ class ApiClient {
     async getProdutoById(id) {
         return this.get(`/produtos/${id}`);
     }
+
+    // ===== NOTIFICAÇÕES PUSH =====
+    async getVapidPublicKey() {
+        return this.get('/notificacoes/vapid-public-key');
+    }
+
+    async subscribeToPush(subscription) {
+        return this.post('/notificacoes/subscribe', subscription);
+    }
+
+    async unsubscribeFromPush(endpoint) {
+        return this.delete('/notificacoes/subscribe', { body: { endpoint } });
+    }
+
+    async getPushSubscriptions() {
+        return this.get('/notificacoes/subscriptions');
+    }
 }
 
 const api = new ApiClient();

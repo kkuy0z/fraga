@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import './config/env.js';
 
 import express from 'express';
 import cors from 'cors';
@@ -14,6 +13,7 @@ import horariosRoutes from './routes/horarios.js';
 import entregaRoutes from './routes/entrega.js';
 import pagamentosRoutes from './routes/pagamentos.js';
 import pedidosRoutes from './routes/pedidos.js';
+import notificacoesRoutes from './routes/notificacoes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -50,6 +50,7 @@ app.use('/api/horarios', horariosRoutes);
 app.use('/api/entrega', entregaRoutes);
 app.use('/api/pagamentos', pagamentosRoutes);
 app.use('/api/pedidos', pedidosRoutes);
+app.use('/api/notificacoes', notificacoesRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

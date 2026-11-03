@@ -1,6 +1,7 @@
 import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatCEP, validateCEP, formatPhone, validatePhone, debounce } from './utils.js';
+import { subscribeToPush, initPushNotifications } from './push-notifications.js';
 
 // Função para decodificar JWT e obter payload
 function decodificarJWT(token) {
@@ -465,20 +466,77 @@ async function finalizarPedido() {
         };
 
         showLoading('Finalizando pedido...');
-        const response = await api.createPedido(pedidoData);
-        hideLoading();
 
-        // Sucesso!
-        cart.clear();
+        try {
+            // Try to create order online
+            const response = await api.createPedido(pedidoData);
+            hideLoading();
 
-        // Mostrar modal de sucesso
-        document.getElementById('pedidoNumero').textContent = response.numero || `#${response.id}`;
-        const sucessoModal = document.getElementById('sucessoModal');
-        sucessoModal.classList.remove('hidden');
-        sucessoModal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+            // Sucesso!
+            cart.clear();
 
-        showToast('Pedido realizado com sucesso!', 'success');
+            // Mostrar modal de sucesso
+            document.getElementById('pedidoNumero').textContent = response.numero || `#${response.id}`;
+            const sucessoModal = document.getElementById('sucessoModal');
+            sucessoModal.classList.remove('hidden');
+            sucessoModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            showToast('Pedido realizado com sucesso!', 'success');
+
+            // Subscribe to push notifications after successful order
+            if ('serviceWorker' in navigator && Notification.permission !== 'denied') {
+                initPushNotifications(api, { autoSubscribe: true });
+            }
+
+        } catch (error) {
+            // Check if offline
+            if (!navigator.onLine || error.message.includes('network') || error.message.includes('fetch')) {
+                hideLoading();
+                showLoading('Você está offline. Salvando pedido para sincronizar quando voltar online...');
+
+                // Queue order for background sync
+                if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+                    try {
+                        const registration = await navigator.serviceWorker.ready;
+                        await new Promise((resolve, reject) => {
+                            const channel = new MessageChannel();
+                            channel.port1.onmessage = (event) => {
+                                if (event.data.success) {
+                                    resolve();
+                                } else {
+                                    reject(new Error(event.data.error || 'Failed to queue order'));
+                                }
+                            };
+                            registration.active.postMessage({
+                                type: 'QUEUE_ORDER',
+                                orderData: pedidoData,
+                                token: clienteToken
+                            }, [channel.port2]);
+                        });
+
+                        hideLoading();
+                        cart.clear();
+
+                        showToast('Pedido salvo! Será sincronizado quando você voltar online.', 'success');
+
+                        // Show success modal with offline indicator
+                        document.getElementById('pedidoNumero').textContent = 'OFFLINE - Será sincronizado';
+                        const sucessoModal = document.getElementById('sucessoModal');
+                        sucessoModal.classList.remove('hidden');
+                        sucessoModal.setAttribute('aria-hidden', 'false');
+                        document.body.style.overflow = 'hidden';
+
+                        return;
+                    } catch (syncError) {
+                        console.error('Failed to queue order for sync:', syncError);
+                    }
+                }
+            }
+
+            // Re-throw for normal error handling
+            throw error;
+        }
 
     } catch (error) {
         hideLoading();

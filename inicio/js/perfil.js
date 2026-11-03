@@ -1,6 +1,7 @@
 import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatDateTime, formatPhone, formatCEP, escapeHtml } from './utils.js';
+import { isPushSupported, getNotificationPermission, requestNotificationPermission, subscribeToPush, unsubscribeFromPush, getPushSubscriptionStatus, initPushNotifications } from './push-notifications.js';
 
 // Estado da página
 let enderecos = [];
@@ -52,6 +53,13 @@ const toggleSenhaConfirmar = document.getElementById('toggleSenhaConfirmar');
 // Logout
 const logoutBtn = document.getElementById('logoutBtn');
 
+// Push Notifications
+const pushStatus = document.getElementById('pushStatus');
+const pushToggle = document.getElementById('pushToggle');
+const pushPermission = document.getElementById('pushPermission');
+const pushSubscribeBtn = document.getElementById('pushSubscribeBtn');
+const pushUnsubscribeBtn = document.getElementById('pushUnsubscribeBtn');
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', async () => {
     await inicializarPagina();
@@ -70,7 +78,8 @@ async function inicializarPagina() {
 
     await Promise.all([
         carregarPerfil(),
-        carregarEnderecos()
+        carregarEnderecos(),
+        carregarPushStatus()
     ]);
 }
 
@@ -108,6 +117,14 @@ function configurarEventListeners() {
     toggleSenhaAtual.addEventListener('click', () => togglePasswordVisibility(senhaAtual, toggleSenhaAtual));
     toggleSenhaNova.addEventListener('click', () => togglePasswordVisibility(senhaNova, toggleSenhaNova));
     toggleSenhaConfirmar.addEventListener('click', () => togglePasswordVisibility(senhaConfirmar, toggleSenhaConfirmar));
+
+    // Push Notifications
+    if (pushSubscribeBtn) {
+        pushSubscribeBtn.addEventListener('click', handlePushSubscribe);
+    }
+    if (pushUnsubscribeBtn) {
+        pushUnsubscribeBtn.addEventListener('click', handlePushUnsubscribe);
+    }
 
     // Logout
     if (logoutBtn) {
@@ -468,6 +485,95 @@ function togglePasswordVisibility(input, button) {
         svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
     } else {
         svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+    }
+}
+
+async function carregarPushStatus() {
+    if (!pushStatus) return;
+
+    if (!isPushSupported()) {
+        pushStatus.innerHTML = '<span style="color: var(--text-muted);">Notificações push não suportadas neste navegador</span>';
+        if (pushToggle) pushToggle.style.display = 'none';
+        if (pushSubscribeBtn) pushSubscribeBtn.style.display = 'none';
+        if (pushUnsubscribeBtn) pushUnsubscribeBtn.style.display = 'none';
+        return;
+    }
+
+    const permission = getNotificationPermission();
+
+    if (pushPermission) {
+        pushPermission.textContent = permission === 'granted' ? 'Concedida' :
+                                     permission === 'denied' ? 'Negada' : 'Não solicitada';
+        pushPermission.className = permission === 'granted' ? 'badge badge-success' :
+                                    permission === 'denied' ? 'badge badge-danger' : 'badge badge-warning';
+    }
+
+    const status = await getPushSubscriptionStatus(api);
+
+    if (status.subscribed) {
+        pushStatus.innerHTML = '<span style="color: var(--success);">● Inscrito</span>';
+        if (pushSubscribeBtn) pushSubscribeBtn.style.display = 'none';
+        if (pushUnsubscribeBtn) pushUnsubscribeBtn.style.display = 'inline-flex';
+    } else {
+        pushStatus.innerHTML = '<span style="color: var(--text-muted);">Não inscrito</span>';
+        if (pushSubscribeBtn) pushSubscribeBtn.style.display = 'inline-flex';
+        if (pushUnsubscribeBtn) pushUnsubscribeBtn.style.display = 'none';
+    }
+
+    // Disable subscribe if permission denied
+    if (permission === 'denied' && pushSubscribeBtn) {
+        pushSubscribeBtn.disabled = true;
+        pushSubscribeBtn.title = 'Permissão de notificação negada. Altere nas configurações do navegador.';
+    }
+}
+
+async function handlePushSubscribe() {
+    if (!pushSubscribeBtn) return;
+
+    const originalText = pushSubscribeBtn.innerHTML;
+    pushSubscribeBtn.disabled = true;
+    pushSubscribeBtn.innerHTML = '<svg class="btn-icon spin" aria-hidden="true"><use href="#i-loader" /></svg> Inscrito...';
+
+    try {
+        const result = await subscribeToPush(api);
+
+        if (result.success) {
+            showToast(result.updated ? 'Inscrição atualizada com sucesso!' : 'Inscrito para notificações!', 'success');
+            await carregarPushStatus();
+        } else {
+            showToast(result.error || 'Erro ao inscrever', 'error');
+        }
+    } catch (error) {
+        console.error('Erro ao inscrever para push:', error);
+        showToast('Erro ao inscrever para notificações', 'error');
+    } finally {
+        pushSubscribeBtn.disabled = false;
+        pushSubscribeBtn.innerHTML = originalText;
+    }
+}
+
+async function handlePushUnsubscribe() {
+    if (!pushUnsubscribeBtn) return;
+
+    const originalText = pushUnsubscribeBtn.innerHTML;
+    pushUnsubscribeBtn.disabled = true;
+    pushUnsubscribeBtn.innerHTML = '<svg class="btn-icon spin" aria-hidden="true"><use href="#i-loader" /></svg> Removendo...';
+
+    try {
+        const result = await unsubscribeFromPush(api);
+
+        if (result.success) {
+            showToast('Inscrição removida com sucesso!', 'success');
+            await carregarPushStatus();
+        } else {
+            showToast(result.error || 'Erro ao remover inscrição', 'error');
+        }
+    } catch (error) {
+        console.error('Erro ao remover inscrição push:', error);
+        showToast('Erro ao remover inscrição', 'error');
+    } finally {
+        pushUnsubscribeBtn.disabled = false;
+        pushUnsubscribeBtn.innerHTML = originalText;
     }
 }
 

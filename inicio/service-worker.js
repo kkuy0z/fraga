@@ -2,7 +2,7 @@
  * Service Worker - Fraga Lanches PWA
  * Versão do cache - incrementar ao fazer mudanças nos arquivos estáticos
  */
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 const CACHE_NAME = `fraga-lanches-${CACHE_VERSION}`;
 const CACHE_STATIC = `fraga-static-${CACHE_VERSION}`;
 const CACHE_API = `fraga-api-${CACHE_VERSION}`;
@@ -47,8 +47,8 @@ const STATIC_ASSETS = [
   '/inicio/js/admin-usuarios.js',
   '/inicio/manifest.json',
   '/img/logo.png',
-  '/img/icon-192.png',
-  '/img/icon-512.png'
+  '/img/icon-192.svg',
+  '/img/icon-512.svg'
 ];
 
 // Estratégias de cache
@@ -201,9 +201,61 @@ self.addEventListener('sync', event => {
 
 async function syncOrders() {
   try {
-    // Tentar buscar pedidos pendentes do IndexedDB e enviar
-    console.log('[SW] Sincronizando pedidos...');
-    // Implementação futura se necessário
+    console.log('[SW] Sincronizando pedidos pendentes...');
+
+    // Get pending orders from IndexedDB
+    const pendingOrders = await getPendingOrdersFromIDB();
+
+    if (pendingOrders.length === 0) {
+      console.log('[SW] Nenhum pedido pendente para sincronizar');
+      return;
+    }
+
+    console.log(`[SW] Encontrados ${pendingOrders.length} pedidos pendentes`);
+
+    for (const order of pendingOrders) {
+      try {
+        const response = await fetch('/api/pedidos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${order.token}`
+          },
+          body: JSON.stringify(order.data)
+        });
+
+        if (response.ok) {
+          // Remove from IndexedDB on success
+          await removePendingOrderFromIDB(order.id);
+          console.log(`[SW] Pedido ${order.id} sincronizado com sucesso`);
+
+          // Notify the client
+          const clients = await self.clients.matchAll();
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'ORDER_SYNCED',
+              orderId: order.id,
+              success: true
+            });
+          });
+        } else {
+          const error = await response.json();
+          console.error(`[SW] Falha ao sincronizar pedido ${order.id}:`, error);
+
+          // Notify the client of failure
+          const clients = await self.clients.matchAll();
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'ORDER_SYNC_FAILED',
+              orderId: order.id,
+              error: error.error || 'Erro ao sincronizar'
+            });
+          });
+        }
+      } catch (error) {
+        console.error(`[SW] Erro ao sincronizar pedido ${order.id}:`, error);
+      }
+    }
   } catch (error) {
     console.error('[SW] Erro ao sincronizar pedidos:', error);
   }
@@ -213,20 +265,70 @@ async function syncCart() {
   try {
     console.log('[SW] Sincronizando carrinho...');
     // O carrinho já é salvo no localStorage, que persiste
+    // Podemos notificar o cliente que a sincronização ocorreu
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'CART_SYNCED',
+        success: true
+      });
+    });
   } catch (error) {
     console.error('[SW] Erro ao sincronizar carrinho:', error);
   }
 }
 
-// Push Notifications (futuro)
+// IndexedDB helpers for offline order storage
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('FragaLanchesOffline', 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('pendingOrders')) {
+        const store = db.createObjectStore('pendingOrders', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function getPendingOrdersFromIDB() {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['pendingOrders'], 'readonly');
+    const store = transaction.objectStore('pendingOrders');
+    const request = store.getAll();
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function removePendingOrderFromIDB(id) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['pendingOrders'], 'readwrite');
+    const store = transaction.objectStore('pendingOrders');
+    const request = store.delete(id);
+
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Push Notifications
 self.addEventListener('push', event => {
   if (!event.data) return;
 
   const data = event.data.json();
   const options = {
     body: data.body || 'Nova atualização no seu pedido',
-    icon: '/img/icon-192.png',
-    badge: '/img/icon-72.png',
+    icon: '/img/icon-192.svg',
+    badge: '/img/icon-72.svg',
     vibrate: [200, 100, 200],
     data: data.data || {},
     actions: [
@@ -269,6 +371,34 @@ self.addEventListener('message', event => {
       ).then(() => event.ports[0].postMessage({ success: true }))
     );
   }
+
+  // Queue order for offline sync
+  if (event.data && event.data.type === 'QUEUE_ORDER') {
+    queueOrderForSync(event.data.orderData, event.data.token)
+      .then(() => event.ports[0].postMessage({ success: true }))
+      .catch(err => event.ports[0].postMessage({ success: false, error: err.message }));
+  }
 });
+
+async function queueOrderForSync(orderData, token) {
+  const db = await openIDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['pendingOrders'], 'readwrite');
+    const store = transaction.objectStore('pendingOrders');
+    const request = store.add({
+      data: orderData,
+      token: token,
+      timestamp: Date.now()
+    });
+
+    request.onsuccess = () => {
+      console.log('[SW] Pedido adicionado à fila de sincronização offline');
+      // Register for background sync
+      self.registration.sync.register('sync-orders').catch(console.error);
+      resolve();
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
 
 console.log('[SW] Service Worker carregado -', CACHE_VERSION);
