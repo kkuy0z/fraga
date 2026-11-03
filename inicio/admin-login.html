@@ -87,6 +87,65 @@
         <p class="loading-message">Entrando...</p>
     </div>
 
+    <!-- Modal Alterar Senha (Primeiro Acesso) -->
+    <div class="modal hidden" id="alterarSenhaModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="alterarSenhaModalTitulo">
+        <div class="modal-overlay" tabindex="-1"></div>
+        <div class="modal-container" style="max-width: 420px;">
+            <header class="modal-header">
+                <h2 class="modal-title" id="alterarSenhaModalTitulo">Alterar Senha Obrigatória</h2>
+                <button class="modal-close" id="alterarSenhaModalClose" aria-label="Fechar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </header>
+            <form id="alterarSenhaForm" class="modal-body" novalidate>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Este é seu primeiro acesso. Por segurança, você deve definir uma nova senha.</p>
+                <div class="form-group">
+                    <label for="senhaAtual" class="form-label">Senha Atual *</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="senhaAtual" name="senhaAtual" class="form-input" required autocomplete="current-password" placeholder="Digite a senha atual">
+                        <button type="button" class="input-icon-btn" id="toggleSenhaAtual" aria-label="Mostrar/ocultar senha">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="novaSenha" class="form-label">Nova Senha *</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="novaSenha" name="novaSenha" class="form-input" required autocomplete="new-password" placeholder="Mínimo 8 caracteres" minlength="8">
+                        <button type="button" class="input-icon-btn" id="toggleNovaSenha" aria-label="Mostrar/ocultar senha">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmarNovaSenha" class="form-label">Confirmar Nova Senha *</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="confirmarNovaSenha" name="confirmarNovaSenha" class="form-input" required autocomplete="new-password" placeholder="Confirme a nova senha">
+                        <button type="button" class="input-icon-btn" id="toggleConfirmarNovaSenha" aria-label="Mostrar/ocultar senha">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 24px;" id="btnConfirmarAlterarSenha">
+                    <svg class="btn-icon" aria-hidden="true"><use href="#i-check" /></svg>
+                    Alterar Senha
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="js/admin-login.js"></script>
     <script>
       if ('serviceWorker' in navigator) {

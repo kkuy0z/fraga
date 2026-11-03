@@ -66,10 +66,19 @@ export async function authMiddleware(req, res, next) {
     }
 
     // Verify user still exists and is active
-    const user = await db.queryOne('SELECT id, email, nome, perfil, ativo FROM usuarios_admin WHERE id = ?', [decoded.id]);
+    const user = await db.queryOne('SELECT id, email, nome, perfil, ativo, forca_troca_senha FROM usuarios_admin WHERE id = ?', [decoded.id]);
 
     if (!user || !user.ativo) {
         return res.status(401).json({ error: 'Usuário não encontrado ou inativo' });
+    }
+
+    // Check if password change is forced
+    if (user.forca_troca_senha) {
+        return res.status(403).json({
+            error: 'Troca de senha obrigatória',
+            code: 'FORCE_PASSWORD_CHANGE',
+            forca_troca_senha: true
+        });
     }
 
     req.user = user;

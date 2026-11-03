@@ -2,6 +2,7 @@ import './config/env.js';
 
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { fileURLToPath } from 'url';
 import { join, resolve } from 'path';
 
@@ -14,6 +15,7 @@ import entregaRoutes from './routes/entrega.js';
 import pagamentosRoutes from './routes/pagamentos.js';
 import pedidosRoutes from './routes/pedidos.js';
 import notificacoesRoutes from './routes/notificacoes.js';
+import { apiLimiter } from './middleware/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -24,13 +26,51 @@ const PORT = process.env.PORT || 3000;
 // Trust proxy for rate limiter (when behind nginx/reverse proxy) - MUST be before rate limiter middleware
 app.set('trust proxy', true);
 
-// Middleware
-app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
-    credentials: true
+// Security headers with Helmet
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "blob:", "https:"],
+            scriptSrc: ["'self'"],
+            connectSrc: ["'self'", process.env.FRONTEND_URL || "http://localhost:3000"],
+            frameAncestors: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"]
+        }
+    },
+    crossOriginEmbedderPolicy: false, // Required for some APIs
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+    }
 }));
+
+// CORS configuration - restrict in production
+const corsOptions = {
+    origin: process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? false : 'http://localhost:3000'),
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    maxAge: 86400 // 24 hours
+};
+app.use(cors(corsOptions));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// HTTPS enforcement in production (behind reverse proxy)
+if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.header('x-forwarded-proto') !== 'https') {
+            return res.redirect(`https://${req.header('host')}${req.url}`);
+        }
+        next();
+    });
+}
 
 // Serve static files from public directory
 app.use(express.static(join(__dirname, '..', 'public')));
@@ -40,6 +80,9 @@ app.use('/inicio', express.static(join(__dirname, '..', 'inicio')));
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Apply general API rate limiter to all API routes
+app.use('/api', apiLimiter);
 
 // API Routes
 app.use('/api/auth', authRoutes);
