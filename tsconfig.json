@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/frontend/*"],
+      "@shared/*": ["src/shared/*"],
+      "@shared": ["src/shared/index.ts"],
+      "@components/*": ["src/shared/components/*"],
+      "@components": ["src/shared/components/index.ts"],
+      "@hooks/*": ["src/shared/hooks/*"],
+      "@hooks": ["src/shared/hooks/index.ts"],
+      "@api/*": ["src/shared/api/*"],
+      "@api": ["src/shared/api/index.ts"],
+      "@store/*": ["src/shared/store/*"],
+      "@store": ["src/shared/store/index.ts"],
+      "@styles/*": ["src/shared/styles/*"],
+      "@utils/*": ["src/shared/utils/*"],
+      "@utils": ["src/shared/utils/index.ts"],
+      "@types/*": ["src/shared/types/*"],
+      "@types": ["src/shared/types/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "server.js"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

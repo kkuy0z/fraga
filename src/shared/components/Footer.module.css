@@ -1,0 +1,17 @@
+.footer {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-subtle);
+  padding: 30px 4%;
+  text-align: center;
+}
+
+.footerContainer {
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+.footerText {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-muted);
+}

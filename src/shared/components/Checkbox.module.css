@@ -1,0 +1,93 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  user-select: none;
+  padding: var(--space-1) 0;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.label:hover .box:not(:has(~ .input:checked)) {
+  border-color: var(--color-primary);
+}
+
+.input:focus-visible + .box {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.input:checked + .box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.input:checked + .box svg {
+  display: block;
+}
+
+.box svg {
+  display: none;
+  width: 14px;
+  height: 14px;
+  color: var(--color-white);
+}
+
+.labelText {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.input:disabled ~ .box {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input:disabled ~ .labelText {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-left: calc(20px + var(--space-3) + var(--space-1));
+  line-height: 1.5;
+}

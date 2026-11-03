@@ -1,0 +1,176 @@
+/**
+ * Design Tokens - Fraga Lanches
+ * Tokens de design centralizados para consistência visual
+ */
+
+:root {
+  /* ===== CORES ===== */
+  /* Cores primárias */
+  --color-primary: #ffc107;
+  --color-primary-dark: #e0a800;
+  --color-primary-light: #ffd900;
+  --color-primary-hover: #e0a800;
+
+  /* Cores de fundo */
+  --color-bg-primary: #0c0c0c;
+  --color-bg-secondary: #121212;
+  --color-bg-card: #0f0f0f;
+  --color-bg-elevated: #1a1a1a;
+  --color-bg-overlay: rgba(12, 12, 12, 0.95);
+
+  /* Cores de texto */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e0e0e0;
+  --color-text-muted: #dcdcdc;
+  --color-text-disabled: #666666;
+
+  /* Cores de borda */
+  --color-border-subtle: rgba(255, 255, 255, 0.1);
+  --color-border-accent: rgba(255, 193, 7, 0.4);
+  --color-border-focus: #ffc107;
+  --color-border-error: #ff6b6b;
+
+  /* Cores semânticas */
+  --color-success: #4caf50;
+  --color-success-light: rgba(76, 175, 80, 0.15);
+  --color-success-border: rgba(76, 175, 80, 0.4);
+
+  --color-warning: #ff9800;
+  --color-warning-light: rgba(255, 152, 0, 0.15);
+  --color-warning-border: rgba(255, 152, 0, 0.4);
+
+  --color-error: #ff6b6b;
+  --color-error-light: rgba(255, 107, 107, 0.15);
+  --color-error-border: rgba(255, 107, 107, 0.4);
+
+  --color-info: #2196f3;
+  --color-info-light: rgba(33, 150, 243, 0.15);
+  --color-info-border: rgba(33, 150, 243, 0.4);
+
+  /* ===== TIPOGRAFIA ===== */
+  --font-family-title: "Cinzel", "Le Jour Serif", "Times New Roman", serif;
+  --font-family-display: "Anton", sans-serif;
+  --font-family-body: "Montserrat", sans-serif, Arial, Helvetica;
+  --font-family-mono: "Helvetica World", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Tamanhos de fonte */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 22px;
+  --font-size-4xl: 24px;
+  --font-size-5xl: 32px;
+  --font-size-6xl: 46px;
+  --font-size-7xl: 52px;
+  --font-size-8xl: 78px;
+
+  /* Pesos de fonte */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+
+  /* Letter spacing */
+  --letter-spacing-tight: 0.5px;
+  --letter-spacing-normal: 1px;
+  --letter-spacing-wide: 1.5px;
+  --letter-spacing-wider: 2px;
+  --letter-spacing-widest: 3px;
+
+  /* ===== ESPAÇAMENTO ===== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ===== BORDAS ===== */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ===== SOMBRAS ===== */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.8);
+  --shadow-card: 0px 10px 30px rgba(0, 0, 0, 0.9);
+  --shadow-accent: 0px 15px 35px rgba(255, 193, 7, 0.2);
+
+  /* ===== TRANSIÇÕES ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-slower: 500ms ease;
+
+  /* ===== Z-INDEX ===== */
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-fixed: 200;
+  --z-modal-backdrop: 1000;
+  --z-modal: 1500;
+  --z-toast: 2000;
+  --z-loading: 3000;
+  --z-tooltip: 4000;
+
+  /* ===== CONTAINER ===== */
+  --container-max: 1450px;
+  --container-padding: 4%;
+
+  /* ===== BREAKPOINTS (para referência em JS) ===== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ===== TEMA CLARO (opcional) ===== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg-primary: #fafafa;
+    --color-bg-secondary: #ffffff;
+    --color-bg-card: #ffffff;
+    --color-bg-elevated: #f5f5f5;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #333333;
+    --color-text-muted: #666666;
+    --color-border-subtle: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ===== REDUZIDO MOVIMENTO ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-normal: 0ms;
+    --transition-slow: 0ms;
+    --transition-slower: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

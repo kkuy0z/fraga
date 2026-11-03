@@ -1,26 +1,24 @@
 {
   "name": "fraga-lanches",
-  "version": "1.0.0",
-  "description": "Sistema de pedidos para hamburgueria artesanal Fraga Lanches",
-  "main": "src/server.js",
+  "version": "2.0.0",
+  "description": "Sistema de pedidos para hamburgueria artesanal Fraga Lanches - Refatorado com Vite + TypeScript",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,html}\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "db:init": "node src/database/init.js",
     "db:migrate": "node src/database/migrate.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+    "server": "node src/server.js",
+    "server:dev": "node --watch src/server.js"
   },
-  "keywords": [
-    "restaurant",
-    "orders",
-    "hamburgueria",
-    "delivery"
-  ],
-  "author": "Fraga Lanches",
-  "license": "ISC",
   "dependencies": {
+    "@tanstack/react-query": "^5.17.0",
     "argon2": "^0.45.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -29,13 +27,32 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "uuid": "^9.0.1",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3"
+    "@tanstack/react-query-devtools": "^5.105.3",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/coverage-v8": "^1.3.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.1.0",
+    "vite-plugin-pwa": "^0.19.0",
+    "vitest": "^1.3.0",
+    "workbox-window": "^7.1.0"
   }
 }
