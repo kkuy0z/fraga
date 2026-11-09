@@ -419,6 +419,12 @@ async function pollNotifications() {
                 case 'entrega_localizacao':
                     eventType = 'entrega_localizacao';
                     break;
+                case 'pedido_entregue':
+                    eventType = 'pedido_entregue';
+                    break;
+                case 'avaliacao_nova':
+                    eventType = 'avaliacao_nova';
+                    break;
             }
 
             const message = {

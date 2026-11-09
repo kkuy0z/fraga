@@ -532,7 +532,8 @@ router.put('/:id/status', authMiddleware, pedidoValidators.updateStatus, async (
         const validTransitions = {
             'pendente': ['confirmado', 'cancelado'],
             'confirmado': ['preparando', 'cancelado'],
-            'preparando': ['saiu_entrega', 'cancelado'],
+            'preparando': ['pronto', 'cancelado'],
+            'pronto': ['saiu_entrega', 'cancelado'],
             'saiu_entrega': ['entregue', 'cancelado'],
             'entregue': [],
             'cancelado': []
@@ -555,21 +556,28 @@ router.put('/:id/status', authMiddleware, pedidoValidators.updateStatus, async (
         `, [id, statusAnterior, status, req.user.id, req.user.nome, `Status alterado de ${statusAnterior} para ${status}`]);
 
         // Emit notification for status change
+        let destinatarioPerfil = 'atendente';
+        if (status === 'saiu_entrega') {
+            destinatarioPerfil = 'entregador';
+        } else if (status === 'preparando' || status === 'pronto') {
+            destinatarioPerfil = 'cozinha';
+        }
+
         await emitNotification({
-            type: 'pedido_status',
-            title: 'Status do Pedido Atualizado',
-            message: `Pedido ${pedido.numero_pedido} mudou de ${statusAnterior} para ${status}`,
+            tipo: 'pedido_status',
+            titulo: 'Status do Pedido Atualizado',
+            mensagem: `Pedido ${pedido.numero_pedido} mudou de ${statusAnterior} para ${status}`,
             pedido_id: id,
-            destinatario_perfil: status === 'saiu_entrega' ? 'entregador' : (status === 'preparando' ? 'cozinha' : 'atendente'),
+            destinatario_perfil: destinatarioPerfil,
             dados: { numero_pedido: pedido.numero_pedido, status_anterior: statusAnterior, status_novo: status }
         });
 
         // If order is delivered, notify client
         if (status === 'entregue') {
             await emitNotification({
-                type: 'pedido_entregue',
-                title: 'Pedido Entregue',
-                message: `Seu pedido ${pedido.numero_pedido} foi entregue com sucesso!`,
+                tipo: 'pedido_entregue',
+                titulo: 'Pedido Entregue',
+                mensagem: `Seu pedido ${pedido.numero_pedido} foi entregue com sucesso!`,
                 pedido_id: id,
                 destinatario_perfil: 'cliente',
                 destinatario_id: pedido.cliente_id,

@@ -243,7 +243,7 @@ export async function initializeDatabase() {
             valor_total REAL NOT NULL,
             valor_troco REAL,
             observacoes_pagamento TEXT,
-            status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'confirmado', 'preparando', 'saiu_entrega', 'entregue', 'cancelado')),
+            status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'confirmado', 'preparando', 'pronto', 'saiu_entrega', 'entregue', 'cancelado')),
             data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
             data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
             endereco_entrega TEXT,

@@ -215,7 +215,7 @@ export function FidelidadePage() {
           <h2 id="resumo-title" className={styles.sectionTitle}>SEUS PONTOS</h2>
 
           <div className={styles.resumoCards}>
-            <div className={styles.card principal}>
+            <div className={`${styles.card} principal`}>
               <div className={styles.cardHeader}>
                 <span className={styles.cardLabel}>Pontos Atuais</span>
                 <span className={styles.nivelBadge}>{resumo?.nivel}</span>
@@ -239,7 +239,7 @@ export function FidelidadePage() {
               )}
             </div>
 
-            <div className={styles.card secundario}>
+            <div className={`${styles.card} secundario`}>
               <div className={styles.cardHeader}>
                 <span className={styles.cardLabel}>Total Acumulado</span>
               </div>
@@ -247,7 +247,7 @@ export function FidelidadePage() {
               <div className={styles.cardLabel}>pontos ganhos</div>
             </div>
 
-            <div className={styles.card secundario}>
+            <div className={`${styles.card} secundario`}>
               <div className={styles.cardHeader}>
                 <span className={styles.cardLabel}>Total Resgatado</span>
               </div>
@@ -318,7 +318,7 @@ export function FidelidadePage() {
             <div className={styles.empty}>
               <div className={styles.emptyIcon}>📋</div>
               <p>Nenhum movimento de pontos ainda</p>
-              <p className={styles.emptyHint">Seus pontos aparecerão aqui após fazer pedidos</p>
+              <p className={styles.emptyHint}>Seus pontos aparecerão aqui após fazer pedidos</p>
             </div>
           ) : (
             <div className={styles.historicoList} role="list">

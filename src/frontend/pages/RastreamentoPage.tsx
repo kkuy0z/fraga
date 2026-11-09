@@ -322,10 +322,8 @@ export function RastreamentoPage() {
             <div className={styles.detailCard}>
               <h3 className={styles.detailTitle}>Itens</h3>
               <div className={styles.itemsList}>
-                {data.pedido.endereco_entrega && (
-                  // Note: items would come from a separate API call or be included in response
-                )}
-              </div>
+                  <p className={styles.emptyText}>Itens do pedido serão exibidos aqui</p>
+                </div>
             </div>
 
             <div className={styles.detailCard}>

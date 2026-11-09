@@ -299,7 +299,7 @@ export function NotificacoesPage() {
             {subscription ? (
               <Card className={styles.subscriptionCard}>
                 <div className={styles.subscriptionInfo}>
-                  <div className={styles.subscriptionBadge ativa}>ATIVA</div>
+                  <div className={`${styles.subscriptionBadge} ativa`}>ATIVA</div>
                   <div>
                     <p className={styles.subscriptionText}>
                       Você receberá notificações sobre seus pedidos, entregas e promoções.
