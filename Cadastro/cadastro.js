@@ -33,25 +33,34 @@ const REGRAS = {
     nome: v => {
         const val = v.trim();
         if (!val) return 'Informe seu nome completo.';
+        if (!/^[A-Za-zÀ-ÿ\s]+$/.test(val)) return 'O nome deve conter apenas letras e espaços.';
         if (!/^\S+(\s+\S+)+$/.test(val)) return 'Informe seu nome completo (nome e sobrenome).';
         if (val.length < 5) return 'Nome muito curto.';
+        if (val.length > 80) return 'Nome muito longo (máx. 80 caracteres).';
         return '';
     },
     email: v => {
-        const val = v.trim();
+        const val = v.trim().toLowerCase();
         if (!val) return 'Informe seu e-mail.';
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) return 'Digite um e-mail válido (ex: nome@exemplo.com).';
+        if (val.length > 120) return 'E-mail muito longo (máx. 120 caracteres).';
         return '';
     },
     telefone: v => {
         const nums = v.replace(/\D/g, '');
         if (!nums) return 'Informe seu telefone.';
         if (nums.length !== 10 && nums.length !== 11) return 'Digite DDD + número (ex: (31) 98767-7197).';
+        // Validar DDD (11-99)
+        const ddd = parseInt(nums.substring(0, 2), 10);
+        if (ddd < 11 || ddd > 99) return 'DDD inválido.';
+        // Se 11 dígitos, deve começar com 9 (celular)
+        if (nums.length === 11 && nums[2] !== '9') return 'Número de celular deve começar com 9.';
         return '';
     },
     senha: v => {
         if (!v) return 'Crie uma senha.';
         if (v.length < 8) return 'A senha precisa ter pelo menos 8 caracteres.';
+        if (v.length > 64) return 'Senha muito longa (máx. 64 caracteres).';
         return '';
     },
     confirmar: (v, form) => {
