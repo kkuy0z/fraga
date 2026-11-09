@@ -280,6 +280,89 @@ async def create_notificacao_admin(
     return NotificacaoResponse.model_validate(notificacao)
 
 
+# =============================================
+# FRONTEND COMPATIBILITY ENDPOINTS (/notificacoes/*)
+# =============================================
+
+@app.get("/notificacoes/vapid-public-key", tags=["notificacoes"])
+async def get_vapid_public_key_compat():
+    """Get VAPID public key for client subscription (frontend compatibility)."""
+    if not VAPID_PUBLIC_KEY:
+        raise HTTPException(status_code=500, detail="VAPID keys not configured")
+    return {"public_key": VAPID_PUBLIC_KEY}
+
+
+@app.post("/notificacoes/subscribe", response_model=PushSubscriptionResponse, status_code=201, tags=["notificacoes"])
+async def subscribe_push_compat(
+    subscription: PushSubscriptionCreate,
+    current_user: "Usuario" = Depends(get_current_user_dep),
+    db: AsyncSession = Depends(get_db)
+):
+    """Register push subscription for PWA (frontend compatibility)."""
+    # Check if already exists
+    result = await db.execute(
+        select(PushSubscription).where(
+            PushSubscription.usuario_id == current_user.id,
+            PushSubscription.endpoint == subscription.endpoint
+        )
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        # Update existing
+        existing.p256dh = subscription.p256dh
+        existing.auth = subscription.auth
+        existing.user_agent = subscription.user_agent
+        existing.ativo = True
+        await db.commit()
+        await db.refresh(existing)
+        return PushSubscriptionResponse.model_validate(existing)
+
+    # Create new
+    push_sub = PushSubscription(
+        usuario_id=current_user.id,
+        **subscription.model_dump()
+    )
+    db.add(push_sub)
+    await db.commit()
+    await db.refresh(push_sub)
+    return PushSubscriptionResponse.model_validate(push_sub)
+
+
+@app.delete("/notificacoes/subscribe", status_code=204, tags=["notificacoes"])
+async def unsubscribe_push_compat(
+    endpoint: str,
+    current_user: "Usuario" = Depends(get_current_user_dep),
+    db: AsyncSession = Depends(get_db)
+):
+    """Unregister push subscription (frontend compatibility)."""
+    result = await db.execute(
+        select(PushSubscription).where(
+            PushSubscription.usuario_id == current_user.id,
+            PushSubscription.endpoint == endpoint
+        )
+    )
+    subscription = result.scalar_one_or_none()
+    if subscription:
+        subscription.ativo = False
+        await db.commit()
+
+
+@app.get("/notificacoes/subscriptions", response_model=List[PushSubscriptionResponse], tags=["notificacoes"])
+async def get_push_subscriptions_compat(
+    current_user: "Usuario" = Depends(get_current_user_dep),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get user's push subscriptions (frontend compatibility)."""
+    result = await db.execute(
+        select(PushSubscription).where(
+            PushSubscription.usuario_id == current_user.id,
+            PushSubscription.ativo == True
+        )
+    )
+    subscriptions = result.scalars().all()
+    return [PushSubscriptionResponse.model_validate(s) for s in subscriptions]
+
+
 # Admin: Broadcast notification
 @app.post("/admin/notificacoes/broadcast", tags=["admin"])
 async def broadcast_notificacao(

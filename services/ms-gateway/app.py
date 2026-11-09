@@ -32,6 +32,7 @@ ROUTE_MAP = {
     "/usuarios": "auth",
     "/perfis": "auth",
     "/enderecos": "auth",
+    "/clientes": "auth",  # Client-facing auth endpoints
     "/categorias": "catalogo",
     "/produtos": "catalogo",
     "/opcoes": "catalogo",

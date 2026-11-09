@@ -560,3 +560,300 @@ async def delete_endereco(
 
     await db.delete(endereco)
     await db.commit()
+
+
+# =============================================
+# CLIENTE ENDPOINTS (Frontend Compatibility)
+# =============================================
+
+@app.post("/clientes/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, tags=["clientes"])
+async def cliente_register(request: RegisterRequest, db: AsyncSession = Depends(get_db)):
+    """Register a new client user (alias for /auth/register)."""
+    # Check if email exists
+    existing = await db.execute(select(Usuario).where(Usuario.email == request.email))
+    if existing.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already registered"
+        )
+
+    # Get cliente perfil
+    perfil_result = await db.execute(select(Perfil).where(Perfil.nome == "cliente"))
+    perfil = perfil_result.scalar_one_or_none()
+    if not perfil:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Default perfil not configured"
+        )
+
+    # Create user
+    usuario = Usuario(
+        perfil_id=perfil.id,
+        nome=request.nome,
+        email=request.email,
+        telefone=request.telefone,
+        senha_hash=hash_password(request.senha),
+        ativo=True
+    )
+    db.add(usuario)
+    await db.commit()
+    await db.refresh(usuario)
+    await db.refresh(usuario, ["perfil"])
+
+    tokens = create_token_pair(usuario.id, usuario.email, usuario.perfil.nome)
+
+    return TokenResponse(
+        access_token=tokens["access_token"],
+        token_type=tokens["token_type"],
+        expires_in=tokens["expires_in"],
+        usuario=UsuarioResponse.model_validate(usuario)
+    )
+
+
+@app.post("/clientes/login", response_model=TokenResponse, tags=["clientes"])
+async def cliente_login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
+    """Authenticate client user and return JWT tokens (alias for /auth/login)."""
+    result = await db.execute(
+        select(Usuario).options(selectinload(Usuario.perfil))
+        .where(Usuario.email == request.email)
+    )
+    usuario = result.scalar_one_or_none()
+
+    if not usuario or not verify_password(request.senha, usuario.senha_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
+    if not usuario.ativo:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is disabled"
+        )
+
+    # Only allow cliente perfil for this endpoint
+    if usuario.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied. Use admin login for staff accounts."
+        )
+
+    # Update last login
+    from datetime import datetime, timezone
+    usuario.ultimo_login = datetime.now(timezone.utc)
+    await db.commit()
+
+    tokens = create_token_pair(usuario.id, usuario.email, usuario.perfil.nome)
+
+    return TokenResponse(
+        access_token=tokens["access_token"],
+        token_type=tokens["token_type"],
+        expires_in=tokens["expires_in"],
+        usuario=UsuarioResponse.model_validate(usuario)
+    )
+
+
+@app.get("/clientes/verify", response_model=UsuarioResponse, tags=["clientes"])
+async def cliente_verify(current_user: Usuario = Depends(get_current_user)):
+    """Verify client token and return user info (alias for /auth/me)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+    return UsuarioResponse.model_validate(current_user)
+
+
+@app.get("/clientes/perfil", response_model=UsuarioResponse, tags=["clientes"])
+async def get_cliente_perfil(current_user: Usuario = Depends(get_current_user)):
+    """Get client profile (alias for /auth/me)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+    return UsuarioResponse.model_validate(current_user)
+
+
+@app.put("/clientes/perfil", response_model=UsuarioResponse, tags=["clientes"])
+async def update_cliente_perfil(
+    update_data: UsuarioUpdate,
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Update client profile (alias for /auth/me PUT)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    if update_data.nome is not None:
+        current_user.nome = update_data.nome
+    if update_data.telefone is not None:
+        current_user.telefone = update_data.telefone
+
+    await db.commit()
+    await db.refresh(current_user, ["perfil"])
+    return UsuarioResponse.model_validate(current_user)
+
+
+@app.put("/clientes/senha", tags=["clientes"])
+async def alterar_cliente_senha(
+    current_password: str,
+    new_password: str,
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Change client password (alias for /auth/change-password)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    if not verify_password(current_password, current_user.senha_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+
+    if len(new_password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 6 characters"
+        )
+
+    current_user.senha_hash = hash_password(new_password)
+    await db.commit()
+
+    return {"message": "Password changed successfully"}
+
+
+@app.get("/clientes/enderecos", response_model=List[EnderecoResponse], tags=["clientes"])
+async def get_cliente_enderecos(
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """List client addresses (alias for /usuarios/{id}/enderecos)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    result = await db.execute(
+        select(Endereco).where(Endereco.usuario_id == current_user.id)
+        .order_by(Endereco.principal.desc(), Endereco.created_at.desc())
+    )
+    enderecos = result.scalars().all()
+    return [EnderecoResponse.model_validate(e) for e in enderecos]
+
+
+@app.post("/clientes/enderecos", response_model=EnderecoResponse, status_code=status.HTTP_201_CREATED, tags=["clientes"])
+async def criar_cliente_endereco(
+    endereco_data: EnderecoCreate,
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Create address for client (alias for /usuarios/{id}/enderecos POST)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    # If this is principal, unset others
+    if endereco_data.principal:
+        from sqlalchemy import update
+        await db.execute(
+            update(Endereco)
+            .where(Endereco.usuario_id == current_user.id, Endereco.principal == True)
+            .values(principal=False)
+        )
+
+    endereco = Endereco(
+        usuario_id=current_user.id,
+        **endereco_data.model_dump()
+    )
+    db.add(endereco)
+    await db.commit()
+    await db.refresh(endereco)
+
+    return EnderecoResponse.model_validate(endereco)
+
+
+@app.put("/clientes/enderecos/{endereco_id}", response_model=EnderecoResponse, tags=["clientes"])
+async def atualizar_cliente_endereco(
+    endereco_id: int,
+    update_data: EnderecoUpdate,
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Update client address (alias for /enderecos/{id} PUT)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    result = await db.execute(select(Endereco).where(Endereco.id == endereco_id))
+    endereco = result.scalar_one_or_none()
+    if not endereco:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Address not found"
+        )
+
+    if endereco.usuario_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    # Handle principal flag
+    if update_data.principal is True:
+        from sqlalchemy import update
+        await db.execute(
+            update(Endereco)
+            .where(Endereco.usuario_id == current_user.id, Endereco.principal == True)
+            .values(principal=False)
+        )
+
+    for field, value in update_data.model_dump(exclude_unset=True).items():
+        setattr(endereco, field, value)
+
+    await db.commit()
+    await db.refresh(endereco)
+    return EnderecoResponse.model_validate(endereco)
+
+
+@app.delete("/clientes/enderecos/{endereco_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["clientes"])
+async def excluir_cliente_endereco(
+    endereco_id: int,
+    current_user: Usuario = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete client address (alias for /enderecos/{id} DELETE)."""
+    if current_user.perfil.nome != PerfilNome.CLIENTE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    result = await db.execute(select(Endereco).where(Endereco.id == endereco_id))
+    endereco = result.scalar_one_or_none()
+    if not endereco:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Address not found"
+        )
+
+    if endereco.usuario_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    await db.delete(endereco)
+    await db.commit()
