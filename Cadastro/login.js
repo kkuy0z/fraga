@@ -177,12 +177,18 @@ async function handleSubmit(e) {
     } catch (error) {
         console.error('Erro no login:', error);
 
-        if (error.message.includes('E-mail ou senha inválidos') || error.message.includes('Credenciais inválidas')) {
-            marcarErro('senha', 'E-mail ou senha incorretos. Tente novamente.');
-        } else if (error.message.includes('conta não confirmada') || error.message.includes('não verificada')) {
+        const msg = error.message || 'Erro ao entrar. Tente novamente.';
+
+        if (msg.includes('E-mail ou senha inválidos') || msg.includes('Credenciais inválidas') || msg.includes('Senha incorreta')) {
+            marcarErro('senha', 'E-mail ou senha incorretos. Verifique suas credenciais.');
+        } else if (msg.includes('conta não confirmada') || msg.includes('não verificada') || msg.includes('não confirmada')) {
             showToast('Sua conta precisa ser verificada. Verifique seu e-mail.', 'warning');
+        } else if (msg.includes('desativada') || msg.includes('bloqueada') || msg.includes('inativa')) {
+            showToast('Esta conta foi desativada. Entre em contato com o suporte.', 'error');
         } else {
-            showToast(error.message || 'Erro ao entrar. Tente novamente.', 'error');
+            // Mostrar erro genérico mas também marcar o campo de senha
+            showToast(msg, 'error');
+            marcarErro('senha', msg);
         }
     } finally {
         hideLoading();

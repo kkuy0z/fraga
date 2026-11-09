@@ -40,6 +40,14 @@ function atualizarContadorCarrinho() {
 async function verificarStatusEstabelecimento() {
     if (!statusBadge) return;
 
+    // Mostrar estado inicial de verificação apenas na primeira vez
+    const isFirstCheck = statusBadge.classList.contains('hidden') || statusBadge.classList.contains('verificando');
+    if (isFirstCheck) {
+        statusBadge.classList.remove('hidden');
+        statusBadge.classList.add('verificando');
+        statusText.textContent = 'Verificando horário de funcionamento...';
+    }
+
     try {
         const response = await api.getStatusFuncionamento();
 
@@ -52,7 +60,7 @@ async function verificarStatusEstabelecimento() {
             statusIndicator.style.backgroundColor = '#4caf50';
         } else {
             statusBadge.classList.add('fechado');
-            const horarioAtual = response.horario_atual ? ` (${response.horario_atual})` : '';
+            const horarioAtual = response.horario_atual ? ` - Abre ${response.horario_atual}` : '';
             statusText.textContent = `FECHADO${horarioAtual}`;
             statusIndicator.style.backgroundColor = '#ff6b6b';
         }
@@ -60,7 +68,7 @@ async function verificarStatusEstabelecimento() {
         console.error('Erro ao verificar status:', error);
         statusBadge.classList.remove('hidden');
         statusBadge.classList.add('verificando');
-        statusText.textContent = 'Verificando status...';
+        statusText.textContent = 'Não foi possível verificar o status. Tente recarregar a página.';
     }
 }
 
