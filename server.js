@@ -36,8 +36,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/clientes', clientesRouter);
-app.use('/api/categorias', catalogoRouter);
-app.use('/api/produtos', catalogoRouter); // produtos routes are in catalogoRouter
+app.use('/api', catalogoRouter);
 app.use('/api/pedidos', pedidosRouter);
 app.use('/api/horarios', horariosRouter);
 app.use('/api/entrega', entregaRouter);
