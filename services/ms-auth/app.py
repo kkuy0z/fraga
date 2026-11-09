@@ -18,6 +18,28 @@ from shared.schemas import (
     LoginRequest, TokenResponse, RegisterRequest,
     PaginationParams, PaginatedResponse, ErrorDetail
 )
+from pydantic import BaseModel
+from typing import Optional
+
+
+# Frontend-compatible response models
+class ClienteTokenResponse(BaseModel):
+    """Response format expected by frontend (cadastro.js, login.js)"""
+    token: str
+    cliente: UsuarioResponse
+
+
+class ClienteLoginRequest(BaseModel):
+    email: str
+    senha: str
+
+
+class ClienteRegisterRequest(BaseModel):
+    nome: str
+    email: str
+    telefone: Optional[str] = None
+    senha: str
+    termosAceitos: bool = True
 from shared.auth import (
     hash_password, verify_password, create_token_pair,
     decode_token, verify_token_permissions,
@@ -566,9 +588,9 @@ async def delete_endereco(
 # CLIENTE ENDPOINTS (Frontend Compatibility)
 # =============================================
 
-@app.post("/clientes/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, tags=["clientes"])
-async def cliente_register(request: RegisterRequest, db: AsyncSession = Depends(get_db)):
-    """Register a new client user (alias for /auth/register)."""
+@app.post("/clientes/register", response_model=ClienteTokenResponse, status_code=status.HTTP_201_CREATED, tags=["clientes"])
+async def cliente_register(request: ClienteRegisterRequest, db: AsyncSession = Depends(get_db)):
+    """Register a new client user (frontend compatible)."""
     # Check if email exists
     existing = await db.execute(select(Usuario).where(Usuario.email == request.email))
     if existing.scalar_one_or_none():
@@ -576,6 +598,15 @@ async def cliente_register(request: RegisterRequest, db: AsyncSession = Depends(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already registered"
         )
+
+    # Check if telefone exists (if provided)
+    if request.telefone:
+        existing_tel = await db.execute(select(Usuario).where(Usuario.telefone == request.telefone))
+        if existing_tel.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Telefone already registered"
+            )
 
     # Get cliente perfil
     perfil_result = await db.execute(select(Perfil).where(Perfil.nome == "cliente"))
@@ -602,17 +633,15 @@ async def cliente_register(request: RegisterRequest, db: AsyncSession = Depends(
 
     tokens = create_token_pair(usuario.id, usuario.email, usuario.perfil.nome)
 
-    return TokenResponse(
-        access_token=tokens["access_token"],
-        token_type=tokens["token_type"],
-        expires_in=tokens["expires_in"],
-        usuario=UsuarioResponse.model_validate(usuario)
+    return ClienteTokenResponse(
+        token=tokens["access_token"],
+        cliente=UsuarioResponse.model_validate(usuario)
     )
 
 
-@app.post("/clientes/login", response_model=TokenResponse, tags=["clientes"])
-async def cliente_login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
-    """Authenticate client user and return JWT tokens (alias for /auth/login)."""
+@app.post("/clientes/login", response_model=ClienteTokenResponse, tags=["clientes"])
+async def cliente_login(request: ClienteLoginRequest, db: AsyncSession = Depends(get_db)):
+    """Authenticate client user and return JWT tokens (frontend compatible)."""
     result = await db.execute(
         select(Usuario).options(selectinload(Usuario.perfil))
         .where(Usuario.email == request.email)
@@ -645,11 +674,9 @@ async def cliente_login(request: LoginRequest, db: AsyncSession = Depends(get_db
 
     tokens = create_token_pair(usuario.id, usuario.email, usuario.perfil.nome)
 
-    return TokenResponse(
-        access_token=tokens["access_token"],
-        token_type=tokens["token_type"],
-        expires_in=tokens["expires_in"],
-        usuario=UsuarioResponse.model_validate(usuario)
+    return ClienteTokenResponse(
+        token=tokens["access_token"],
+        cliente=UsuarioResponse.model_validate(usuario)
     )
 
 
