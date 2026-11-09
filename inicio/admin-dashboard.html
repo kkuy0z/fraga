@@ -177,6 +177,17 @@
 
     <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-dashboard.js"></script>
+<<<<<<< HEAD
+=======
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/inicio/service-worker.js')
+            .catch(error => console.error('[SW] Erro no registro:', error));
+        });
+      }
+    </script>
+>>>>>>> 814c537953c3216b9cdd4b6a1e530e43aae52a9e
 </body>
 
 </html>

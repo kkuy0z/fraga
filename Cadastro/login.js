@@ -83,8 +83,9 @@ function initPendingLinks() {
 
 /* ---------- Verificar Autenticação (Header) ---------- */
 async function verificarAuth() {
-    const clienteToken = localStorage.getItem('cliente_token');
-    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || 'null');
+    // Verificar localStorage primeiro, depois sessionStorage (para "lembrar-me" não marcado)
+    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
+    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
 
