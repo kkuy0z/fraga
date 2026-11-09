@@ -172,12 +172,17 @@ async function verificarAuth() {
     const userName = document.getElementById('userName');
     const userAvatar = document.getElementById('userAvatar');
     const adminLink = document.getElementById('adminLink');
+    const loginLink = document.getElementById('loginLink');
 
     if (clienteUser) {
         if (userButton) userButton.style.display = 'flex';
         if (userName) userName.textContent = clienteUser.nome;
         if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
         if (adminLink) adminLink.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'none';
+    } else {
+        if (userButton) userButton.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'inline-flex';
     }
 }
 
