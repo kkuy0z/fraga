@@ -177,14 +177,6 @@
 
     <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-dashboard.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/inicio/service-worker.js')
-            .catch(error => console.error('[SW] Erro no registro:', error));
-        });
-      }
-    </script>
 </body>
 
 </html>
