@@ -27,11 +27,11 @@
 
             <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
                 <a href="/inicio/index.html">INÍCIO</a>
-                <a href="/inicio//inicio/cardapio.html">CARDÁPIO</a>
-                <a href="/inicio/inicio/index.html#sobre">SOBRE</a>
-                <a href="/inicio/inicio/index.html#espaco">ESPAÇO</a>
-                <a href="/inicio/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
-                <a href="/inicio/inicio/index.html#contato">CONTATO</a>
+                <a href="/inicio/cardapio.html">CARDÁPIO</a>
+                <a href="/inicio/index.html#sobre">SOBRE</a>
+                <a href="/inicio/index.html#espaco">ESPAÇO</a>
+                <a href="/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
+                <a href="/inicio/index.html#contato">CONTATO</a>
             </nav>
 
             <div class="header-actions">
@@ -51,7 +51,7 @@
                         <span id="userName">Minha Conta</span>
                     </button>
                     <div class="user-dropdown" id="userDropdown" role="menu">
-                        <a href="/inicio//inicio/meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
+                        <a href="/inicio/meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
                         <a href="/inicio/perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
                         <div class="user-dropdown-divider"></div>
                         <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">Sair</button>
@@ -60,7 +60,7 @@
 
                 <a href="/Cadastro/login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
 
-                <a href="/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
@@ -358,7 +358,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
+          navigator.serviceWorker.register('/inicio/service-worker.js')
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }

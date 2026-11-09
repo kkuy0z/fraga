@@ -353,26 +353,9 @@
     <script src="script.js"></script>
     <script type="module" src="js/index.js"></script>
     <script>
-      // Service Worker Registration
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-              console.log('[SW] Registrado com sucesso:', registration.scope);
-
-              // Verificar atualizações
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // Nova versão disponível
-                    if (confirm('Nova versão disponível. Atualizar?')) {
-                      window.location.reload();
-                    }
-                  }
-                });
-              });
-            })
+          navigator.serviceWorker.register('/inicio/service-worker.js')
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
