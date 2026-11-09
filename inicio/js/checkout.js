@@ -566,12 +566,14 @@ async function verificarAuth() {
     const userAvatar = document.getElementById('userAvatar');
     const logoutBtn = document.getElementById('logoutBtn');
     const adminLink = document.getElementById('adminLink');
+    const loginLink = document.getElementById('loginLink');
 
     if (clienteToken && clienteUser) {
         userButton.style.display = 'flex';
         userName.textContent = clienteUser.nome;
         userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
         adminLink.style.display = 'none';
+        loginLink.style.display = 'none';
 
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('cliente_token');
@@ -588,6 +590,7 @@ async function verificarAuth() {
         userName.textContent = user.nome;
         userAvatar.textContent = user.nome.charAt(0).toUpperCase();
         adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
+        loginLink.style.display = 'none';
 
         logoutBtn.addEventListener('click', () => {
             api.clearAuth();
@@ -597,5 +600,6 @@ async function verificarAuth() {
     } else {
         userButton.style.display = 'none';
         adminLink.style.display = 'none';
+        loginLink.style.display = 'inline-flex';
     }
 }
