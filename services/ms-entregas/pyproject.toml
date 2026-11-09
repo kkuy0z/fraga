@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ms-entregas"
+version = "1.0.0"
+description = "Entregas microservice for Fraga Lanches"
+requires-python = ">=3.12"
+dependencies = [
+    "fraga-shared @ file:///app/shared",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.26.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
