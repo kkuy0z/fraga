@@ -121,6 +121,8 @@ async function verificarAuth() {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('cliente_token');
             localStorage.removeItem('cliente_user');
+            sessionStorage.removeItem('cliente_token');
+            sessionStorage.removeItem('cliente_user');
             showToast('Logout realizado com sucesso', 'success');
             setTimeout(() => window.location.reload(), 1000);
         });
