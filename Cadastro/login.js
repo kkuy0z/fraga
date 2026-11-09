@@ -1,135 +1,236 @@
-/* Tela de login: integração com backend via API */
+/**
+ * Login de Cliente - Fraga Lanches
+ * Integração com backend via API
+ */
 import api from '../inicio/js/api.js';
 import { showToast, showLoading, hideLoading } from '../inicio/js/utils.js';
 
-const $ = (s, c = document) => c.querySelector(s);
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
 
-/* ---------- Menu mobile (mesmo comportamento da página inicial) ---------- */
-const header = $('.header'), botao = $('#menu-mobile'), nav = $('#nav');
-function menu(aberto) {
-  nav.classList.toggle('active', aberto);
-  botao.setAttribute('aria-expanded', aberto);
-  botao.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
-}
-botao.addEventListener('click', () => menu(!nav.classList.contains('active')));
-nav.addEventListener('click', e => { if (e.target.closest('a')) menu(false); });
-document.addEventListener('click', e => { if (!header.contains(e.target)) menu(false); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
+/* ---------- Menu Mobile ---------- */
+function initMobileMenu() {
+    const header = $('.header-fixed');
+    const btn = $('#menu-mobile');
+    const nav = $('#navMenu');
 
-/* ---------- Regras de validação ---------- */
-const REGRAS = {
-  email: v => !v.trim() ? 'Informe seu e-mail.' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Digite um e-mail válido, como nome@exemplo.com.',
-  senha: v => !v ? 'Informe sua senha.' : ''
-};
+    if (!btn || !nav) return;
 
-const form = $('#form-login'), sucesso = $('#sucesso');
-const campos = Object.keys(REGRAS).map(id => $('#' + id));
-
-function validar(el) {
-  const caixa = el.closest('.campo');
-  const msg = REGRAS[el.id](el.value, form, el);
-  caixa.classList.toggle('invalido', !!msg);
-  caixa.classList.toggle('valido', !msg);
-  el.setAttribute('aria-invalid', !!msg);
-  $('.erro', caixa).textContent = msg;
-  return !msg;
-}
-
-/* Valida ao sair do campo; depois de tocado, revalida enquanto digita. */
-campos.forEach(el => {
-  el.addEventListener('blur', () => { if (el.value || el.dataset.tocado) { el.dataset.tocado = 1; validar(el); } });
-  el.addEventListener('input', () => {
-    if (el.dataset.tocado) validar(el);
-    sucesso.hidden = true;
-  });
-});
-
-/* Links "Esqueci a senha" ainda não têm página: evita "pular" para o topo. */
-document.querySelectorAll('a[data-pendente]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
-
-/* ---------- Mostrar / ocultar senha ---------- */
-document.querySelectorAll('.ver-senha').forEach(b => b.addEventListener('click', () => {
-  const input = $('#' + b.dataset.alvo), mostrar = input.type === 'password';
-  input.type = mostrar ? 'text' : 'password';
-  b.setAttribute('aria-pressed', mostrar);
-  b.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
-  $('use', b).setAttribute('href', mostrar ? '#i-eye-off' : '#i-eye');
-}));
-
-/* ---------- Verificar se já está logado ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('cliente_token');
-  if (token) {
-    // Verificar se token é válido
-    api.clienteVerify()
-      .then(() => {
-        window.location.href = '/inicio/meus-pedidos.html';
-      })
-      .catch(() => {
-        // Token inválido, limpar e ficar na página de login
-        localStorage.removeItem('cliente_token');
-        localStorage.removeItem('cliente_user');
-      });
-  }
-});
-
-/* ---------- Envio para Backend ---------- */
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  campos.forEach(el => { el.dataset.tocado = 1; });
-  const invalidos = campos.filter(el => !validar(el));
-  if (invalidos.length) { sucesso.hidden = true; invalidos[0].focus(); return; }
-
-  const btnSubmit = form.querySelector('.cad-enviar');
-  const btnText = btnSubmit.innerHTML;
-
-  // Desabilitar botão e mostrar loading
-  btnSubmit.disabled = true;
-  btnSubmit.innerHTML = '<svg class="cad-ic" aria-hidden="true"><use href="#i-login" /></svg>Entrando...';
-  showLoading('Verificando credenciais...');
-
-  try {
-    const dados = {
-      email: form.elements.email.value.trim(),
-      senha: form.elements.senha.value,
-      lembrar: form.elements.lembrar.checked
+    const toggle = (open) => {
+        nav.classList.toggle('active', open);
+        btn.setAttribute('aria-expanded', open);
+        btn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
     };
 
-    // Chamar API do backend via módulo api
-    const data = await api.clienteLogin(dados);
+    btn.addEventListener('click', () => toggle(!nav.classList.contains('active')));
+    nav.addEventListener('click', e => e.target.closest('a') && toggle(false));
+    document.addEventListener('click', e => !header?.contains(e.target) && toggle(false));
+    document.addEventListener('keydown', e => e.key === 'Escape' && toggle(false));
+}
 
-    // Sucesso! Salvar token e dados do cliente
-    localStorage.setItem('cliente_token', data.token);
-    localStorage.setItem('cliente_user', JSON.stringify(data.cliente));
-
-    // Mostrar sucesso
-    sucesso.hidden = false;
-    sucesso.focus();
-    showToast('Login realizado com sucesso! Bem-vindo de volta!', 'success');
-
-    // Redirecionar após 1.5 segundos
-    setTimeout(() => {
-      window.location.href = '/inicio/meus-pedidos.html';
-    }, 1500);
-
-  } catch (error) {
-    console.error('Erro no login:', error);
-    // Tratar erros específicos do backend
-    if (error.message.includes('E-mail não encontrado') || error.message.includes('Senha incorreta') || error.message.includes('Credenciais inválidas')) {
-      const caixa = $('#email').closest('.campo');
-      caixa.classList.add('invalido');
-      caixa.classList.remove('valido');
-      $('#email').setAttribute('aria-invalid', 'true');
-      $('.erro', caixa).textContent = 'E-mail ou senha incorretos.';
-      $('#email').focus();
-    } else if (error.message.includes('Conta desativada')) {
-      showToast('Esta conta foi desativada. Entre em contato com o suporte.', 'error');
-    } else {
-      showToast(error.message || 'Erro ao entrar. Tente novamente.', 'error');
+/* ---------- Regras de Validação ---------- */
+const REGRAS = {
+    email: v => {
+        const val = v.trim();
+        if (!val) return 'Informe seu e-mail.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) return 'Digite um e-mail válido (ex: nome@exemplo.com).';
+        return '';
+    },
+    senha: v => {
+        if (!v) return 'Digite sua senha.';
+        return '';
     }
-  } finally {
-    hideLoading();
-    btnSubmit.disabled = false;
-    btnSubmit.innerHTML = btnText;
-  }
+};
+
+/* ---------- Validação de Campo ---------- */
+function validarCampo(el, form) {
+    const caixa = el.closest('.campo');
+    const msg = REGRAS[el.id](el.value, form, el);
+    const invalido = !!msg;
+
+    caixa.classList.toggle('invalido', invalido);
+    caixa.classList.toggle('valido', !invalido);
+    el.setAttribute('aria-invalid', invalido);
+    $('.erro', caixa).textContent = msg;
+
+    // Ocultar ajuda quando inválido
+    if (invalido) {
+        const ajuda = $('.ajuda', caixa);
+        if (ajuda) ajuda.style.display = 'none';
+    }
+
+    return !invalido;
+}
+
+/* ---------- Mostrar/Ocultar Senha ---------- */
+function initPasswordToggle() {
+    $$('.ver-senha').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = $('#' + btn.dataset.alvo);
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', show);
+            btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+            $('use', btn).setAttribute('href', show ? '#i-eye-off' : '#i-eye');
+        });
+    });
+}
+
+/* ---------- Links Pendentes (Esqueci a senha) ---------- */
+function initPendingLinks() {
+    $$('a[data-pendente]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+}
+
+/* ---------- Verificar Autenticação (Header) ---------- */
+async function verificarAuth() {
+    const clienteToken = localStorage.getItem('cliente_token');
+    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || 'null');
+    const token = localStorage.getItem('auth_token');
+    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+
+    const userButton = $('#userButton');
+    const userName = $('#userName');
+    const userAvatar = $('#userAvatar');
+    const adminLink = $('#adminLink');
+    const loginLink = $('#loginLink');
+
+    if (clienteToken && clienteUser) {
+        if (userButton) userButton.style.display = 'flex';
+        if (userName) userName.textContent = clienteUser.nome;
+        if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
+        if (adminLink) adminLink.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'none';
+    } else if (token && user) {
+        const payload = decodificarJWT(token);
+        const isAdmin = payload && payload.role === 'administrador';
+        if (userButton) userButton.style.display = 'flex';
+        if (userName) userName.textContent = user.nome;
+        if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
+        if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
+        if (loginLink) loginLink.style.display = 'none';
+    } else {
+        if (userButton) userButton.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'inline-flex';
+    }
+}
+
+function decodificarJWT(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        return JSON.parse(jsonPayload);
+    } catch {
+        return null;
+    }
+}
+
+/* ---------- Submit do Formulário ---------- */
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const btnSubmit = form.querySelector('.cad-enviar');
+    const originalHTML = btnSubmit.innerHTML;
+
+    // Marcar todos como tocados e validar
+    $$('.campo input, .campo select', form).forEach(el => el.dataset.tocado = '1');
+    const campos = Object.keys(REGRAS).map(id => $('#' + id));
+    const invalidos = campos.filter(el => !validarCampo(el, form));
+
+    if (invalidos.length) {
+        invalidos[0].focus();
+        return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<svg class="cad-ic" aria-hidden="true"><use href="#i-lock" /></svg>Entrando...';
+    showLoading('Entrando na sua conta...');
+
+    try {
+        const email = form.elements.email.value.trim();
+        const senha = form.elements.senha.value;
+        const lembrar = form.elements.lembrar?.checked || false;
+
+        const data = await api.clienteLogin(email, senha);
+
+        // Sucesso - salvar token e redirecionar
+        localStorage.setItem('cliente_token', data.token);
+        localStorage.setItem('cliente_user', JSON.stringify(data.cliente));
+
+        // Se não marcar "lembrar-me", token expira ao fechar o navegador (sessionStorage)
+        if (!lembrar) {
+            sessionStorage.setItem('cliente_token', data.token);
+            sessionStorage.setItem('cliente_user', JSON.stringify(data.cliente));
+            localStorage.removeItem('cliente_token');
+            localStorage.removeItem('cliente_user');
+        }
+
+        showToast(`Bem-vindo de volta, ${data.cliente.nome}!`, 'success');
+
+        // Redirecionar para página anterior ou meus-pedidos
+        const redirect = sessionStorage.getItem('redirectAfterLogin') || '/inicio/meus-pedidos.html';
+        sessionStorage.removeItem('redirectAfterLogin');
+        setTimeout(() => window.location.href = redirect, 1000);
+
+    } catch (error) {
+        console.error('Erro no login:', error);
+
+        if (error.message.includes('E-mail ou senha inválidos') || error.message.includes('Credenciais inválidas')) {
+            marcarErro('senha', 'E-mail ou senha incorretos. Tente novamente.');
+        } else if (error.message.includes('conta não confirmada') || error.message.includes('não verificada')) {
+            showToast('Sua conta precisa ser verificada. Verifique seu e-mail.', 'warning');
+        } else {
+            showToast(error.message || 'Erro ao entrar. Tente novamente.', 'error');
+        }
+    } finally {
+        hideLoading();
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = originalHTML;
+    }
+}
+
+function marcarErro(campoId, msg) {
+    const caixa = $('#' + campoId).closest('.campo');
+    caixa.classList.add('invalido');
+    caixa.classList.remove('valido');
+    $('#' + campoId).setAttribute('aria-invalid', 'true');
+    $('.erro', caixa).textContent = msg;
+    $('#' + campoId).focus();
+}
+
+/* ---------- Validação em Tempo Real ---------- */
+function initLiveValidation(form) {
+    const campos = Object.keys(REGRAS).map(id => $('#' + id));
+
+    campos.forEach(el => {
+        // Validar ao sair do campo (blur)
+        el.addEventListener('blur', () => {
+            if (el.value || el.dataset.tocado) {
+                el.dataset.tocado = '1';
+                validarCampo(el, form);
+            }
+        });
+
+        // Revalidar enquanto digita (após tocar)
+        el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => {
+            if (el.dataset.tocado || el.type === 'checkbox') {
+                validarCampo(el, form);
+            }
+        });
+    });
+}
+
+/* ---------- Inicialização ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+    const form = $('#form-login');
+
+    initMobileMenu();
+    initPasswordToggle();
+    initPendingLinks();
+    initLiveValidation(form);
+    verificarAuth();
+
+    form.addEventListener('submit', handleSubmit);
 });
