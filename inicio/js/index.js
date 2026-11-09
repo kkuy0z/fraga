@@ -87,6 +87,7 @@ async function verificarAuth() {
     const userAvatar = document.getElementById('userAvatar');
     const logoutBtn = document.getElementById('logoutBtn');
     const adminLink = document.getElementById('adminLink');
+    const loginLink = document.getElementById('loginLink');
 
     if (clienteToken && clienteUser) {
         // Cliente logado
@@ -94,6 +95,7 @@ async function verificarAuth() {
         if (userName) userName.textContent = clienteUser.nome;
         if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
         if (adminLink) adminLink.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'none';
     } else if (token && user) {
         // Admin logado - verificar role
         const payload = decodificarJWT(token);
@@ -103,10 +105,12 @@ async function verificarAuth() {
         if (userName) userName.textContent = user.nome;
         if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
         if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
+        if (loginLink) loginLink.style.display = 'none';
     } else {
         // Não logado
         if (userButton) userButton.style.display = 'none';
         if (adminLink) adminLink.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'inline-flex';
     }
 }
 

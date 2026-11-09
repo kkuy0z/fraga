@@ -76,8 +76,8 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Serve static files - serve built React app from dist/frontend
-app.use(express.static(join(__dirname, 'dist', 'frontend')));
+// Serve static files - serve frontend from inicio folder
+app.use(express.static(join(__dirname, 'inicio')));
 app.use('/img', express.static(join(__dirname, 'img')));
 
 // Health check
@@ -119,7 +119,7 @@ app.use('/api/*', (req, res) => {
 
 // Serve frontend for non-API routes (SPA fallback)
 app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'frontend', 'index.html'));
+    res.sendFile(join(__dirname, 'inicio', 'index.html'));
 });
 
 app.listen(PORT, () => {
