@@ -12,9 +12,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+=======
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </head>
 
 <body>
@@ -23,8 +32,13 @@
             <!-- Logo -->
             <div class="text-center" style="margin-bottom: var(--space-8);">
                 <a href="/inicio/index.html" style="display: inline-block;">
+<<<<<<< HEAD
+                    <img src="/img/logo.png" alt="Fraga Lanches" style="height: 60px;" class="logo-img">
+                    <span style="display: none; font-size: 28px; font-weight: 700; color: var(--primary);">Fraga Lanches</span>
+=======
                     <img src="/img/logo.png" alt="Fraga Lanches" style="height: 60px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
                     <span style="display: none; font-size: clamp(1.5rem, 3vw, 1.75rem); font-weight: 700; color: var(--color-accent); font-family: var(--font-title);">Fraga Lanches</span>
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
                 </a>
             </div>
 
@@ -63,7 +77,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-6);" id="btnLogin">
-                        <svg class="btn-icon" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-login" /></svg>
                         Entrar
                     </button>
                 </form>
@@ -137,14 +151,27 @@
 
     <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-login.js"></script>
+<<<<<<< HEAD
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/inicio/service-worker.js')
+          navigator.serviceWorker.register('/service-worker.js')
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>
