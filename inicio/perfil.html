@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
@@ -21,17 +27,17 @@
         <div class="header-inner">
             <div class="logo">
                 <a href="/inicio/index.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
+                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" class="logo-img">
                 </a>
             </div>
 
             <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
                 <a href="/inicio/index.html">INÍCIO</a>
                 <a href="/inicio/cardapio.html">CARDÁPIO</a>
-                <a href="/inicio/inicio/index.html#sobre">SOBRE</a>
-                <a href="/inicio/inicio/index.html#espaco">ESPAÇO</a>
-                <a href="/inicio/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
-                <a href="/inicio/inicio/index.html#contato">CONTATO</a>
+                <a href="/inicio/index.html#sobre">SOBRE</a>
+                <a href="/inicio/index.html#espaco">ESPAÇO</a>
+                <a href="/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
+                <a href="/inicio/index.html#contato">CONTATO</a>
             </nav>
 
             <div class="header-actions">
@@ -58,9 +64,9 @@
                     </div>
                 </div>
 
-                <a href="/Cadastro/login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
 
-                <a href="/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
@@ -311,6 +317,16 @@
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
 </body>
 

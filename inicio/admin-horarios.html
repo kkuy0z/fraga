@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
@@ -21,7 +27,7 @@
         <div class="header-inner">
             <div class="logo">
                 <a href="/inicio/admin-dashboard.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Admin" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <img src="/img/logo.png" alt="Fraga Lanches Admin" class="logo-img">
                     <span style="display: none; font-size: 20px; font-weight: 700; color: var(--primary);">Fraga Admin</span>
                 </a>
             </div>
@@ -107,7 +113,7 @@
                             <span id="dropdownUserRole" class="badge badge-info">administrador</span>
                         </div>
                         <div class="user-dropdown-divider"></div>
-                        <a href="/inicio/index.html" class="user-dropdown-item" role="menuitem" target="_blank">
+                        <a href="/inicio/index.html" class="user-dropdown-item" role="menuitem" target="_blank" rel="noopener noreferrer">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right: 8px;">
                                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                 <polyline points="15 3 21 3 21 9"></polyline>
@@ -305,6 +311,16 @@
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
 </body>
 

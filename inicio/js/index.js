@@ -64,17 +64,9 @@ async function verificarStatusEstabelecimento() {
     }
 }
 
-// Função para decodificar JWT e obter payload
-function decodificarJWT(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        return null;
-    }
-}
+// NOTA: Removida a função decodificarJWT insegura.
+// A validação de token e role deve ser feita no backend via /auth/verify ou /clientes/verify
+// O frontend apenas verifica a presença do token no localStorage para exibir UI.
 
 async function verificarAuth() {
     const token = localStorage.getItem('auth_token');
@@ -97,14 +89,13 @@ async function verificarAuth() {
         if (adminLink) adminLink.style.display = 'none';
         if (loginLink) loginLink.style.display = 'none';
     } else if (token && user) {
-        // Admin logado - verificar role
-        const payload = decodificarJWT(token);
-        const isAdmin = payload && payload.role === 'administrador';
-
+        // Admin logado - a verificação de role deve ser feita no backend
+        // Por enquanto, mostramos o link admin se houver token de admin
+        // O backend validará o role nas requisições administrativas
         if (userButton) userButton.style.display = 'flex';
         if (userName) userName.textContent = user.nome;
         if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
+        if (adminLink) adminLink.style.display = 'inline-flex';
         if (loginLink) loginLink.style.display = 'none';
     } else {
         // Não logado
