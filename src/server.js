@@ -6,19 +6,19 @@ import helmet from 'helmet';
 import { fileURLToPath } from 'url';
 import { join, resolve } from 'path';
 
-import authRoutes from './routes/auth.js';
-import clientesRoutes from './routes/clientes.js';
-import categoriasRoutes from './routes/categorias.js';
-import produtosRoutes from './routes/produtos.js';
-import horariosRoutes from './routes/horarios.js';
-import entregaRoutes from './routes/entrega.js';
-import entregasRoutes from './routes/entregas.js';
-import pagamentosRoutes from './routes/pagamentos.js';
-import pedidosRoutes from './routes/pedidos.js';
-import notificacoesRoutes from './routes/notificacoes.js';
-import avaliacoesRoutes from './routes/avaliacoes.js';
-import relatoriosRoutes from './routes/relatorios.js';
-import { apiLimiter } from './middleware/rateLimiter.js';
+import authRoutes from './src/routes/auth.js';
+import clientesRoutes from './src/routes/clientes.js';
+import categoriasRoutes from './src/routes/categorias.js';
+import produtosRoutes from './src/routes/produtos.js';
+import horariosRoutes from './src/routes/horarios.js';
+import entregaRoutes from './src/routes/entrega.js';
+import entregasRoutes from './src/routes/entregas.js';
+import pagamentosRoutes from './src/routes/pagamentos.js';
+import pedidosRoutes from './src/routes/pedidos.js';
+import notificacoesRoutes from './src/routes/notificacoes.js';
+import avaliacoesRoutes from './src/routes/avaliacoes.js';
+import relatoriosRoutes from './src/routes/relatorios.js';
+import { apiLimiter } from './src/middleware/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
@@ -75,9 +75,9 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Serve static files - serve inicio at root for proper relative paths
-app.use(express.static(join(__dirname, '..', 'inicio')));
-app.use('/img', express.static(join(__dirname, '..', 'img')));
+// Serve static files - serve built React app from dist/frontend
+app.use(express.static(join(__dirname, 'dist', 'frontend')));
+app.use('/img', express.static(join(__dirname, 'img')));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -117,7 +117,7 @@ app.use('/api/*', (req, res) => {
 
 // Serve frontend for non-API routes (SPA fallback)
 app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, '..', 'inicio', 'index.html'));
+    res.sendFile(join(__dirname, 'dist', 'frontend', 'index.html'));
 });
 
 app.listen(PORT, () => {

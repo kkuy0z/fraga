@@ -60,8 +60,8 @@ router.get('/vendas', relatorioValidators.vendas, async (req, res) => {
                 ${selectDate},
                 COUNT(*) as total_pedidos,
                 SUM(valor_total) as faturamento_total,
-                SUM(valor_entrega) as total_entrega,
-                SUM(valor_desconto) as total_desconto,
+                SUM(taxa_entrega) as total_entrega,
+                SUM(desconto) as total_desconto,
                 AVG(valor_total) as ticket_medio
             FROM pedidos
             ${whereClause}
@@ -74,8 +74,8 @@ router.get('/vendas', relatorioValidators.vendas, async (req, res) => {
             SELECT
                 COUNT(*) as total_pedidos,
                 SUM(valor_total) as faturamento_total,
-                SUM(valor_entrega) as total_entrega,
-                SUM(valor_desconto) as total_desconto,
+                SUM(taxa_entrega) as total_entrega,
+                SUM(desconto) as total_desconto,
                 AVG(valor_total) as ticket_medio
             FROM pedidos
             ${whereClause}

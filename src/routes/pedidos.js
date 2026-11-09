@@ -2,7 +2,7 @@ import express from 'express';
 import db from '../database/connection.js';
 import { authMiddleware, optionalAuth, clienteAuthMiddleware } from '../middleware/auth.js';
 import { pedidoValidators } from '../middleware/validation.js';
-import { v4 as uuidv4 } from 'uuid';
+import { emitNotification } from './notificacoes.js';
 
 const router = express.Router();
 
@@ -122,18 +122,21 @@ router.post('/', clienteAuthMiddleware, pedidoValidators.create, async (req, res
         // Generate order number
         const numeroPedido = gerarNumeroPedido();
 
+        // Get cliente_id from authenticated client
+        const clienteId = req.cliente?.id || null;
+
         // Use transaction for atomic order creation
         const pedido = await db.transaction(async () => {
             // Create order
             const result = await db.query(`
                 INSERT INTO pedidos (
-                    numero_pedido, cliente_nome, cliente_telefone, cliente_email,
+                    numero_pedido, cliente_id, cliente_nome, cliente_telefone, cliente_email,
                     cep, logradouro, numero_endereco, bairro, complemento, referencia,
                     forma_pagamento_id, valor_troco, observacoes_pagamento,
                     subtotal_produtos, taxa_entrega, taxa_bairro, desconto, valor_total, status
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendente')
             `, [
-                numeroPedido, cliente_nome, cliente_telefone, cliente_email,
+                numeroPedido, clienteId, cliente_nome, cliente_telefone, cliente_email,
                 cep, logradouro, numero_endereco, bairro, complemento, referencia,
                 forma_pagamento_id, valor_troco, observacoes_pagamento,
                 totais.subtotal_produtos, totais.taxa_entrega, totais.taxa_bairro, totais.desconto, totais.valor_total
@@ -148,7 +151,7 @@ router.post('/', clienteAuthMiddleware, pedidoValidators.create, async (req, res
                 let itemSubtotal = produto.preco_base * item.quantidade;
 
                 const itemResult = await db.query(`
-                    INSERT INTO pedido_itens (pedido_id, produto_id, produto_nome, preco_base, quantidade, subtotal)
+                    INSERT INTO pedido_itens (pedido_id, produto_id, produto_nome, preco_unitario, quantidade, subtotal)
                     VALUES (?, ?, ?, ?, ?, ?)
                 `, [pedidoId, item.produto_id, produto.nome, produto.preco_base, item.quantidade, itemSubtotal]);
 
@@ -205,6 +208,16 @@ router.post('/', clienteAuthMiddleware, pedidoValidators.create, async (req, res
             pedidoCompleto.troco = formaPagamento.tipo === 'dinheiro' && valor_troco > 0
                 ? (valor_troco - valorTotalReal).toFixed(2)
                 : 0;
+
+            // Emit notification for new order
+            await emitNotification({
+                type: 'novo_pedido',
+                title: 'Novo Pedido Recebido',
+                message: `Pedido ${numeroPedido} foi realizado`,
+                pedido_id: pedidoId,
+                destinatario_perfil: 'atendente',
+                dados: { numero_pedido: numeroPedido, valor_total: valorTotalReal }
+            });
 
             return pedidoCompleto;
         });
@@ -531,7 +544,38 @@ router.put('/:id/status', authMiddleware, pedidoValidators.updateStatus, async (
             });
         }
 
+        const statusAnterior = pedido.status;
+
         await db.query('UPDATE pedidos SET status = ?, data_atualizacao = CURRENT_TIMESTAMP WHERE id = ?', [status, id]);
+
+        // Insert into status history
+        await db.query(`
+            INSERT INTO pedido_status_historico (pedido_id, status_anterior, status_novo, usuario_id, usuario_nome, motivo)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `, [id, statusAnterior, status, req.user.id, req.user.nome, `Status alterado de ${statusAnterior} para ${status}`]);
+
+        // Emit notification for status change
+        await emitNotification({
+            type: 'pedido_status',
+            title: 'Status do Pedido Atualizado',
+            message: `Pedido ${pedido.numero_pedido} mudou de ${statusAnterior} para ${status}`,
+            pedido_id: id,
+            destinatario_perfil: status === 'saiu_entrega' ? 'entregador' : (status === 'preparando' ? 'cozinha' : 'atendente'),
+            dados: { numero_pedido: pedido.numero_pedido, status_anterior: statusAnterior, status_novo: status }
+        });
+
+        // If order is delivered, notify client
+        if (status === 'entregue') {
+            await emitNotification({
+                type: 'pedido_entregue',
+                title: 'Pedido Entregue',
+                message: `Seu pedido ${pedido.numero_pedido} foi entregue com sucesso!`,
+                pedido_id: id,
+                destinatario_perfil: 'cliente',
+                destinatario_id: pedido.cliente_id,
+                dados: { numero_pedido: pedido.numero_pedido }
+            });
+        }
 
         const updated = await db.queryOne('SELECT * FROM pedidos WHERE id = ?', [id]);
         res.json(updated);
