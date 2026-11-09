@@ -1,0 +1,256 @@
+version: '3.8'
+
+services:
+  # Database
+  mysql:
+    image: mysql:8.0
+    container_name: fraga-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-fraga_root_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-fraga_lanches}
+      MYSQL_USER: ${MYSQL_USER:-fraga_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-fraga_pass_2026}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./shared/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fraga-network
+
+  # Message Broker
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: fraga-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-fraga_user}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-fraga_pass_2026}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fraga-network
+
+  # API Gateway (Entry point)
+  gateway:
+    build:
+      context: ./services/ms-gateway
+      dockerfile: Dockerfile
+    container_name: fraga-gateway
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - JWT_SECRET=${JWT_SECRET:-fraga-super-secret-jwt-key-2026-change-in-production}
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRE_MINUTES=60
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Auth Service
+  ms-auth:
+    build:
+      context: ./services/ms-auth
+      dockerfile: Dockerfile
+    container_name: fraga-ms-auth
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - JWT_SECRET=${JWT_SECRET:-fraga-super-secret-jwt-key-2026-change-in-production}
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRE_MINUTES=60
+      - ARGON2_TIME_COST=3
+      - ARGON2_MEMORY_COST=65536
+      - ARGON2_PARALLELISM=4
+      - PYTHONPATH=/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Catalogo Service
+  ms-catalogo:
+    build:
+      context: ./services/ms-catalogo
+      dockerfile: Dockerfile
+    container_name: fraga-ms-catalogo
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - PYTHONPATH=/app
+    ports:
+      - "8002:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Pedidos Service
+  ms-pedidos:
+    build:
+      context: ./services/ms-pedidos
+      dockerfile: Dockerfile
+    container_name: fraga-ms-pedidos
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - PYTHONPATH=/app
+    ports:
+      - "8003:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Cozinha Service
+  ms-cozinha:
+    build:
+      context: ./services/ms-cozinha
+      dockerfile: Dockerfile
+    container_name: fraga-ms-cozinha
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - PYTHONPATH=/app
+    ports:
+      - "8004:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Notificações Service
+  ms-notificacoes:
+    build:
+      context: ./services/ms-notificacoes
+      dockerfile: Dockerfile
+    container_name: fraga-ms-notificacoes
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_EMAIL=${VAPID_EMAIL:-mailto:admin@fragalanches.com}
+      - PYTHONPATH=/app
+    ports:
+      - "8005:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Avaliações Service
+  ms-avaliacoes:
+    build:
+      context: ./services/ms-avaliacoes
+      dockerfile: Dockerfile
+    container_name: fraga-ms-avaliacoes
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - PYTHONPATH=/app
+    ports:
+      - "8006:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Pagamentos Service
+  ms-pagamentos:
+    build:
+      context: ./services/ms-pagamentos
+      dockerfile: Dockerfile
+    container_name: fraga-ms-pagamentos
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - MERCADO_PAGO_ACCESS_TOKEN=${MERCADO_PAGO_ACCESS_TOKEN}
+      - MERCADO_PAGO_PUBLIC_KEY=${MERCADO_PAGO_PUBLIC_KEY}
+      - MERCADO_PAGO_WEBHOOK_SECRET=${MERCADO_PAGO_WEBHOOK_SECRET}
+      - PYTHONPATH=/app
+    ports:
+      - "8007:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Relatórios Service
+  ms-relatorios:
+    build:
+      context: ./services/ms-relatorios
+      dockerfile: Dockerfile
+    container_name: fraga-ms-relatorios
+    environment:
+      - DATABASE_URL=mysql+asyncmy://${MYSQL_USER:-fraga_user}:${MYSQL_PASSWORD:-fraga_pass_2026}@mysql:3306/${MYSQL_DATABASE:-fraga_lanches}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-fraga_user}:${RABBITMQ_PASSWORD:-fraga_pass_2026}@rabbitmq:5672
+      - PYTHONPATH=/app
+    ports:
+      - "8008:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  rabbitmq_data:
+
+networks:
+  fraga-network:
+    driver: bridge
