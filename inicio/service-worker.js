@@ -2,7 +2,7 @@
  * Service Worker - Fraga Lanches PWA
  * Versão do cache - incrementar ao fazer mudanças nos arquivos estáticos
  */
-const CACHE_VERSION = 'v1.1.3';
+const CACHE_VERSION = 'v1.1.4';
 const CACHE_NAME = `fraga-lanches-${CACHE_VERSION}`;
 const CACHE_STATIC = `fraga-static-${CACHE_VERSION}`;
 const CACHE_API = `fraga-api-${CACHE_VERSION}`;
@@ -31,6 +31,7 @@ const STATIC_ASSETS = [
   '/Cadastro/login.css',
   '/Cadastro/cadastro.js',
   '/Cadastro/login.js',
+  '/inicio/design-system.css',
   '/inicio/style.css',
   '/inicio/style-pages.css',
   '/inicio/js/api.js',
@@ -51,6 +52,7 @@ const STATIC_ASSETS = [
   '/inicio/js/admin-entrega.js',
   '/inicio/js/admin-pagamentos.js',
   '/inicio/js/admin-usuarios.js',
+  '/inicio/js/shared-components.js',
   '/inicio/manifest.json',
   '/img/logo.png',
   '/img/icon-192.svg',
