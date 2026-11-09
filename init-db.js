@@ -101,10 +101,43 @@ CREATE TABLE IF NOT EXISTS formas_pagamento (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Clientes
+CREATE TABLE IF NOT EXISTS clientes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    telefone TEXT NOT NULL UNIQUE,
+    senha_hash TEXT NOT NULL,
+    cep TEXT,
+    logradouro TEXT,
+    numero TEXT,
+    bairro TEXT,
+    complemento TEXT,
+    ativo INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Endereços dos clientes
+CREATE TABLE IF NOT EXISTS enderecos_cliente (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    cep TEXT NOT NULL,
+    logradouro TEXT NOT NULL,
+    numero TEXT NOT NULL,
+    bairro TEXT NOT NULL,
+    complemento TEXT,
+    principal INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+);
+
 -- Pedidos
 CREATE TABLE IF NOT EXISTS pedidos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     numero_pedido TEXT NOT NULL UNIQUE,
+    cliente_id INTEGER,
     cliente_nome TEXT NOT NULL,
     cliente_telefone TEXT NOT NULL,
     cliente_email TEXT,
@@ -119,11 +152,13 @@ CREATE TABLE IF NOT EXISTS pedidos (
     observacoes_pagamento TEXT,
     subtotal_produtos REAL NOT NULL DEFAULT 0 CHECK (subtotal_produtos >= 0),
     taxa_entrega REAL NOT NULL DEFAULT 0 CHECK (taxa_entrega >= 0),
+    taxa_bairro REAL NOT NULL DEFAULT 0 CHECK (taxa_bairro >= 0),
     desconto REAL NOT NULL DEFAULT 0 CHECK (desconto >= 0),
     valor_total REAL NOT NULL DEFAULT 0 CHECK (valor_total >= 0),
     status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'confirmado', 'preparando', 'saiu_entrega', 'entregue', 'cancelado')),
     data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL,
     FOREIGN KEY (forma_pagamento_id) REFERENCES formas_pagamento(id) ON DELETE RESTRICT
 );
 
@@ -133,7 +168,7 @@ CREATE TABLE IF NOT EXISTS pedido_itens (
     pedido_id INTEGER NOT NULL,
     produto_id INTEGER NOT NULL,
     produto_nome TEXT NOT NULL,
-    preco_base REAL NOT NULL CHECK (preco_base >= 0),
+    preco_unitario REAL NOT NULL CHECK (preco_unitario >= 0),
     quantidade INTEGER NOT NULL DEFAULT 1 CHECK (quantidade > 0),
     subtotal REAL NOT NULL CHECK (subtotal >= 0),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -156,6 +191,72 @@ CREATE TABLE IF NOT EXISTS pedido_item_personalizacoes (
     FOREIGN KEY (opcao_id) REFERENCES personalizacao_opcoes(id) ON DELETE RESTRICT
 );
 
+-- Entregas
+CREATE TABLE IF NOT EXISTS entregas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_id INTEGER NOT NULL,
+    entregador_id INTEGER,
+    status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceita', 'retirada', 'em_rota', 'entregue', 'falha')),
+    saida_em DATETIME,
+    entregue_em DATETIME,
+    latitude REAL,
+    longitude REAL,
+    observacoes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+    FOREIGN KEY (entregador_id) REFERENCES usuarios_admin(id) ON DELETE SET NULL
+);
+
+-- Histórico de status dos pedidos
+CREATE TABLE IF NOT EXISTS pedido_status_historico (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_id INTEGER NOT NULL,
+    status_anterior TEXT,
+    status_novo TEXT NOT NULL,
+    usuario_id INTEGER,
+    usuario_nome TEXT,
+    motivo TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios_admin(id) ON DELETE SET NULL
+);
+
+-- Avaliações
+CREATE TABLE IF NOT EXISTS avaliacoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_id INTEGER NOT NULL UNIQUE,
+    cliente_id INTEGER NOT NULL,
+    estrelas INTEGER NOT NULL CHECK (estrelas BETWEEN 1 AND 5),
+    comentario TEXT,
+    respondido INTEGER DEFAULT 0,
+    resposta_admin TEXT,
+    respondido_por INTEGER,
+    respondido_em DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+    FOREIGN KEY (respondido_por) REFERENCES usuarios_admin(id) ON DELETE SET NULL
+);
+
+-- Notificações internas
+CREATE TABLE IF NOT EXISTS notificacoes_internas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tipo TEXT NOT NULL,
+    titulo TEXT NOT NULL,
+    mensagem TEXT NOT NULL,
+    pedido_id INTEGER,
+    destinatario_perfil TEXT,
+    destinatario_id INTEGER,
+    dados TEXT,
+    lida INTEGER DEFAULT 0,
+    lida_em DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL,
+    FOREIGN KEY (destinatario_id) REFERENCES usuarios_admin(id) ON DELETE SET NULL
+);
+
 -- Usuários administrativos
 CREATE TABLE IF NOT EXISTS usuarios_admin (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -164,9 +265,23 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
     nome TEXT NOT NULL,
     perfil TEXT NOT NULL DEFAULT 'atendente' CHECK (perfil IN ('administrador', 'atendente', 'cozinha', 'entregador')),
     ativo INTEGER DEFAULT 1,
+    forca_troca_senha INTEGER DEFAULT 0,
     ultimo_login DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Push subscriptions
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    endpoint TEXT NOT NULL UNIQUE,
+    p256dh TEXT NOT NULL,
+    auth TEXT NOT NULL,
+    user_agent TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
 );
 
 -- Índices
@@ -174,9 +289,19 @@ CREATE INDEX IF NOT EXISTS idx_produtos_categoria ON produtos(categoria_id);
 CREATE INDEX IF NOT EXISTS idx_produtos_disponivel ON produtos(disponivel);
 CREATE INDEX IF NOT EXISTS idx_pedidos_status ON pedidos(status);
 CREATE INDEX IF NOT EXISTS idx_pedidos_data ON pedidos(data_pedido);
+CREATE INDEX IF NOT EXISTS idx_pedidos_cliente ON pedidos(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_pedido_itens_pedido ON pedido_itens(pedido_id);
 CREATE INDEX IF NOT EXISTS idx_personalizacao_grupos_produto ON personalizacao_grupos(produto_id);
 CREATE INDEX IF NOT EXISTS idx_personalizacao_opcoes_grupo ON personalizacao_opcoes(grupo_id);
+CREATE INDEX IF NOT EXISTS idx_entregas_pedido ON entregas(pedido_id);
+CREATE INDEX IF NOT EXISTS idx_entregas_entregador ON entregas(entregador_id);
+CREATE INDEX IF NOT EXISTS idx_entregas_status ON entregas(status);
+CREATE INDEX IF NOT EXISTS idx_avaliacoes_pedido ON avaliacoes(pedido_id);
+CREATE INDEX IF NOT EXISTS idx_avaliacoes_cliente ON avaliacoes(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_notificacoes_internas_destinatario ON notificacoes_internas(destinatario_perfil, destinatario_id);
+CREATE INDEX IF NOT EXISTS idx_pedido_status_historico_pedido ON pedido_status_historico(pedido_id);
+CREATE INDEX IF NOT EXISTS idx_enderecos_cliente_cliente ON enderecos_cliente(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_cliente ON push_subscriptions(cliente_id);
 `;
 
 db.exec(schema);
