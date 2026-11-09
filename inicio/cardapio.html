@@ -3,75 +3,27 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cardápio - Fraga Lanches</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Header Fixo -->
-    <header class="header-fixed" role="banner">
-        <div class="header-inner">
-            <div class="logo">
-                <a href="/inicio/index.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
-                </a>
-            </div>
-
-            <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
-                <a href="/inicio/index.html">INÍCIO</a>
-                <a href="/inicio/cardapio.html" class="active">CARDÁPIO</a>
-                <a href="/inicio/index.html#sobre">SOBRE</a>
-                <a href="/inicio/index.html#espaco">ESPAÇO</a>
-                <a href="/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
-                <a href="/inicio/index.html#contato">CONTATO</a>
-            </nav>
-
-            <div class="header-actions">
-                <a href="/inicio/carrinho.html" class="cart-button" id="cartButton" aria-label="Carrinho de compras">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span>Carrinho</span>
-                    <span class="cart-count" id="cartCount" aria-label="Itens no carrinho">0</span>
-                </a>
-
-                <div class="user-menu" id="userMenu">
-                    <button class="user-button" id="userButton" aria-expanded="false" aria-haspopup="true" aria-label="Menu do usuário">
-                        <div class="user-avatar" id="userAvatar">?</div>
-                        <span id="userName">Minha Conta</span>
-                    </button>
-                    <div class="user-dropdown" id="userDropdown" role="menu">
-                        <a href="/inicio/meus-pedidos.html" class="user-dropdown-item" role="menuitem">Meus Pedidos</a>
-                        <a href="/inicio/perfil.html" class="user-dropdown-item" role="menuitem">Meu Perfil</a>
-                        <div class="user-dropdown-divider"></div>
-                        <button class="user-dropdown-item btn-logout" id="logoutBtn" role="menuitem">Sair</button>
-                    </div>
-                </div>
-
-<a href="/Cadastro/login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
-
-                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
-            </div>
-        </div>
-    </header>
+    <!-- Header will be injected by shared-components.js -->
 
     <!-- Banner Fechado -->
     <div id="closedBanner" class="closed-banner hidden" role="alert" aria-live="assertive">
         <div class="closed-banner-content">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-clock" /></svg>
             <div class="closed-banner-text">
                 <strong>ESTABELECIMENTO FECHADO</strong>
                 <span id="closedBannerMessage">Carregando horário de funcionamento...</span>
@@ -90,7 +42,7 @@
 
     <!-- Filtro de Categorias -->
     <section class="categorias-filtro" aria-label="Filtrar por categoria">
-        <div class="container" style="max-width: 1450px; margin: 0 auto; padding: 0 4%;">
+        <div class="container">
             <div class="categorias-scroll" id="categoriasFiltro" role="tablist" aria-label="Categorias do cardápio">
                 <!-- Categorias serão inseridas via JS -->
             </div>
@@ -99,7 +51,7 @@
 
     <!-- Grid de Produtos -->
     <main class="cardapio-main" role="main">
-        <div class="container" style="max-width: 1450px; margin: 0 auto; padding: 60px 4%;">
+        <div class="container">
             <div class="cardapio-grid" id="cardapioGrid" role="list" aria-label="Produtos do cardápio">
                 <!-- Produtos serão inseridos via JS -->
             </div>
@@ -107,9 +59,7 @@
             <!-- Estado vazio -->
             <div class="empty-state hidden" id="emptyState">
                 <div class="empty-state-icon">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><use href="#i-search" /></svg>
                 </div>
                 <h2 class="empty-state-title">Nenhum produto encontrado</h2>
                 <p class="empty-state-message">Não há produtos disponíveis nesta categoria no momento.</p>
@@ -122,43 +72,10 @@
         </div>
     </main>
 
-    <!-- Modal de Detalhes do Produto -->
-    <div class="modal-overlay" id="produtoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal" id="produtoModalContent">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Detalhes do Produto</h2>
-                <button class="modal-close" id="modalClose" aria-label="Fechar detalhes do produto">&times;</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Conteúdo do modal será inserido via JS -->
-            </div>
-        </div>
-    </div>
+    <!-- Footer will be injected by shared-components.js -->
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-        <div class="loading-spinner" aria-hidden="true"></div>
-        <p class="loading-message">Carregando cardápio...</p>
-    </div>
-
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <p class="footer-text">© 2026 Fraga Lanches - Todos os direitos reservados.</p>
-        </div>
-    </footer>
-
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/cardapio.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/inicio/service-worker.js')
-            .catch(error => console.error('[SW] Erro no registro:', error));
-        });
-      }
-    </script>
 </body>
 
 </html>
