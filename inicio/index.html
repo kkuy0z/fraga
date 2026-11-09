@@ -84,13 +84,13 @@
             <div class="espaco-container">
                 <!-- Carrossel de Múltiplas Imagens -->
                 <div class="carrossel-espaco-wrapper">
-                    <button class="carrossel-arrow" id="anterior-espaco" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <button class="carrossel-arrow" id="anterior-espaco" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-left" /></svg></button>
 
                     <div class="carrossel-espaco-container" id="carrosselEspaco">
                         <!-- Imagens serão inseridas via JS -->
                     </div>
 
-                    <button class="carrossel-arrow" id="proximo-espaco" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                    <button class="carrossel-arrow" id="proximo-espaco" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-right" /></svg></button>
                 </div>
 
                 <!-- Bolinhas indicadoras -->
@@ -156,13 +156,13 @@
             <div class="avaliacoes-container-geral">
                 <!-- Carrossel de Depoimentos -->
                 <div class="avaliacoes-carrossel-wrapper">
-                    <button class="carrossel-arrow" id="prev-review" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <button class="carrossel-arrow" id="prev-review" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-left" /></svg></button>
 
                     <div class="avaliacoes-container" id="avaliacoes-list">
                         <!-- Cards serão inseridos via JS -->
                     </div>
 
-                    <button class="carrossel-arrow" id="next-review" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+                    <button class="carrossel-arrow" id="next-review" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-right" /></svg></button>
                 </div>
 
                 <!-- Bolinhas Indicadoras -->
@@ -238,6 +238,9 @@
         </div>
     </section>
 
+    <!-- Footer will be injected by shared-components.js -->
+
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/index.js"></script>
 </body>
 
