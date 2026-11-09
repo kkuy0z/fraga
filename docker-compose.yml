@@ -1,0 +1,333 @@
+version: '3.8'
+
+services:
+  # Database
+  db:
+    image: mariadb:11.4
+    container_name: fraga-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-fraga_root_password}
+      MYSQL_DATABASE: ${DB_NAME:-fraga_lanches}
+      MYSQL_USER: ${DB_USER:-fraga_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-fraga_password}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./shared/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - fraga-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: fraga-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-fraga}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-fraga_password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-fraga}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - fraga-network
+    ports:
+      - "15672:15672"  # Management UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Auth Service
+  ms-auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-auth
+    command: python -m uvicorn services.ms_auth.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-auth
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      JWT_SECRET: ${JWT_SECRET:-fraga_jwt_secret_change_in_production}
+      JWT_ALGORITHM: HS256
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      JWT_REFRESH_TOKEN_EXPIRE_DAYS: 7
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Catalogo Service
+  ms-catalogo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-catalogo
+    command: python -m uvicorn services.ms_catalogo.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-catalogo
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Pedidos Service
+  ms-pedidos:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-pedidos
+    command: python -m uvicorn services.ms_pedidos.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-pedidos
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Cozinha Service
+  ms-cozinha:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-cozinha
+    command: python -m uvicorn services.ms_cozinha.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-cozinha
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Entregas Service
+  ms-entregas:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-entregas
+    command: python -m uvicorn services.ms_entregas.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-entregas
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Notificacoes Service
+  ms-notificacoes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-notificacoes
+    command: python -m uvicorn services.ms_notificacoes.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-notificacoes
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_CLAIMS_EMAIL: ${VAPID_CLAIMS_EMAIL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Avaliacoes Service
+  ms-avaliacoes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-avaliacoes
+    command: python -m uvicorn services.ms_avaliacoes.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-avaliacoes
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Pagamentos Service
+  ms-pagamentos:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-pagamentos
+    command: python -m uvicorn services.ms_pagamentos.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-pagamentos
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MERCADO_PAGO_ACCESS_TOKEN: ${MERCADO_PAGO_ACCESS_TOKEN:-}
+      MERCADO_PAGO_PUBLIC_KEY: ${MERCADO_PAGO_PUBLIC_KEY:-}
+      MERCADO_PAGO_WEBHOOK_SECRET: ${MERCADO_PAGO_WEBHOOK_SECRET:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Relatorios Service
+  ms-relatorios:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-relatorios
+    command: python -m uvicorn services.ms_relatorios.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-relatorios
+      SERVICE_VERSION: 1.0.0
+      DATABASE_URL: mysql+asyncmy://${DB_USER:-fraga_user}:${DB_PASSWORD:-fraga_password}@db:3306/${DB_NAME:-fraga_lanches}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-fraga}:${RABBITMQ_PASSWORD:-fraga_password}@rabbitmq:5672/${RABBITMQ_VHOST:-fraga}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # API Gateway
+  ms-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraga-ms-gateway
+    command: python -m uvicorn services.ms_gateway.app:app --host 0.0.0.0 --port 8000
+    environment:
+      SERVICE_NAME: ms-gateway
+      SERVICE_VERSION: 1.0.0
+      # Service URLs (internal Docker network)
+      AUTH_SERVICE_URL: http://ms-auth:8000
+      CATALOGO_SERVICE_URL: http://ms-catalogo:8000
+      PEDIDOS_SERVICE_URL: http://ms-pedidos:8000
+      COZINHA_SERVICE_URL: http://ms-cozinha:8000
+      ENTREGAS_SERVICE_URL: http://ms-entregas:8000
+      NOTIFICACOES_SERVICE_URL: http://ms-notificacoes:8000
+      AVALIACOES_SERVICE_URL: http://ms-avaliacoes:8000
+      PAGAMENTOS_SERVICE_URL: http://ms-pagamentos:8000
+      RELATORIOS_SERVICE_URL: http://ms-relatorios:8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ms-auth
+      - ms-catalogo
+      - ms-pedidos
+      - ms-cozinha
+      - ms-entregas
+      - ms-notificacoes
+      - ms-avaliacoes
+      - ms-pagamentos
+      - ms-relatorios
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+  # Frontend (nginx to serve static files)
+  frontend:
+    image: nginx:alpine
+    container_name: fraga-frontend
+    volumes:
+      - ./inicio:/usr/share/nginx/html:ro
+      - ./Cadastro:/usr/share/nginx/html/Cadastro:ro
+      - ./img:/usr/share/nginx/html/img:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - ms-gateway
+    networks:
+      - fraga-network
+    restart: unless-stopped
+
+networks:
+  fraga-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  rabbitmq_data:
