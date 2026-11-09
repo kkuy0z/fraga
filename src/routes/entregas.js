@@ -102,6 +102,67 @@ router.get('/minhas/pedido/:pedidoId', async (req, res) => {
     }
 });
 
+// Entregador authenticated routes - use clienteAuthMiddleware for deliverers too?
+// We need a middleware that accepts both admin and entregador tokens
+// For now, let's add a specific route for "minhas" that works with any authenticated user
+
+/**
+ * GET /api/entregas/entregador/minhas/ativas
+ * Entregador autenticado busca suas entregas ativas
+ */
+router.get('/entregador/minhas/ativas', authMiddleware, requireRole('entregador'), async (req, res) => {
+    try {
+        const entregadorId = req.user.id;
+
+        const entregas = await db.query(`
+            SELECT
+                e.*,
+                p.cliente_nome,
+                p.cliente_telefone,
+                p.cep, p.logradouro, p.numero_endereco, p.bairro, p.complemento, p.referencia,
+                p.valor_total,
+                p.observacoes_pagamento,
+                fp.nome as forma_pagamento,
+                (
+                    SELECT json_group_array(
+                        json_object(
+                            'nome', prod.nome,
+                            'quantidade', pi.quantidade,
+                            'preco_unitario', pi.preco_unitario,
+                            'observacoes', pi.observacoes
+                        )
+                    )
+                    FROM pedido_itens pi
+                    JOIN produtos prod ON pi.produto_id = prod.id
+                    WHERE pi.pedido_id = p.id
+                ) as itens
+            FROM entregas e
+            JOIN pedidos p ON e.pedido_id = p.id
+            LEFT JOIN formas_pagamento fp ON p.forma_pagamento_id = fp.id
+            WHERE e.entregador_id = ?
+            AND e.status IN ('aceita', 'retirada', 'em_rota')
+            ORDER BY
+                CASE e.status
+                    WHEN 'retirada' THEN 1
+                    WHEN 'aceita' THEN 2
+                    WHEN 'em_rota' THEN 3
+                END,
+                e.saida_em ASC
+        `, [entregadorId]);
+
+        // Parse itens JSON
+        const entregasFormatadas = entregas.map(e => ({
+            ...e,
+            itens: e.itens ? JSON.parse(e.itens) : []
+        }));
+
+        res.json(entregasFormatadas);
+    } catch (error) {
+        console.error('Error getting active deliveries for authenticated entregador:', error);
+        res.status(500).json({ error: 'Erro ao buscar entregas ativas' });
+    }
+});
+
 // Admin/Delivery routes - require admin authentication
 router.use(authMiddleware);
 router.use(requireRole('administrador', 'atendente', 'entregador'));

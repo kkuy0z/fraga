@@ -22,6 +22,16 @@ import { PerfilPage } from './pages/PerfilPage';
 import { MeusPedidosPage } from './pages/MeusPedidosPage';
 import { PedidoConfirmadoPage } from './pages/PedidoConfirmadoPage';
 
+// Páginas cliente (autenticadas)
+import { AvaliacoesPage } from './pages/AvaliacoesPage';
+import { RastreamentoPage } from './pages/RastreamentoPage';
+import { FidelidadePage } from './pages/FidelidadePage';
+import { NotificacoesPage } from './pages/NotificacoesPage';
+
+// Páginas funcionários
+import { CozinhaPage } from './pages/CozinhaPage';
+import { EntregadorPage } from './pages/EntregadorPage';
+
 // Páginas admin
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
@@ -39,7 +49,7 @@ import { AuthLayout } from './layouts/AuthLayout';
 import { AdminLayout } from './layouts/AdminLayout';
 
 export function App() {
-  const { isAdminAuthenticated, isClienteAuthenticated } = useCheckAuth();
+  const { isAdminAuthenticated, isClienteAuthenticated, isCozinha, isEntregador } = useCheckAuth();
 
   return (
     <BrowserRouter>
@@ -98,6 +108,78 @@ export function App() {
                   </AuthLayout>
                 ) : (
                   <Navigate to="/cadastro" replace />
+                )
+              }
+            />
+            <Route
+              path="/avaliar/:id"
+              element={
+                isClienteAuthenticated ? (
+                  <AuthLayout>
+                    <AvaliacoesPage />
+                  </AuthLayout>
+                ) : (
+                  <Navigate to="/cadastro" replace />
+                )
+              }
+            />
+            <Route
+              path="/rastreamento/:id"
+              element={
+                isClienteAuthenticated ? (
+                  <AuthLayout>
+                    <RastreamentoPage />
+                  </AuthLayout>
+                ) : (
+                  <Navigate to="/cadastro" replace />
+                )
+              }
+            />
+            <Route
+              path="/fidelidade"
+              element={
+                isClienteAuthenticated ? (
+                  <AuthLayout>
+                    <FidelidadePage />
+                  </AuthLayout>
+                ) : (
+                  <Navigate to="/cadastro" replace />
+                )
+              }
+            />
+            <Route
+              path="/notificacoes"
+              element={
+                isClienteAuthenticated ? (
+                  <AuthLayout>
+                    <NotificacoesPage />
+                  </AuthLayout>
+                ) : (
+                  <Navigate to="/cadastro" replace />
+                )
+              }
+            />
+
+            {/* Rotas funcionários - Cozinha */}
+            <Route
+              path="/cozinha"
+              element={
+                isCozinha ? (
+                  <CozinhaPage />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+
+            {/* Rotas funcionários - Entregador */}
+            <Route
+              path="/entregador"
+              element={
+                isEntregador ? (
+                  <EntregadorPage />
+                ) : (
+                  <Navigate to="/" replace />
                 )
               }
             />

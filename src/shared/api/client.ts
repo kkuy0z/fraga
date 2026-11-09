@@ -423,6 +423,23 @@ class ApiClient {
   async getPushSubscriptions(): Promise<NotificacaoPush[]> {
     return this.get<NotificacaoPush[]>('/notificacoes/subscriptions');
   }
+
+  // ===== FIDELIDADE =====
+  async getFidelidadeResumo(): Promise<{ pontos_atuais: number; total_acumulado: number; total_resgatado: number; nivel: string; proximo_nivel?: { nome: string; pontos_necessarios: number } }> {
+    return this.get('/fidelidade/resumo');
+  }
+
+  async getFidelidadeHistorico(): Promise<Array<{ id: number; tipo: string; pontos: number; descricao: string; pedido_id?: number; pedido_numero?: string; recompensa_id?: number; recompensa_nome?: string; created_at: string }>> {
+    return this.get('/fidelidade/historico');
+  }
+
+  async getFidelidadeRecompensas(): Promise<Array<{ id: number; nome: string; descricao: string; pontos_custo: number; tipo: string; valor_desconto?: number; produto_id?: number; produto_nome?: string; ativo: boolean; estoque?: number; imagem_url?: string }>> {
+    return this.get('/fidelidade/recompensas');
+  }
+
+  async resgatarRecompensa(data: { recompensa_id: number; quantidade: number }): Promise<void> {
+    return this.post<void>('/fidelidade/resgatar', data);
+  }
 }
 
 // Export singleton instance

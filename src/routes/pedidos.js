@@ -211,9 +211,9 @@ router.post('/', clienteAuthMiddleware, pedidoValidators.create, async (req, res
 
             // Emit notification for new order
             await emitNotification({
-                type: 'novo_pedido',
-                title: 'Novo Pedido Recebido',
-                message: `Pedido ${numeroPedido} foi realizado`,
+                tipo: 'novo_pedido',
+                titulo: 'Novo Pedido Recebido',
+                mensagem: `Pedido ${numeroPedido} foi realizado`,
                 pedido_id: pedidoId,
                 destinatario_perfil: 'atendente',
                 dados: { numero_pedido: numeroPedido, valor_total: valorTotalReal }

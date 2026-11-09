@@ -18,6 +18,7 @@ import pedidosRoutes from './src/routes/pedidos.js';
 import notificacoesRoutes from './src/routes/notificacoes.js';
 import avaliacoesRoutes from './src/routes/avaliacoes.js';
 import relatoriosRoutes from './src/routes/relatorios.js';
+import fidelidadeRoutes from './src/routes/fidelidade.js';
 import { apiLimiter } from './src/middleware/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -100,6 +101,7 @@ app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/notificacoes', notificacoesRoutes);
 app.use('/api/avaliacoes', avaliacoesRoutes);
 app.use('/api/relatorios', relatoriosRoutes);
+app.use('/api/fidelidade', fidelidadeRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

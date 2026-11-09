@@ -28,7 +28,7 @@ const clients = new Map();
 const profileRooms = new Map();
 
 // Initialize profile rooms
-['administrador', 'atendente', 'cozinha', 'entregador'].forEach(perfil => {
+['administrador', 'atendente', 'cozinha', 'entregador', 'cliente'].forEach(perfil => {
     profileRooms.set(perfil, new Set());
 });
 
@@ -86,10 +86,31 @@ function authenticateToken(token) {
 
 // Verify user and get profile
 async function verifyUser(decoded) {
-    if (!decoded || decoded.tipo === 'cliente') {
+    if (!decoded) {
         return null;
     }
 
+    // Support both admin users and clientes
+    if (decoded.tipo === 'cliente') {
+        const cliente = await db.queryOne(
+            'SELECT id, email, nome, telefone, ativo FROM clientes WHERE id = ?',
+            [decoded.id]
+        );
+
+        if (!cliente || !cliente.ativo) {
+            return null;
+        }
+
+        return {
+            id: cliente.id,
+            nome: cliente.nome,
+            email: cliente.email,
+            perfil: 'cliente',
+            tipo: 'cliente'
+        };
+    }
+
+    // Admin users
     const user = await db.queryOne(
         'SELECT id, email, nome, perfil, ativo FROM usuarios_admin WHERE id = ?',
         [decoded.id]
@@ -99,7 +120,10 @@ async function verifyUser(decoded) {
         return null;
     }
 
-    return user;
+    return {
+        ...user,
+        tipo: 'admin'
+    };
 }
 
 // Broadcast to specific user
@@ -219,6 +243,7 @@ wss.on('connection', async (ws, req) => {
     ws.userId = user.id;
     ws.userNome = user.nome;
     ws.perfil = user.perfil;
+    ws.tipo = user.tipo;
 
     // Add to clients map
     if (!clients.has(user.id)) {
@@ -245,19 +270,21 @@ wss.on('connection', async (ws, req) => {
         timestamp: new Date().toISOString()
     }));
 
-    // Send unread notifications count
-    const unreadCount = await db.queryOne(`
-        SELECT COUNT(*) as count
-        FROM notificacoes_internas
-        WHERE lida = 0
-        AND (destinatario_perfil = ? OR destinatario_perfil = 'todos' OR destinatario_id = ?)
-    `, [user.perfil, user.id]);
+    // Send unread notifications count (only for admin users)
+    if (user.tipo === 'admin') {
+        const unreadCount = await db.queryOne(`
+            SELECT COUNT(*) as count
+            FROM notificacoes_internas
+            WHERE lida = 0
+            AND (destinatario_perfil = ? OR destinatario_perfil = 'todos' OR destinatario_id = ?)
+        `, [user.perfil, user.id]);
 
-    ws.send(JSON.stringify({
-        type: 'unread_count',
-        count: unreadCount?.count || 0,
-        timestamp: new Date().toISOString()
-    }));
+        ws.send(JSON.stringify({
+            type: 'unread_count',
+            count: unreadCount?.count || 0,
+            timestamp: new Date().toISOString()
+        }));
+    }
 
     // Handle messages
     ws.on('message', (message) => handleMessage(ws, message.toString()));
@@ -364,17 +391,39 @@ async function pollNotifications() {
         `);
 
         for (const notif of notifications) {
+            const baseMessage = {
+                tipo: notif.tipo,
+                titulo: notif.titulo,
+                mensagem: notif.mensagem,
+                pedido_id: notif.pedido_id,
+                dados: notif.dados ? JSON.parse(notif.dados) : null,
+                created_at: notif.created_at
+            };
+
+            // Map notification types to frontend event types
+            let eventType = 'notification';
+            switch (notif.tipo) {
+                case 'novo_pedido':
+                    eventType = 'pedido_novo';
+                    break;
+                case 'pedido_atualizado':
+                case 'pedido_status':
+                    eventType = 'pedido_atualizado';
+                    break;
+                case 'entrega_atribuida':
+                    eventType = 'entrega_atribuida';
+                    break;
+                case 'entrega_atualizada':
+                    eventType = 'entrega_atualizada';
+                    break;
+                case 'entrega_localizacao':
+                    eventType = 'entrega_localizacao';
+                    break;
+            }
+
             const message = {
-                type: 'notification',
-                notification: {
-                    id: notif.id,
-                    tipo: notif.tipo,
-                    titulo: notif.titulo,
-                    mensagem: notif.mensagem,
-                    pedido_id: notif.pedido_id,
-                    dados: notif.dados ? JSON.parse(notif.dados) : null,
-                    created_at: notif.created_at
-                }
+                type: eventType,
+                ...baseMessage
             };
 
             // Send to specific user if destinatario_id
@@ -385,6 +434,12 @@ async function pollNotifications() {
             // Send to profile room
             if (notif.destinatario_perfil) {
                 sendToProfile(notif.destinatario_perfil, message);
+            }
+
+            // Also send to cliente if this is their order
+            if (notif.pedido_id && notif.destinatario_perfil === 'cliente') {
+                // The cliente will receive it via their own connection if they're subscribed
+                // Or we could send to specific cliente room
             }
         }
     } catch (error) {
@@ -400,9 +455,10 @@ async function pollDeliveryLocations() {
     try {
         // Get active deliveries with recent location updates
         const deliveries = await db.query(`
-            SELECT e.*, u.nome as entregador_nome
+            SELECT e.*, u.nome as entregador_nome, p.cliente_id
             FROM entregas e
             JOIN usuarios_admin u ON e.entregador_id = u.id
+            JOIN pedidos p ON e.pedido_id = p.id
             WHERE e.status IN ('aceita', 'retirada', 'em_rota')
             AND e.latitude IS NOT NULL
             AND e.longitude IS NOT NULL
@@ -410,15 +466,23 @@ async function pollDeliveryLocations() {
         `);
 
         for (const delivery of deliveries) {
-            sendToProfile('administrador', {
-                type: 'delivery_location',
+            const message = {
+                type: 'entrega_localizacao',
                 pedido_id: delivery.pedido_id,
                 entregador_id: delivery.entregador_id,
                 entregador_nome: delivery.entregador_nome,
                 latitude: delivery.latitude,
                 longitude: delivery.longitude,
                 timestamp: delivery.updated_at
-            });
+            };
+
+            // Send to admin profile
+            sendToProfile('administrador', message);
+
+            // Send to specific client if they're connected
+            if (delivery.cliente_id) {
+                sendToUser(delivery.cliente_id, message);
+            }
         }
     } catch (error) {
         console.error('Error polling delivery locations:', error);
