@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import argon2 from 'argon2';
 import db from '../database/connection.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -36,14 +36,14 @@ export function verifyToken(token) {
 
 export async function verifyPassword(senha, hash) {
     try {
-        return await bcrypt.compare(senha, hash);
+        return await argon2.verify(hash, senha);
     } catch (error) {
         return false;
     }
 }
 
 export async function hashPassword(senha) {
-    return await bcrypt.hash(senha, 12);
+    return await argon2.hash(senha, { type: argon2.argon2id });
 }
 
 export async function authMiddleware(req, res, next) {

@@ -106,7 +106,7 @@ export async function initializeDatabase() {
 
     // Configuração de entrega
     await run(`
-        CREATE TABLE IF NOT EXISTS configuracao_entrega (
+        CREATE TABLE IF NOT EXISTS configuracoes_entrega (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             taxa_entrega REAL DEFAULT 0,
             valor_minimo_pedido REAL DEFAULT 0,
@@ -236,9 +236,10 @@ export async function initializeDatabase() {
             complemento TEXT,
             referencia TEXT,
             forma_pagamento_id INTEGER NOT NULL,
-            valor_subtotal REAL NOT NULL,
-            valor_entrega REAL NOT NULL DEFAULT 0,
-            valor_desconto REAL NOT NULL DEFAULT 0,
+            subtotal_produtos REAL NOT NULL,
+            taxa_entrega REAL NOT NULL DEFAULT 0,
+            taxa_bairro REAL NOT NULL DEFAULT 0,
+            desconto REAL NOT NULL DEFAULT 0,
             valor_total REAL NOT NULL,
             valor_troco REAL,
             observacoes_pagamento TEXT,
@@ -295,6 +296,69 @@ export async function initializeDatabase() {
         )
     `);
 
+    // Fidelidade (RF-19) - Loyalty program
+    await run(`
+        CREATE TABLE IF NOT EXISTS fidelidade (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente_id INTEGER NOT NULL UNIQUE,
+            pontos_atuais INTEGER NOT NULL DEFAULT 0,
+            total_acumulado INTEGER NOT NULL DEFAULT 0,
+            total_resgatado INTEGER NOT NULL DEFAULT 0,
+            nivel TEXT NOT NULL DEFAULT 'Bronze' CHECK (nivel IN ('Bronze', 'Prata', 'Ouro', 'Diamante')),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+        )
+    `);
+
+    await run(`
+        CREATE TABLE IF NOT EXISTS fidelidade_historico (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente_id INTEGER NOT NULL,
+            tipo TEXT NOT NULL CHECK (tipo IN ('ganho', 'resgatado', 'expirado', 'ajuste')),
+            pontos INTEGER NOT NULL,
+            descricao TEXT NOT NULL,
+            pedido_id INTEGER,
+            recompensa_id INTEGER,
+            recompensa_nome TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+            FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL,
+            FOREIGN KEY (recompensa_id) REFERENCES recompensas(id) ON DELETE SET NULL
+        )
+    `);
+
+    await run(`
+        CREATE TABLE IF NOT EXISTS recompensas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            descricao TEXT,
+            pontos_custo INTEGER NOT NULL CHECK (pontos_custo > 0),
+            tipo TEXT NOT NULL CHECK (tipo IN ('desconto', 'produto', 'frete_gratis', 'outro')),
+            valor_desconto REAL,
+            produto_id INTEGER,
+            ativo INTEGER DEFAULT 1,
+            estoque INTEGER,
+            imagem_url TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE SET NULL
+        )
+    `);
+
+    await run(`
+        CREATE TABLE IF NOT EXISTS fidelidade_resgates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente_id INTEGER NOT NULL,
+            recompensa_id INTEGER NOT NULL,
+            quantidade INTEGER NOT NULL DEFAULT 1,
+            pontos_gastos INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+            FOREIGN KEY (recompensa_id) REFERENCES recompensas(id) ON DELETE RESTRICT
+        )
+    `);
+
     // Índices
     const indexes = [
         'CREATE INDEX IF NOT EXISTS idx_produtos_categoria ON produtos(categoria_id)',
@@ -314,7 +378,13 @@ export async function initializeDatabase() {
         'CREATE INDEX IF NOT EXISTS idx_entregas_status ON entregas(status)',
         'CREATE INDEX IF NOT EXISTS idx_pedido_status_historico_pedido ON pedido_status_historico(pedido_id)',
         'CREATE INDEX IF NOT EXISTS idx_notificacoes_internas_destinatario ON notificacoes_internas(destinatario_perfil, destinatario_id, lida)',
-        'CREATE INDEX IF NOT EXISTS idx_push_subscriptions_cliente ON push_subscriptions(cliente_id)'
+        'CREATE INDEX IF NOT EXISTS idx_push_subscriptions_cliente ON push_subscriptions(cliente_id)',
+        'CREATE INDEX IF NOT EXISTS idx_fidelidade_cliente ON fidelidade(cliente_id)',
+        'CREATE INDEX IF NOT EXISTS idx_fidelidade_historico_cliente ON fidelidade_historico(cliente_id)',
+        'CREATE INDEX IF NOT EXISTS idx_fidelidade_historico_pedido ON fidelidade_historico(pedido_id)',
+        'CREATE INDEX IF NOT EXISTS idx_recompensas_ativo ON recompensas(ativo)',
+        'CREATE INDEX IF NOT EXISTS idx_fidelidade_resgates_cliente ON fidelidade_resgates(cliente_id)',
+        'CREATE INDEX IF NOT EXISTS idx_fidelidade_resgates_recompensa ON fidelidade_resgates(recompensa_id)'
     ];
 
     for (const indexSql of indexes) {
@@ -333,10 +403,10 @@ export async function initializeDatabase() {
     }
 
     // Seed delivery config
-    const deliveryConfig = await run('SELECT 1 FROM configuracao_entrega WHERE id = 1');
+    const deliveryConfig = await run('SELECT 1 FROM configuracoes_entrega WHERE id = 1');
     if (!deliveryConfig) {
         await run(
-            'INSERT INTO configuracao_entrega (id, taxa_entrega, valor_minimo_pedido, bairro_taxa_extra) VALUES (1, 5.00, 20.00, "[]")'
+            'INSERT INTO configuracoes_entrega (id, taxa_entrega, valor_minimo_pedido, bairro_taxa_extra) VALUES (1, 5.00, 20.00, "[]")'
         );
     }
 

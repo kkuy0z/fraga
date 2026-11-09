@@ -1,0 +1,489 @@
+.page {
+  padding: var(--spacing-lg);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* Resumo */
+.resumo {
+  margin-bottom: var(--spacing-xl);
+}
+
+.resumoCards {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+}
+
+.card.principal {
+  background: linear-gradient(135deg, var(--color-primary-bg), var(--color-primary-light-bg));
+  border-color: var(--color-primary-border);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.cardLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nivelBadge {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.pontosValor {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.pontosLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.valorGrande {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.progressContainer {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-primary-border);
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-xs);
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--color-bg);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
+
+/* Recompensas */
+.recompensas {
+  margin-bottom: var(--spacing-xl);
+}
+
+.recompensasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.recompensaCard {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.recompensaCard:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.recompensaImage {
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+}
+
+.recompensaImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recompensaContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.recompensaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.recompensaNome {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.recompensaTipo {
+  flex-shrink: 0;
+}
+
+.recompensaDesc {
+  margin: 0 0 var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.recompensaFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.recompensaCusto {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+}
+
+.custoValor {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.custoLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.recompensaEstoque {
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.resgatarBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Histórico */
+.historico {
+  margin-bottom: var(--spacing-xl);
+}
+
+.historicoList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.historicoItem {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  align-items: flex-start;
+}
+
+.historicoIcon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+
+.historicoContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historicoTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.historicoDesc {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.historicoTipo {
+  flex-shrink: 0;
+}
+
+.historicoBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.historicoPedido {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.historicoRecompensa {
+  font-weight: 500;
+  color: var(--color-warning);
+}
+
+.historicoPontos {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  min-width: 80px;
+  text-align: right;
+}
+
+.historicoPontos.ganho {
+  color: var(--color-success);
+}
+
+.historicoPontos.gasto {
+  color: var(--color-error);
+}
+
+/* Empty state */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--color-border);
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.5;
+}
+
+.emptyHint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+/* Modal */
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.modalResumo {
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.modalResumo h4 {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--color-text);
+}
+
+.modalResumo p {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.modalCusto {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.modalCusto span:first-child {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.input {
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-bg);
+}
+
+.helpText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.modalTotal {
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  padding: var(--spacing-md);
+  background: var(--color-primary-bg);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.modalTotal strong {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+}
+
+/* Error container */
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--spacing-lg);
+}
+
+.errorCard {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  max-width: 400px;
+}
+
+.errorCard h1 {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.errorCard h2 {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text);
+}
+
+.errorCard p {
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: var(--spacing-md);
+  }
+
+  .resumoCards {
+    grid-template-columns: 1fr;
+  }
+
+  .recompensasGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .historicoItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .historicoPontos {
+    min-width: auto;
+    text-align: left;
+    margin-top: var(--spacing-sm);
+  }
+
+  .recompensaFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resgatarBtn {
+    width: 100%;
+  }
+}

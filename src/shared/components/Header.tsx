@@ -10,7 +10,7 @@ import styles from './Header.module.css';
 
 interface HeaderProps {
   /** Página atual para destacar no menu */
-  currentPage?: 'inicio' | 'cardapio' | 'carrinho' | 'checkout' | 'perfil' | 'meus-pedidos' | 'cadastro' | 'admin';
+  currentPage?: 'inicio' | 'cardapio' | 'carrinho' | 'checkout' | 'perfil' | 'meus-pedidos' | 'cadastro' | 'admin' | 'fidelidade' | 'notificacoes' | 'avaliacoes' | 'rastreamento' | 'cozinha' | 'entregador';
   /** Mostrar link para admin */
   showAdminLink?: boolean;
   /** Classe CSS adicional */
@@ -113,6 +113,12 @@ export function Header({
                     </a>
                     <a href="/inicio/perfil.html" className={styles.userDropdownItem} role="menuitem">
                       Meu Perfil
+                    </a>
+                    <a href="/inicio/fidelidade.html" className={styles.userDropdownItem} role="menuitem">
+                      🎁 Fidelidade
+                    </a>
+                    <a href="/inicio/notificacoes.html" className={styles.userDropdownItem} role="menuitem">
+                      🔔 Notificações
                     </a>
                   </>
                 )}

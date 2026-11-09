@@ -1,0 +1,333 @@
+.page {
+  padding: var(--spacing-lg);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* Status Section */
+.statusSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.statusIcon {
+  font-size: var(--font-size-2xl);
+}
+
+.statusInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.statusLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.statusValue {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.notSupported,
+.permissionDenied {
+  padding: var(--spacing-md);
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  border-radius: var(--radius-md);
+  color: var(--color-warning-text);
+}
+
+.notSupported p,
+.permissionDenied p {
+  margin: 0 0 var(--spacing-sm);
+}
+
+.notSupported p:last-child,
+.permissionDenied p:last-child {
+  margin-bottom: 0;
+}
+
+/* Actions Section */
+.actionsSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.subscriptionCard,
+.subscribeCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.subscriptionInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 200px;
+}
+
+.subscriptionBadge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.subscriptionBadge.ativa {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.subscriptionText {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--color-text);
+}
+
+.subscriptionDetails {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-family: monospace;
+}
+
+.unsubscribeBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.subscribeCard {
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.subscribeInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.subscribeIcon {
+  font-size: 3rem;
+}
+
+.subscribeTitle {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
+}
+
+.subscribeText {
+  margin: 0;
+  color: var(--color-text-muted);
+  max-width: 400px;
+}
+
+.subscribeBtn {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Prefs Section */
+.prefsSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.prefsDesc {
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.prefsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.prefItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  gap: var(--spacing-md);
+}
+
+.prefInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.prefIcon {
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
+}
+
+.prefLabel {
+  display: block;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.prefDesc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.savePrefsBtn {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Info Section */
+.infoSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+}
+
+.infoCard {
+  padding: var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.infoIcon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.infoCard h3 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.infoCard p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Error container */
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--spacing-lg);
+}
+
+.errorCard {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  max-width: 400px;
+}
+
+.errorCard h1 {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.errorCard h2 {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text);
+}
+
+.errorCard p {
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: var(--spacing-md);
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .subscriptionCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .subscriptionInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .subscribeCard {
+    padding: var(--spacing-lg);
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .prefItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prefInfo {
+    width: 100%;
+  }
+}

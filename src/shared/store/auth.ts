@@ -27,6 +27,9 @@ interface AuthState {
   getCurrentUser: () => User | Cliente | null;
   getCurrentToken: () => string | null;
   isAdmin: () => boolean;
+  isCozinha: () => boolean;
+  isEntregador: () => boolean;
+  isAtendente: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -67,6 +70,21 @@ export const useAuthStore = create<AuthState>()(
         const user = get().adminUser;
         return user?.role === 'administrador';
       },
+
+      isCozinha: () => {
+        const user = get().adminUser;
+        return user?.role === 'cozinha';
+      },
+
+      isEntregador: () => {
+        const user = get().adminUser;
+        return user?.role === 'entregador';
+      },
+
+      isAtendente: () => {
+        const user = get().adminUser;
+        return user?.role === 'atendente';
+      },
     }),
     {
       name: 'fraga-auth',
@@ -91,3 +109,6 @@ export const useIsClienteAuthenticated = () => useAuthStore((state) => state.isC
 export const useCurrentUser = () => useAuthStore((state) => state.getCurrentUser());
 export const useCurrentToken = () => useAuthStore((state) => state.getCurrentToken());
 export const useIsAdmin = () => useAuthStore((state) => state.isAdmin());
+export const useIsCozinha = () => useAuthStore((state) => state.isCozinha());
+export const useIsEntregador = () => useAuthStore((state) => state.isEntregador());
+export const useIsAtendente = () => useAuthStore((state) => state.isAtendente());

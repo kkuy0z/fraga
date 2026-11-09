@@ -17,6 +17,9 @@ import {
   useCurrentUser,
   useCurrentToken,
   useIsAdmin,
+  useIsCozinha,
+  useIsEntregador,
+  useIsAtendente,
 } from '@store';
 import { decodificarJWT, isTokenExpired } from '@utils';
 
@@ -30,6 +33,9 @@ export function useAuth() {
   const currentUser = useCurrentUser();
   const currentToken = useCurrentToken();
   const isAdmin = useIsAdmin();
+  const isCozinha = useIsCozinha();
+  const isEntregador = useIsEntregador();
+  const isAtendente = useIsAtendente();
 
   const setAdminAuth = useAuthStore((state) => state.setAdminAuth);
   const clearAdminAuth = useAuthStore((state) => state.clearAdminAuth);
@@ -133,6 +139,9 @@ export function useAuth() {
     currentUser,
     currentToken,
     isAdmin: checkIsAdmin(),
+    isCozinha,
+    isEntregador,
+    isAtendente,
     userRole: getUserRole(),
 
     // Actions
@@ -180,7 +189,7 @@ export function useRequireClienteAuth(redirectTo = '/cadastro.html') {
 
 // Hook para verificar auth sem redirecionar (para uso em componentes que se adaptam)
 export function useCheckAuth() {
-  const { isAdminAuthenticated, isClienteAuthenticated, verifyAdminAuth, verifyClienteAuth } = useAuth();
+  const { isAdminAuthenticated, isClienteAuthenticated, isCozinha, isEntregador, isAtendente, verifyAdminAuth, verifyClienteAuth } = useAuth();
 
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -190,5 +199,5 @@ export function useCheckAuth() {
     }
   }, [isAdminAuthenticated, isClienteAuthenticated, verifyAdminAuth, verifyClienteAuth]);
 
-  return { isAdminAuthenticated, isClienteAuthenticated };
+  return { isAdminAuthenticated, isClienteAuthenticated, isCozinha, isEntregador, isAtendente };
 }

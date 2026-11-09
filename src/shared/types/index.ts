@@ -4,7 +4,7 @@ export interface User {
   id: number;
   nome: string;
   email: string;
-  role: 'administrador' | 'atendente' | 'cliente';
+  role: 'administrador' | 'atendente' | 'cozinha' | 'entregador' | 'cliente';
   ativo: boolean;
   created_at: string;
   updated_at: string;
