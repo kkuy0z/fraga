@@ -461,7 +461,7 @@ async function pollDeliveryLocations() {
     try {
         // Get active deliveries with recent location updates
         const deliveries = await db.query(`
-            SELECT e.*, u.nome as entregador_nome, p.cliente_id
+            SELECT e.*, u.nome as entregador_nome, p.cliente_id, p.cliente_email, p.cliente_telefone
             FROM entregas e
             JOIN usuarios_admin u ON e.entregador_id = u.id
             JOIN pedidos p ON e.pedido_id = p.id
@@ -485,9 +485,20 @@ async function pollDeliveryLocations() {
             // Send to admin profile
             sendToProfile('administrador', message);
 
-            // Send to specific client if they're connected
-            if (delivery.cliente_id) {
-                sendToUser(delivery.cliente_id, message);
+            // Send to specific client if they're connected (using cliente_id if available, otherwise try to find by email/phone)
+            let clienteId = delivery.cliente_id;
+            if (!clienteId && delivery.cliente_email) {
+                // Try to find client by email
+                const cliente = await db.queryOne('SELECT id FROM clientes WHERE email = ?', [delivery.cliente_email]);
+                if (cliente) clienteId = cliente.id;
+            }
+            if (!clienteId && delivery.cliente_telefone) {
+                // Try to find client by phone
+                const cliente = await db.queryOne('SELECT id FROM clientes WHERE telefone = ?', [delivery.cliente_telefone]);
+                if (cliente) clienteId = cliente.id;
+            }
+            if (clienteId) {
+                sendToUser(clienteId, message);
             }
         }
     } catch (error) {
