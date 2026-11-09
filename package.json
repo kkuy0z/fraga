@@ -1,0 +1,24 @@
+{
+  "name": "fraga-lanches-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Fraga Lanches",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:init": "node db/init.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.4.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^10.0.0",
+    "better-sqlite3": "^9.4.3",
+    "zod": "^3.23.8"
+  }
+}
