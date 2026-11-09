@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fraga Lanches</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://maps.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://maps.google.com; frame-src https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
     <!-- Referrer Policy -->
@@ -70,6 +70,15 @@
             </div>
         </div>
     </header>
+=======
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 
     <section class="hero" id="inicio">
         <img src="/img/img_fundo.png" alt="Hambúrguer Artesanal" class="hero-bg" id="heroBg">
@@ -81,12 +90,16 @@
                 <span class="status-indicator"></span>
                 <span class="status-text">Verificando...</span>
             </div>
-            <h1>
+            <h1 class="heading-1">
                 A MELHOR<br>
                 <span class="destaque">HAMBURGUERIA</span><br>
                 DA REGIÃO!
             </h1>
+<<<<<<< HEAD
             <a href="/inicio/cardapio.html" class="botao-pedido">
+=======
+            <a href="/Cadastro/cadastro.html" class="botao-pedido btn btn-primary btn-lg">
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
                 Faça um Pedido <span class="seta">></span>
             </a>
         </div>
@@ -94,89 +107,96 @@
 
     <!-- ================= SOBRE NÓS ================= -->
     <section class="sobre" id="sobre">
-        <div class="sobre-container">
-            <div class="sobre-texto-box">
-                <h2 class="titulo-sobre">
-                    <span class="traco-horizontal"></span> SOBRE <span class="destaque-sobre">NÓS</span>
-                </h2>
-                <h3 class="subtitulo-sobre">
-                    Feito a mão.<br>
-                    <span class="destaque-subtitulo">Pensado para você.</span>
-                </h3>
-                <div class="linha-amarela"></div>
-                <p class="sobre-texto">
-                    O Fraga Lanches vai se tornar o seu novo destino favorito para matar a fome com muito sabor e
-                    qualidade! Especializados em hambúrgueres artesanais suculentos, oferecemos também as melhores e
-                    mais generosas porções do bairro, além de pratos completos e deliciosos. Seja para curtir no
-                    aconchego da sua casa ou para aproveitar o nosso atendimento, garantimos praticidade e ingredientes
-                    caprichados em cada pedido.
-                </p>
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title"><span class="accent">SOBRE</span> NÓS</h2>
+                <p class="section-subtitle">Feito a mão. Pensado para você.</p>
+                <div class="section-divider-left"></div>
             </div>
 
+<<<<<<< HEAD
             <div class="logo-principal-container">
                 <img src="/img/logo.png" alt="Fraga Lanches Logo Principal" class="logo-principal-img" id="logoPrincipal">
+=======
+            <div class="sobre-container">
+                <div class="sobre-texto-box">
+                    <h3 class="subtitle-serif">Feito a mão.<br><span class="accent">Pensado para você.</span></h3>
+                    <div class="divider-yellow"></div>
+                    <p class="about-text">
+                        O Fraga Lanches vai se tornar o seu novo destino favorito para matar a fome com muito sabor e
+                        qualidade! Especializados em hambúrgueres artesanais suculentos, oferecemos também as melhores e
+                        mais generosas porções do bairro, além de pratos completos e deliciosos. Seja para curtir no
+                        aconchego da sua casa ou para aproveitar o nosso atendimento, garantimos praticidade e ingredientes
+                        caprichados em cada pedido.
+                    </p>
+                </div>
+
+                <div class="logo-principal-container">
+                    <img src="/img/logo.png" alt="Fraga Lanches Logo Principal" class="logo-principal-img"
+                        onerror="this.src='https://via.placeholder.com/320/111111/ffd900?text=FRAGA+LANCHES'">
+                </div>
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
             </div>
         </div>
     </section>
 
     <!-- ================= NOSSO ESPAÇO ================= -->
     <section class="espaco" id="espaco">
-        <div class="espaco-container">
-            <!-- Cabeçalho da Seção -->
-            <div class="espaco-header">
-                <h2 class="titulo-espaco">NOSSO <span class="destaque-espaco">ESPAÇO</span></h2>
-                <p class="subtitulo-espaco">Mais do que um espaço para comer, um espaço feito para reunir, celebrar e
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">NOSSO <span class="accent">ESPAÇO</span></h2>
+                <p class="section-subtitle">Mais do que um espaço para comer, um espaço feito para reunir, celebrar e
                     saborear refeições saborosas!</p>
-                <div class="linha-amarela-espaco"></div>
+                <div class="section-divider"></div>
             </div>
 
-            <!-- Carrossel de Múltiplas Imagens -->
-            <div class="carrossel-espaco-wrapper">
-                <button class="seta-espaco" id="anterior-espaco" aria-label="Anterior">&#10094;</button>
+            <div class="espaco-container">
+                <!-- Carrossel de Múltiplas Imagens -->
+                <div class="carrossel-espaco-wrapper">
+                    <button class="carrossel-arrow" id="anterior-espaco" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-left" /></svg></button>
 
+<<<<<<< HEAD
                 <div class="carrossel-espaco-container">
                     <!-- Exemplo com 4 imagens visíveis no carrossel -->
                     <div class="espaco-card"><img src="/img/espaco1.svg" alt="Espaço 1 - Salão Principal" class="espaco-img"></div>
                     <div class="espaco-card"><img src="/img/espaco2.svg" alt="Espaço 2 - Área Externa" class="espaco-img"></div>
                     <div class="espaco-card"><img src="/img/espaco3.svg" alt="Espaço 3 - Mesas Privativas" class="espaco-img"></div>
                     <div class="espaco-card"><img src="/img/espaco4.svg" alt="Espaço 4 - Balcão" class="espaco-img"></div>
+=======
+                    <div class="carrossel-espaco-container" id="carrosselEspaco">
+                        <!-- Imagens serão inseridas via JS -->
+                    </div>
+
+                    <button class="carrossel-arrow" id="proximo-espaco" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-right" /></svg></button>
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
                 </div>
 
-                <button class="seta-espaco" id="proximo-espaco" aria-label="Próximo">&#10095;</button>
-            </div>
-
-            <!-- Bolinhas indicadoras -->
-            <div class="carrossel-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+                <!-- Bolinhas indicadoras -->
+                <div class="carrossel-dots" id="carrosselDots"></div>
             </div>
         </div>
     </section>
 
     <!-- ================= LOCALIZAÇÃO ================= -->
     <section class="localizacao" id="localizacao">
-        <div class="localizacao-container">
-            <!-- Título da Seção -->
-            <div class="localizacao-header">
-                <h2 class="titulo-localizacao">LOCALIZAÇÃO</h2>
-                <div class="linha-amarela-loc"></div>
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title"><span class="accent">LOCALIZAÇÃO</span></h2>
+                <div class="section-divider-left"></div>
             </div>
 
             <div class="localizacao-grid">
                 <!-- Coluna da Esquerda: Endereço, Horário e Botão -->
                 <div class="localizacao-info">
                     <div class="info-item endereco-item">
-                        <span class="icone-loc">📍</span>
+                        <span class="icone-loc" aria-hidden="true">📍</span>
                         <p>R. SIMONÉSIA, 5 - MARIMBÁ<br>BETIM, MG</p>
                     </div>
 
                     <div class="horario-box">
                         <h3 class="horario-titulo">HORÁRIO DE FUNCIONAMENTO</h3>
                         <div class="horario-conteudo">
-                            <span class="icone-relogio">⏰</span>
+                            <span class="icone-relogio" aria-hidden="true">⏰</span>
                             <div class="horario-texto">
                                 <span>Segunda à Sábado</span>
                                 <strong class="destaque-horas">18HRS - 23H30</strong>
@@ -185,7 +205,11 @@
                     </div>
 
                     <a href="https://maps.google.com/maps?q=Rua+Simon%C3%A9sia,+5,+Marimb%C3%A1,+Betim+-+MG"
+<<<<<<< HEAD
                         target="_blank" rel="noopener noreferrer" class="botao-como-chegar">
+=======
+                        target="_blank" class="botao-como-chegar btn btn-primary btn-block" style="max-width: 240px;">
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
                         COMO CHEGAR <span class="seta-btn">&rarr;</span>
                     </a>
                 </div>
@@ -205,18 +229,19 @@
 
     <!-- ================= AVALIAÇÕES ================= -->
     <section class="avaliacoes" id="avaliacoes">
-        <div class="avaliacoes-container-geral">
-            <!-- Cabeçalho da Seção -->
-            <div class="avaliacoes-header">
-                <h2 class="titulo-avaliacoes">VEJA AS <span class="destaque-av">AVALIAÇÕES</span></h2>
-                <p class="subtitulo-avaliacoes">Confira o que os nossos clientes têm a dizer sobre nosso serviço.</p>
-                <div class="linha-amarela-av"></div>
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">VEJA AS <span class="accent">AVALIAÇÕES</span></h2>
+                <p class="section-subtitle">Confira o que os nossos clientes têm a dizer sobre nosso serviço.</p>
+                <div class="section-divider"></div>
             </div>
 
-            <!-- Carrossel de Depoimentos -->
-            <div class="avaliacoes-carrossel-wrapper">
-                <button class="seta-av" id="prev-review" aria-label="Anterior">&#9664;</button>
+            <div class="avaliacoes-container-geral">
+                <!-- Carrossel de Depoimentos -->
+                <div class="avaliacoes-carrossel-wrapper">
+                    <button class="carrossel-arrow" id="prev-review" aria-label="Anterior"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-left" /></svg></button>
 
+<<<<<<< HEAD
                 <div class="avaliacoes-container" id="avaliacoes-list">
                     <!-- Card 1 -->
                     <div class="avaliacao-card">
@@ -232,58 +257,72 @@
                             ponto perfeito e o pão é super macio. Sem contar que pedi entrega e chegou quentinho e super
                             rápido. Nota 10!"</p>
                         <div class="aspas-rodape">“</div>
+=======
+                    <div class="avaliacoes-container" id="avaliacoes-list">
+                        <!-- Cards serão inseridos via JS -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
                     </div>
 
-                    <!-- Card 2 -->
-                    <div class="avaliacao-card">
-                        <div class="avatar-box">
-                            <svg class="avatar-svg" viewBox="0 0 24 24" fill="#ffd900">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-                            </svg>
-                        </div>
-                        <h4 class="cliente-nome">Samuel Welington</h4>
-                        <div class="estrelas">★★★★★</div>
-                        <p class="cliente-comentario">"Surpreendido pela qualidade! Além do lanche artesanal
-                            maravilhoso, pedi uma marmita durante a semana e a comida é caseira, muito saborosa e bem
-                            servida. Parabéns à equipe!"</p>
-                        <div class="aspas-rodape">“</div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="avaliacao-card">
-                        <div class="avatar-box">
-                            <svg class="avatar-svg" viewBox="0 0 24 24" fill="#ffd900">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-                            </svg>
-                        </div>
-                        <h4 class="cliente-nome">Maria Gabriela</h4>
-                        <div class="estrelas">★★★★★</div>
-                        <p class="cliente-comentario">"Atendimento impecável e comida excelente. As porções são
-                            generosas e o preço é justo. Virou o meu delivery favorito de fim de semana!"</p>
-                        <div class="aspas-rodape">“</div>
-                    </div>
+                    <button class="carrossel-arrow" id="next-review" aria-label="Próximo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-chevron-right" /></svg></button>
                 </div>
 
-                <button class="seta-av" id="next-review" aria-label="Próximo">&#9658;</button>
-            </div>
-
-            <!-- Bolinhas Indicadoras -->
-            <div class="carrossel-dots-av">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+                <!-- Bolinhas Indicadoras -->
+                <div class="carrossel-dots" id="avaliacoesDots"></div>
             </div>
         </div>
     </section>
 
     <!-- ================= CONTATO ================= -->
     <section class="contato" id="contato">
-        <div class="contato-container-geral">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">ENTRE EM CONTATO<br>E <span class="accent">FAÇA SEU PEDIDO!</span></h2>
+                <p class="section-subtitle">Estamos prontos para preparar suas refeições com todo o cuidado que você merece. Fale com a gente ou faça seu pedido agora!</p>
+                <div class="section-divider-left"></div>
+            </div>
+
             <div class="contato-grid">
+                <!-- Coluna da Direita: Blocos de Contato e Botão do WhatsApp -->
+                <div class="contato-botoes-coluna">
+                    <!-- Bloco WhatsApp -->
+                    <a href="https://wa.me/5531997577197" target="_blank" class="bloco-contato-item">
+                        <div class="icone-circulo">
+                            <svg class="svg-icone" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#i-whatsapp" /></svg>
+                        </div>
+                        <div class="texto-bloco">
+                            <span class="label-topo">WHATSAPP</span>
+                            <strong class="valor-info">(31) 99757-7197</strong>
+                        </div>
+                    </a>
+
+                    <!-- Bloco Instagram -->
+                    <a href="https://instagram.com/fraga_lanches" target="_blank" class="bloco-contato-item">
+                        <div class="icone-circulo">
+                            <svg class="svg-icone" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </div>
+                        <div class="texto-bloco">
+                            <span class="label-topo">INSTAGRAM</span>
+                            <strong class="valor-info">fraga_lanches</strong>
+                        </div>
+                    </a>
+
+                    <!-- Bloco Endereço -->
+                    <div class="bloco-contato-item">
+                        <div class="icone-circulo">
+                            <svg class="svg-icone" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#i-map-marker" /></svg>
+                        </div>
+                        <div class="texto-bloco">
+                            <span class="label-topo">ENDEREÇO</span>
+                            <strong class="valor-info">R. Simonésia, 5 - Marimbá</strong>
+                        </div>
+                    </div>
+
+                    <!-- Botão Pedir pelo WhatsApp -->
+                    <a href="https://wa.me/5531997577197" target="_blank" class="botao-pedir-whatsapp btn btn-primary btn-lg">
+                        PEDIR PELO WHATSAPP <span class="seta-contato">&rarr;</span>
+                    </a>
+                </div>
+
                 <!-- Coluna da Esquerda: Título, Subtítulo e Linha Amarela -->
                 <div class="contato-info-texto">
                     <h2 class="titulo-contato">
@@ -296,6 +335,7 @@
                     </p>
                     <div class="linha-amarela-contato"></div>
                 </div>
+<<<<<<< HEAD
 
                 <!-- Coluna da Direita: Blocos de Contato e Botão do WhatsApp -->
                 <div class="contato-botoes-coluna">
@@ -346,18 +386,17 @@
                         PEDIR PELO WHATSAPP <span class="seta-contato">&rarr;</span>
                     </a>
                 </div>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
             </div>
         </div>
     </section>
-    <!-- ================= FOOTER ================= -->
-    <footer>
-        <div class="container">
-            © 2026 Fraga Lanches - Todos os direitos reservados.
-        </div>
-    </footer>
 
-    <script src="script.js"></script>
+    <!-- Footer will be injected by shared-components.js -->
+
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/index.js"></script>
+<<<<<<< HEAD
     <script>
       // Service Worker Registration
       if ('serviceWorker' in navigator) {
@@ -393,6 +432,8 @@
         });
       });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>

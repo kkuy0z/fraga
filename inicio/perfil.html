@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Fraga Lanches</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <!-- Referrer Policy -->
@@ -70,6 +70,15 @@
             </div>
         </div>
     </header>
+=======
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 
     <!-- Main Content -->
     <main class="page-main" role="main">
@@ -84,7 +93,7 @@
             </div>
 
             <!-- Tabs Navigation -->
-            <nav class="tabs" id="perfilTabs" role="tablist" aria-label="Seções do perfil" style="margin-bottom: 24px; border-bottom: 1px solid var(--border);">
+            <nav class="tabs" id="perfilTabs" role="tablist" aria-label="Seções do perfil">
                 <button role="tab" class="tab-btn active" aria-selected="true" aria-controls="tab-dados" id="tab-btn-dados" data-tab="dados">Dados Pessoais</button>
                 <button role="tab" class="tab-btn" aria-selected="false" aria-controls="tab-enderecos" id="tab-btn-enderecos" data-tab="enderecos">Endereços</button>
                 <button role="tab" class="tab-btn" aria-selected="false" aria-controls="tab-seguranca" id="tab-btn-seguranca" data-tab="seguranca">Segurança</button>
@@ -92,8 +101,8 @@
 
             <!-- Tab: Dados Pessoais -->
             <div role="tabpanel" id="tab-dados" class="tab-panel active" aria-labelledby="tab-btn-dados">
-                <form id="formDadosPessoais" class="card" style="padding: 24px;" novalidate>
-                    <h3 class="card-title" style="margin-bottom: 24px;">Informações Pessoais</h3>
+                <form id="formDadosPessoais" class="card" style="padding: var(--space-6);" novalidate>
+                    <h3 class="card-title" style="margin-bottom: var(--space-6);">Informações Pessoais</h3>
 
                     <div class="form-row">
                         <div class="form-group" style="flex: 1;">
@@ -102,7 +111,7 @@
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label for="perfilEmail" class="form-label">E-mail *</label>
-                            <input type="email" id="perfilEmail" name="email" class="form-input" required maxlength="120" readonly style="background: var(--bg-secondary); cursor: not-allowed;">
+                            <input type="email" id="perfilEmail" name="email" class="form-input" required maxlength="120" readonly style="background: var(--color-bg-secondary); cursor: not-allowed;">
                             <p class="form-help">O e-mail não pode ser alterado. Entre em contato com o suporte se precisar alterá-lo.</p>
                         </div>
                     </div>
@@ -114,7 +123,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-end gap-2" style="margin-top: 24px;">
+                    <div class="d-flex justify-end gap-2" style="margin-top: var(--space-6);">
                         <button type="submit" class="btn btn-primary">
                             <svg class="btn-icon" aria-hidden="true"><use href="#i-save" /></svg>
                             Salvar Alterações
@@ -125,7 +134,7 @@
 
             <!-- Tab: Endereços -->
             <div role="tabpanel" id="tab-enderecos" class="tab-panel hidden" aria-labelledby="tab-btn-enderecos">
-                <div class="d-flex justify-between align-center" style="margin-bottom: 24px;">
+                <div class="d-flex justify-between align-center" style="margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-3);">
                     <h3 class="card-title" style="margin: 0;">Meus Endereços</h3>
                     <button class="btn btn-primary" id="btnNovoEndereco" aria-label="Adicionar novo endereço">
                         <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
@@ -133,17 +142,14 @@
                     </button>
                 </div>
 
-                <div id="enderecosList" class="enderecos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                <div id="enderecosList" class="enderecos-grid">
                     <!-- Endereços serão inseridos via JS -->
                 </div>
 
                 <!-- Estado Vazio -->
                 <div class="empty-state hidden" id="enderecosEmptyState" style="grid-column: 1 / -1;">
                     <div class="empty-state-icon">
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><use href="#i-map-marker" /></svg>
                     </div>
                     <h2 class="empty-state-title">Nenhum endereço cadastrado</h2>
                     <p class="empty-state-message">Adicione um endereço para agilizar seus pedidos.</p>
@@ -152,9 +158,9 @@
 
             <!-- Tab: Segurança -->
             <div role="tabpanel" id="tab-seguranca" class="tab-panel hidden" aria-labelledby="tab-btn-seguranca">
-                <form id="formAlterarSenha" class="card" style="padding: 24px; max-width: 500px;" novalidate>
-                    <h3 class="card-title" style="margin-bottom: 8px;">Alterar Senha</h3>
-                    <p class="form-help" style="margin-bottom: 24px;">Sua senha deve ter no mínimo 8 caracteres.</p>
+                <form id="formAlterarSenha" class="card" style="padding: var(--space-6); max-width: 500px;" novalidate>
+                    <h3 class="card-title" style="margin-bottom: var(--space-2);">Alterar Senha</h3>
+                    <p class="form-help" style="margin-bottom: var(--space-6);">Sua senha deve ter no mínimo 8 caracteres.</p>
 
                     <div class="form-group">
                         <label for="senhaAtual" class="form-label">Senha Atual *</label>
@@ -196,7 +202,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-end gap-2" style="margin-top: 24px;">
+                    <div class="d-flex justify-end gap-2" style="margin-top: var(--space-6);">
                         <button type="submit" class="btn btn-primary">
                             <svg class="btn-icon" aria-hidden="true"><use href="#i-save" /></svg>
                             Alterar Senha
@@ -207,16 +213,15 @@
         </div>
     </main>
 
+    <!-- Footer will be injected by shared-components.js -->
+
     <!-- Modal Novo/Editar Endereço -->
     <div class="modal-overlay hidden" id="enderecoModal" role="dialog" aria-modal="true" aria-labelledby="enderecoModalTitulo">
         <div class="modal modal-md">
             <div class="modal-header">
                 <h2 class="modal-title" id="enderecoModalTitulo">Novo Endereço</h2>
                 <button class="modal-close" id="enderecoModalClose" aria-label="Fechar modal">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-x" /></svg>
                 </button>
             </div>
             <form id="enderecoForm" class="modal-body" novalidate>
@@ -227,10 +232,7 @@
                     <div class="input-with-icon">
                         <input type="text" id="enderecoCep" name="cep" class="form-input" required placeholder="00000-000" maxlength="9" aria-describedby="cepHelp">
                         <button type="button" class="input-icon-btn" id="btnBuscarCep" aria-label="Buscar endereço pelo CEP">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-search" /></svg>
                         </button>
                     </div>
                     <p class="form-help" id="cepHelp">Digite o CEP e clique no ícone de busca para preencher automaticamente</p>
@@ -259,7 +261,7 @@
                     <input type="text" id="enderecoComplemento" name="complemento" class="form-input" maxlength="100" placeholder="Apto, Bloco, Casa, etc. (opcional)">
                 </div>
 
-                <div class="form-check" style="margin-top: 16px;">
+                <div class="form-check" style="margin-top: var(--space-4);">
                     <input type="checkbox" id="enderecoPrincipal" name="principal" class="form-check-input">
                     <label for="enderecoPrincipal" class="form-check-label">Definir como endereço principal</label>
                 </div>
@@ -294,22 +296,9 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-        <div class="loading-spinner"></div>
-        <p class="loading-message">Carregando...</p>
-    </div>
-
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <p class="footer-text">© 2026 Fraga Lanches - Todos os direitos reservados.</p>
-        </div>
-    </footer>
-
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/perfil.js"></script>
+<<<<<<< HEAD
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -328,6 +317,8 @@
         });
       });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>

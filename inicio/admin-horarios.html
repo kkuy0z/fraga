@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horários - Fraga Lanches Admin</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <!-- Referrer Policy -->
@@ -144,6 +144,15 @@
             <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
     </button>
+=======
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 
     <!-- Main Content -->
     <main class="page-main admin-main" role="main">
@@ -151,7 +160,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <div class="page-header-inner">
-                    <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: 16px;">
+                    <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: var(--space-4);">
                         <div>
                             <h1 class="page-title">Horários de Funcionamento</h1>
                             <p class="page-subtitle">Configure os dias e horários de atendimento</p>
@@ -166,15 +175,15 @@
             </div>
 
             <!-- Status Atual -->
-            <div class="card" style="margin-bottom: 24px; padding: 20px;">
-                <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: 16px;">
+            <div class="card" style="margin-bottom: var(--space-6); padding: var(--space-6);">
+                <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: var(--space-4);">
                     <div>
-                        <h3 class="card-title" style="margin-bottom: 4px;">Status do Estabelecimento</h3>
-                        <p style="color: var(--text-muted); font-size: 14px;">Baseado nos horários configurados e horário atual</p>
+                        <h3 class="card-title" style="margin-bottom: var(--space-1);">Status do Estabelecimento</h3>
+                        <p style="color: var(--color-text-muted); font-size: var(--fs-sm);">Baseado nos horários configurados e horário atual</p>
                     </div>
                     <div id="statusAtualContainer" class="d-flex align-center gap-3">
-                        <div class="status-indicator" id="statusIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: var(--text-muted);"></div>
-                        <span id="statusText" style="font-weight: 600; font-size: 16px;">Verificando...</span>
+                        <div class="status-indicator" id="statusIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: var(--color-text-muted);"></div>
+                        <span id="statusText" style="font-weight: 600; font-size: var(--fs-lg);">Verificando...</span>
                     </div>
                 </div>
             </div>
@@ -211,7 +220,7 @@
                 </div>
                 <h2 class="empty-state-title">Nenhum horário cadastrado</h2>
                 <p class="empty-state-message">Adicione os horários de funcionamento para cada dia da semana.</p>
-                <button class="btn btn-primary" id="btnPrimeiroHorario" style="margin-top: 16px;">
+                <button class="btn btn-primary" id="btnPrimeiroHorario" style="margin-top: var(--space-4);">
                     <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
                     Adicionar Horário
                 </button>
@@ -219,16 +228,15 @@
         </div>
     </main>
 
+    <!-- Footer will be injected by shared-components.js -->
+
     <!-- Modal Novo/Editar Horário -->
     <div class="modal-overlay hidden" id="horarioModal" role="dialog" aria-modal="true" aria-labelledby="horarioModalTitulo">
         <div class="modal modal-md">
             <div class="modal-header">
                 <h2 class="modal-title" id="horarioModalTitulo">Novo Horário</h2>
                 <button class="modal-close" id="horarioModalClose" aria-label="Fechar modal">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-x" /></svg>
                 </button>
             </div>
             <form id="horarioForm" class="modal-body" novalidate>
@@ -259,7 +267,7 @@
                     </div>
                 </div>
 
-                <div class="form-check" style="margin-top: 16px;">
+                <div class="form-check" style="margin-top: var(--space-4);">
                     <input type="checkbox" id="horarioFechado" name="fechado" class="form-check-input">
                     <label for="horarioFechado" class="form-check-label">Fechado neste dia</label>
                 </div>
@@ -294,16 +302,9 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-        <div class="loading-spinner"></div>
-        <p class="loading-message">Carregando...</p>
-    </div>
-
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-horarios.js"></script>
+<<<<<<< HEAD
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -322,6 +323,8 @@
         });
       });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>

@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Fraga Lanches</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <!-- Referrer Policy -->
@@ -144,6 +144,15 @@
             <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
     </button>
+=======
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 
     <!-- Main Content -->
     <main class="page-main admin-main" role="main">
@@ -158,9 +167,9 @@
             </div>
 
             <!-- Stats Cards -->
-            <section class="stats-grid" aria-label="Estatísticas gerais">
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-primary">
+            <section class="stats-grid" aria-label="Estatísticas gerais" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-5); margin-bottom: var(--space-8);">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-primary" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--color-accent-weak); color: var(--color-accent); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M16 11V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"></path>
                             <path d="M8 7v9"></path>
@@ -169,26 +178,26 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Pedidos Hoje</p>
-                        <p class="stat-value" id="statPedidosHoje">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Pedidos Hoje</p>
+                        <p class="stat-value" id="statPedidosHoje" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
 
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-success">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-success" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--color-success-bg); color: var(--color-success); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Pedidos Entregues</p>
-                        <p class="stat-value" id="statPedidosEntregues">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Pedidos Entregues</p>
+                        <p class="stat-value" id="statPedidosEntregues" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
 
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-warning">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-warning" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: rgba(255, 152, 0, 0.15); color: var(--color-warning); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                             <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -196,25 +205,25 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Pedidos Pendentes</p>
-                        <p class="stat-value" id="statPedidosPendentes">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Pedidos Pendentes</p>
+                        <p class="stat-value" id="statPedidosPendentes" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
 
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-info">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-info" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--color-accent-weak); color: var(--color-accent); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Produtos Ativos</p>
-                        <p class="stat-value" id="statProdutosAtivos">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Produtos Ativos</p>
+                        <p class="stat-value" id="statProdutosAtivos" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
 
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-neutral">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-neutral" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.05); color: var(--color-text-muted); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <line x1="4" y1="7" x2="4" y2="21"></line>
                             <line x1="4" y1="7" x2="20" y2="7"></line>
@@ -225,13 +234,13 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Categorias</p>
-                        <p class="stat-value" id="statCategorias">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Categorias</p>
+                        <p class="stat-value" id="statCategorias" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
 
-                <article class="card stat-card">
-                    <div class="stat-icon stat-icon-danger">
+                <article class="card stat-card" style="display: flex; align-items: center; gap: var(--space-5); padding: var(--space-6);">
+                    <div class="stat-icon stat-icon-danger" style="flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--color-error-bg); color: var(--color-error); display: grid; place-items: center;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle cx="9" cy="7" r="4"></circle>
@@ -240,20 +249,20 @@
                         </svg>
                     </div>
                     <div class="stat-content">
-                        <p class="stat-label">Clientes Cadastrados</p>
-                        <p class="stat-value" id="statClientes">—</p>
+                        <p class="stat-label" style="font-family: var(--font-body); font-size: var(--fs-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">Clientes Cadastrados</p>
+                        <p class="stat-value" id="statClientes" style="font-family: var(--font-heading); font-size: var(--fs-3xl); color: var(--color-text-primary);">—</p>
                     </div>
                 </article>
             </section>
 
             <!-- Recent Orders -->
             <section class="admin-table-section" aria-label="Pedidos recentes">
-                <div class="d-flex justify-between align-center" style="margin-bottom: 16px; flex-wrap: wrap; gap: 16px;">
+                <div class="d-flex justify-between align-center" style="margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-4);">
                     <h2 class="card-title" style="margin: 0;">Pedidos Recentes</h2>
                     <a href="/inicio/admin-pedidos.html" class="btn btn-outline btn-sm">Ver Todos</a>
                 </div>
                 <div class="table-container">
-                    <table class="table" id="tabelaPedidosRecentess">
+                    <table class="table" id="tabelaPedidosRecentes">
                         <thead>
                             <tr>
                                 <th>Pedido</th>
@@ -274,8 +283,8 @@
             </section>
 
             <!-- Quick Actions -->
-            <section style="margin-top: 32px;">
-                <h2 class="card-title" style="margin-bottom: 16px;">Ações Rápidas</h2>
+            <section style="margin-top: var(--space-8);">
+                <h2 class="card-title" style="margin-bottom: var(--space-4);">Ações Rápidas</h2>
                 <div class="d-flex gap-2" style="flex-wrap: wrap;">
                     <a href="/inicio/admin-produtos.html" class="btn btn-primary">
                         <svg class="btn-icon" aria-hidden="true"><use href="#i-add" /></svg>
@@ -298,16 +307,11 @@
         </div>
     </main>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+    <!-- Footer will be injected by shared-components.js -->
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-        <div class="loading-spinner"></div>
-        <p class="loading-message">Carregando...</p>
-    </div>
-
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-dashboard.js"></script>
+<<<<<<< HEAD
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -326,6 +330,8 @@
         });
       });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>

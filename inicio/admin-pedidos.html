@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos - Fraga Lanches Admin</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-pages.css">
+    <link rel="stylesheet" href="design-system.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#0c0c0c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches Admin">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+<<<<<<< HEAD
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <!-- Referrer Policy -->
@@ -144,6 +144,15 @@
             <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
     </button>
+=======
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 
     <!-- Main Content -->
     <main class="page-main admin-main" role="main">
@@ -151,7 +160,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <div class="page-header-inner">
-                    <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: 16px;">
+                    <div class="d-flex justify-between align-center" style="flex-wrap: wrap; gap: var(--space-4);">
                         <div>
                             <h1 class="page-title">Pedidos</h1>
                             <p class="page-subtitle">Gerencie e acompanhe todos os pedidos</p>
@@ -162,8 +171,8 @@
             </div>
 
             <!-- Filtros -->
-            <div class="admin-filters" style="margin-bottom: 16px; flex-wrap: wrap; gap: 16px;">
-                <div class="filter-group" style="flex-wrap: wrap; gap: 12px;">
+            <div class="admin-filters" style="margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-4);">
+                <div class="filter-group" style="flex-wrap: wrap; gap: var(--space-3);">
                     <input type="text" id="buscaPedido" class="form-input" placeholder="Buscar por nº pedido, cliente..." style="max-width: 300px; flex: 1; min-width: 200px;">
                     <select id="filtroStatus" class="form-select" style="max-width: 180px;">
                         <option value="">Todos os status</option>
@@ -177,7 +186,7 @@
                     <select id="filtroPagamento" class="form-select" style="max-width: 180px;">
                         <option value="">Todas as formas</option>
                     </select>
-                    <div class="form-row" style="gap: 12px;">
+                    <div class="form-row" style="gap: var(--space-3);">
                         <div class="form-group" style="flex: 1; min-width: 150px;">
                             <label for="dataInicio" class="form-label">Data Início</label>
                             <input type="date" id="dataInicio" class="form-input">
@@ -187,7 +196,7 @@
                             <input type="date" id="dataFim" class="form-input">
                         </div>
                     </div>
-                    <button class="btn btn-secondary" id="btnLimparFiltros" style="margin-top: 8px;">
+                    <button class="btn btn-secondary" id="btnLimparFiltros" style="margin-top: var(--space-2);">
                         <svg class="btn-icon" aria-hidden="true"><use href="#i-refresh" /></svg>
                         Limpar Filtros
                     </button>
@@ -235,16 +244,15 @@
         </div>
     </main>
 
+    <!-- Footer will be injected by shared-components.js -->
+
     <!-- Modal Detalhes do Pedido -->
     <div class="modal-overlay hidden" id="pedidoModal" role="dialog" aria-modal="true" aria-labelledby="pedidoModalTitulo">
         <div class="modal modal-xl">
             <div class="modal-header">
                 <h2 class="modal-title" id="pedidoModalTitulo">Detalhes do Pedido</h2>
                 <button class="modal-close" id="pedidoModalClose" aria-label="Fechar modal">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><use href="#i-x" /></svg>
                 </button>
             </div>
             <div class="modal-body" id="pedidoModalBody">
@@ -293,16 +301,9 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-        <div class="loading-spinner"></div>
-        <p class="loading-message">Carregando...</p>
-    </div>
-
+    <script type="module" src="js/shared-components.js"></script>
     <script type="module" src="js/admin-pedidos.js"></script>
+<<<<<<< HEAD
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -321,6 +322,8 @@
         });
       });
     </script>
+=======
+>>>>>>> 5f591b814ebbbba10c50793e6296bfaf8ec43682
 </body>
 
 </html>

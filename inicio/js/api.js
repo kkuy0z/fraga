@@ -6,8 +6,9 @@ class ApiClient {
         this.baseUrl = '/api';
         this.token = localStorage.getItem('auth_token') || null;
         this.user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-        this.clienteToken = localStorage.getItem('cliente_token') || null;
-        this.clienteUser = JSON.parse(localStorage.getItem('cliente_user') || 'null');
+        // Verificar localStorage primeiro, depois sessionStorage (para "lembrar-me" não marcado)
+        this.clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token') || null;
+        this.clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
     }
 
     // ===== ADMIN AUTH =====
@@ -42,6 +43,8 @@ class ApiClient {
         this.clienteUser = null;
         localStorage.removeItem('cliente_token');
         localStorage.removeItem('cliente_user');
+        sessionStorage.removeItem('cliente_token');
+        sessionStorage.removeItem('cliente_user');
     }
 
     isClienteAuthenticated() {

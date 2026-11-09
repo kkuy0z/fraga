@@ -40,6 +40,14 @@ function atualizarContadorCarrinho() {
 async function verificarStatusEstabelecimento() {
     if (!statusBadge) return;
 
+    // Mostrar estado inicial de verificação apenas na primeira vez
+    const isFirstCheck = statusBadge.classList.contains('hidden') || statusBadge.classList.contains('verificando');
+    if (isFirstCheck) {
+        statusBadge.classList.remove('hidden');
+        statusBadge.classList.add('verificando');
+        statusText.textContent = 'Verificando horário de funcionamento...';
+    }
+
     try {
         const response = await api.getStatusFuncionamento();
 
@@ -52,7 +60,7 @@ async function verificarStatusEstabelecimento() {
             statusIndicator.style.backgroundColor = '#4caf50';
         } else {
             statusBadge.classList.add('fechado');
-            const horarioAtual = response.horario_atual ? ` (${response.horario_atual})` : '';
+            const horarioAtual = response.horario_atual ? ` - Abre ${response.horario_atual}` : '';
             statusText.textContent = `FECHADO${horarioAtual}`;
             statusIndicator.style.backgroundColor = '#ff6b6b';
         }
@@ -60,7 +68,7 @@ async function verificarStatusEstabelecimento() {
         console.error('Erro ao verificar status:', error);
         statusBadge.classList.remove('hidden');
         statusBadge.classList.add('verificando');
-        statusText.textContent = 'Verificando status...';
+        statusText.textContent = 'Não foi possível verificar o status. Tente recarregar a página.';
     }
 }
 
@@ -71,8 +79,8 @@ async function verificarStatusEstabelecimento() {
 async function verificarAuth() {
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-    const clienteToken = localStorage.getItem('cliente_token');
-    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || 'null');
+    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
+    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
 
     const userButton = document.getElementById('userButton');
     const userName = document.getElementById('userName');
@@ -106,12 +114,14 @@ async function verificarAuth() {
 }
 
 function handleLogout() {
-    const clienteToken = localStorage.getItem('cliente_token');
+    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
     const token = localStorage.getItem('auth_token');
 
     if (clienteToken) {
         localStorage.removeItem('cliente_token');
         localStorage.removeItem('cliente_user');
+        sessionStorage.removeItem('cliente_token');
+        sessionStorage.removeItem('cliente_user');
     } else if (token) {
         api.clearAuth();
     }

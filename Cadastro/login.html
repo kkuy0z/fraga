@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="description" content="Entre na sua conta Fraga Lanches e acompanhe seus pedidos, veja seu histórico e aproveite ofertas exclusivas.">
+    <title>Entrar | Fraga Lanches</title>
+    <link rel="icon" href="/img/logo.png">
+    <link rel="manifest" href="/inicio/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <link rel="stylesheet" href="/inicio/design-system.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="pg-login">
+    <!-- Header will be injected by shared-components.js -->
+
+    <main class="cad" style="padding-top: var(--header-height, 72px);">
+        <div class="cad-grid">
+
+            <!-- Apresentação -->
+            <div class="cad-intro">
+                <img class="cad-logo" src="/img/logo.png" alt="Logo Fraga Lanches Delivery">
+                <p class="cad-eyebrow">Bem-vindo de volta</p>
+                <h1>Entre na <span>sua conta!</span></h1>
+                <p class="cad-lead">Acesse seu painel e aproveite todas as vantagens de ser cliente Fraga Lanches.</p>
+            </div>
+
+            <!-- Formulário -->
+            <div class="cad-card">
+                <div class="cad-card-topo">
+                    <span class="cad-badge" aria-hidden="true"><svg class="cad-ic"><use href="#i-login" /></svg></span>
+                    <div>
+                        <h2>Entrar</h2>
+                        <p>É rápido e seguro!</p>
+                    </div>
+                </div>
+
+                <!-- novalidate: a validação é feita em login.js. Para integrar o backend, veja os comentários [BACKEND] -->
+                <form id="form-login" action="#" novalidate>
+                    <p class="cad-legenda"><span class="obrig" aria-hidden="true">*</span> Campos obrigatórios</p>
+
+                    <div class="campo">
+                        <label for="email" class="form-label">E-mail <span class="obrig" aria-hidden="true">*</span></label>
+                        <div class="input-with-icon">
+                            <input id="email" name="email" type="email" inputmode="email" autocomplete="email"
+                                placeholder="exemplo@seuemail.com" maxlength="120" required aria-describedby="erro-email" class="form-input">
+                            <svg class="input-icon" aria-hidden="true"><use href="#i-mail" /></svg>
+                        </div>
+                        <p class="form-help error" id="erro-email"></p>
+                    </div>
+
+                    <div class="campo">
+                        <label for="senha" class="form-label">Senha <span class="obrig" aria-hidden="true">*</span></label>
+                        <div class="input-with-icon">
+                            <input id="senha" name="senha" type="password" autocomplete="current-password"
+                                placeholder="Digite sua senha" maxlength="64" required aria-describedby="ajuda-senha erro-senha" class="form-input">
+                            <button type="button" class="input-icon-btn" data-alvo="senha" aria-label="Mostrar senha" aria-pressed="false">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="form-help" id="ajuda-senha">A senha é sensível a maiúsculas e minúsculas.</p>
+                        <p class="form-help error" id="erro-senha"></p>
+                    </div>
+
+                    <div class="campo campo-termos" style="flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-4);">
+                        <label class="form-check" for="lembrar" style="margin: 0;">
+                            <input id="lembrar" name="lembrar" type="checkbox" class="form-check-input" aria-describedby="erro-lembrar">
+                            <span class="form-check-label">Lembrar-me</span>
+                        </label>
+                        <a class="btn-link" href="#" data-pendente>Esqueci a senha</a>
+                        <p class="form-help error" id="erro-lembrar" style="display: none;"></p>
+                    </div>
+
+                    <button class="btn btn-primary btn-block btn-lg" type="submit">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-login" /></svg>
+                        Entrar
+                    </button>
+
+                    <div class="alert alert-success hidden" id="sucesso" role="status" tabindex="-1">
+                        <svg class="alert-icon" aria-hidden="true"><use href="#i-check-circle" /></svg>
+                        <div>
+                            <strong>Login realizado!</strong>
+                            <p>Redirecionando para sua conta...</p>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="divider" style="margin: var(--space-6) 0;">
+                    <span>Não tem uma conta?</span>
+                </div>
+                <a class="btn btn-outline btn-block" href="/Cadastro/cadastro.html">Criar conta</a>
+                <a class="btn-link" href="/inicio/index.html" style="display: block; text-align: center; margin-top: var(--space-4);"><span aria-hidden="true">‹</span> Voltar para a página inicial</a>
+            </div>
+
+            <!-- Benefícios + foto -->
+            <div class="cad-extras">
+                <ul class="cad-beneficios">
+                    <li><svg class="cad-ic" aria-hidden="true"><use href="#i-truck" /></svg><span>Acompanhe seus pedidos em tempo real</span></li>
+                    <li><svg class="cad-ic" aria-hidden="true"><use href="#i-star" /></svg><span>Receba ofertas exclusivas e descontos especiais</span></li>
+                    <li><svg class="cad-ic" aria-hidden="true"><use href="#i-heart" /></svg><span>Mais praticidade e agilidade na hora de pedir</span></li>
+                </ul>
+                <figure class="cad-foto">
+                    <img src="/img/img_fundo.png" alt="Hambúrguer artesanal de duas carnes com queijo e bacon">
+                </figure>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer will be injected by shared-components.js -->
+
+    <script type="module" src="/inicio/js/shared-components.js"></script>
+    <script type="module" src="login.js"></script>
+</body>
+
+</html>
