@@ -119,9 +119,10 @@
             <label for="senha">Senha <span class="obrig" aria-hidden="true">*</span></label>
             <div class="entrada"><svg class="cad-ic" aria-hidden="true"><use href="#i-lock" /></svg>
               <input id="senha" name="senha" type="password" autocomplete="current-password"
-                placeholder="Digite sua senha" maxlength="64" required aria-describedby="erro-senha">
+                placeholder="Digite sua senha" maxlength="64" required aria-describedby="ajuda-senha erro-senha">
               <button type="button" class="ver-senha" data-alvo="senha" aria-label="Mostrar senha" aria-pressed="false">
                 <svg class="cad-ic" aria-hidden="true"><use href="#i-eye" /></svg></button></div>
+            <p class="ajuda" id="ajuda-senha">A senha é sensível a maiúsculas e minúsculas.</p>
             <p class="erro" id="erro-senha"></p>
           </div>
 
