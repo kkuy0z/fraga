@@ -31,7 +31,9 @@
   "license": "ISC",
   "dependencies": {
     "@tanstack/react-query": "^5.17.0",
-    "argon2": "^0.45.1",
+    "argon2": "^0.40.3",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -41,16 +43,16 @@
     "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0",
+    "react-router-dom": "^7.18.5",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7",
-    "uuid": "^9.0.1",
+    "sqlite3": "^6.0.1",
+    "uuid": "^14.0.3",
     "web-push": "^3.6.7",
     "ws": "^8.14.2"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "jest": "^25.1.0",
+    "supertest": "^6.3.3"
   }
 }
