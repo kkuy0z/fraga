@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
@@ -21,7 +27,7 @@
         <div class="header-inner">
             <div class="logo">
                 <a href="/inicio/index.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
+                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" class="logo-img">
                 </a>
             </div>
 
@@ -156,6 +162,16 @@
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
 </body>
 

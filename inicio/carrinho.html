@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
@@ -21,17 +27,17 @@
         <div class="header-inner">
             <div class="logo">
                 <a href="/inicio/index.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
+                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" class="logo-img">
                 </a>
             </div>
 
             <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Menu principal">
                 <a href="/inicio/index.html">INÍCIO</a>
                 <a href="/inicio/cardapio.html">CARDÁPIO</a>
-                <a href="/inicio/inicio/index.html#sobre">SOBRE</a>
-                <a href="/inicio/inicio/index.html#espaco">ESPAÇO</a>
-                <a href="/inicio/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
-                <a href="/inicio/inicio/index.html#contato">CONTATO</a>
+                <a href="/inicio/index.html#sobre">SOBRE</a>
+                <a href="/inicio/index.html#espaco">ESPAÇO</a>
+                <a href="/inicio/index.html#avaliacoes">AVALIAÇÕES</a>
+                <a href="/inicio/index.html#contato">CONTATO</a>
             </nav>
 
             <div class="header-actions">
@@ -94,12 +100,12 @@
                         </div>
                         <h2 class="empty-state-title">Carrinho vazio</h2>
                         <p class="empty-state-message">Adicione produtos do cardápio para começar seu pedido.</p>
-                        <a href="cardapio.html" class="btn btn-primary btn-lg mt-3">Ir ao Cardápio</a>
+                        <a href="/inicio/cardapio.html" class="btn btn-primary btn-lg mt-3">Ir ao Cardápio</a>
                     </div>
 
                     <!-- Ações do carrinho -->
                     <div class="carrinho-acoes hidden" id="carrinhoAcoes" style="display: flex; justify-content: space-between; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-subtle);">
-                        <a href="cardapio.html" class="btn btn-secondary">Continuar Comprando</a>
+                        <a href="/inicio/cardapio.html" class="btn btn-secondary">Continuar Comprando</a>
                         <button class="btn btn-danger" id="btnLimparCarrinho">Limpar Carrinho</button>
                     </div>
                 </section>
@@ -135,7 +141,7 @@
                                 <p>Taxa de entrega pode variar conforme o bairro.</p>
                             </div>
 
-                            <a href="checkout.html" class="btn btn-primary btn-block btn-lg" id="btnFinalizar" disabled>
+                            <a href="/inicio/checkout.html" class="btn btn-primary btn-block btn-lg" id="btnFinalizar" disabled>
                                 Finalizar Pedido
                             </a>
                         </div>
@@ -168,6 +174,16 @@
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
 </body>
 

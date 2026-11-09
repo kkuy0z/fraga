@@ -13,6 +13,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
     <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://maps.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://maps.google.com; frame-src https://maps.google.com; base-uri 'self'; form-action 'self' https://wa.me;">
+    <!-- Referrer Policy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions Policy -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
 </head>
 
 <body>
@@ -21,7 +27,7 @@
         <div class="header-inner">
             <div class="logo">
                 <a href="/inicio/index.html">
-                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" onerror="this.style.display='none'">
+                    <img src="/img/logo.png" alt="Fraga Lanches Delivery" class="logo-img">
                 </a>
             </div>
 
@@ -58,15 +64,15 @@
                     </div>
                 </div>
 
-                <a href="/Cadastro/login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm login-link" id="loginLink" style="display: none;">Entrar</a>
 
-                <a href="/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
+                <a href="/inicio/admin-login.html" class="btn btn-outline btn-sm" style="display: none;" id="adminLink">Painel Admin</a>
             </div>
         </div>
     </header>
 
     <section class="hero" id="inicio">
-        <img src="/img/img_fundo.png" alt="Hambúrguer Artesanal" class="hero-bg" onerror="this.style.display='none'">
+        <img src="/img/img_fundo.png" alt="Hambúrguer Artesanal" class="hero-bg" id="heroBg">
         <div class="hero-overlay"></div>
 
         <div class="hero-conteudo">
@@ -80,8 +86,8 @@
                 <span class="destaque">HAMBURGUERIA</span><br>
                 DA REGIÃO!
             </h1>
-            <a href="/Cadastro/cadastro.html" class="botao-pedido">
-                Faça um Pedido <span class="seta">&gt;</span>
+            <a href="/inicio/cardapio.html" class="botao-pedido">
+                Faça um Pedido <span class="seta">></span>
             </a>
         </div>
     </section>
@@ -108,8 +114,7 @@
             </div>
 
             <div class="logo-principal-container">
-                <img src="/img/logo.png" alt="Fraga Lanches Logo Principal" class="logo-principal-img"
-                    onerror="this.src='https://via.placeholder.com/320/111111/ffd900?text=FRAGA+LANCHES'">
+                <img src="/img/logo.png" alt="Fraga Lanches Logo Principal" class="logo-principal-img" id="logoPrincipal">
             </div>
         </div>
     </section>
@@ -131,10 +136,10 @@
 
                 <div class="carrossel-espaco-container">
                     <!-- Exemplo com 4 imagens visíveis no carrossel -->
-                    <div class="espaco-card"><img src="/img/espaco1.svg" alt="Espaço 1 - Salão Principal"></div>
-                    <div class="espaco-card"><img src="/img/espaco2.svg" alt="Espaço 2 - Área Externa"></div>
-                    <div class="espaco-card"><img src="/img/espaco3.svg" alt="Espaço 3 - Mesas Privativas"></div>
-                    <div class="espaco-card"><img src="/img/espaco4.svg" alt="Espaço 4 - Balcão"></div>
+                    <div class="espaco-card"><img src="/img/espaco1.svg" alt="Espaço 1 - Salão Principal" class="espaco-img"></div>
+                    <div class="espaco-card"><img src="/img/espaco2.svg" alt="Espaço 2 - Área Externa" class="espaco-img"></div>
+                    <div class="espaco-card"><img src="/img/espaco3.svg" alt="Espaço 3 - Mesas Privativas" class="espaco-img"></div>
+                    <div class="espaco-card"><img src="/img/espaco4.svg" alt="Espaço 4 - Balcão" class="espaco-img"></div>
                 </div>
 
                 <button class="seta-espaco" id="proximo-espaco" aria-label="Próximo">&#10095;</button>
@@ -180,7 +185,7 @@
                     </div>
 
                     <a href="https://maps.google.com/maps?q=Rua+Simon%C3%A9sia,+5,+Marimb%C3%A1,+Betim+-+MG"
-                        target="_blank" class="botao-como-chegar">
+                        target="_blank" rel="noopener noreferrer" class="botao-como-chegar">
                         COMO CHEGAR <span class="seta-btn">&rarr;</span>
                     </a>
                 </div>
@@ -190,7 +195,8 @@
                     <iframe
                         src="https://maps.google.com/maps?q=Rua+Simon%C3%A9sia,+5,+Marimb%C3%A1,+Betim+-+MG&t=&z=16&ie=UTF8&iwloc=&output=embed"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Localização Fraga Lanches no Google Maps">
                     </iframe>
                 </div>
             </div>
@@ -221,7 +227,7 @@
                             </svg>
                         </div>
                         <h4 class="cliente-nome">Júlio Costa</h4>
-                        <div class="estrelas">★★★★★</div>=
+                        <div class="estrelas">★★★★★</div>
                         <p class="cliente-comentario">"Simplesmente o melhor hambúrguer da região! Carne suculenta,
                             ponto perfeito e o pão é super macio. Sem contar que pedi entrega e chegou quentinho e super
                             rápido. Nota 10!"</p>
@@ -294,7 +300,7 @@
                 <!-- Coluna da Direita: Blocos de Contato e Botão do WhatsApp -->
                 <div class="contato-botoes-coluna">
                     <!-- Bloco Telefone -->
-                    <a href="https://wa.me/5531997577197" target="_blank" class="bloco-contato-item">
+                    <a href="https://wa.me/5531997577197" target="_blank" rel="noopener noreferrer" class="bloco-contato-item">
                         <div class="icone-circulo">
                             <svg class="svg-icone" viewBox="0 0 24 24" fill="#ffd900">
                                 <path
@@ -308,11 +314,11 @@
                     </a>
 
                     <!-- Bloco Instagram -->
-                    <a href="https://instagram.com/fraga_lanches" target="_blank" class="bloco-contato-item">
+                    <a href="https://instagram.com/fraga_lanches" target="_blank" rel="noopener noreferrer" class="bloco-contato-item">
                         <div class="icone-circulo">
                             <svg class="svg-icone" viewBox="0 0 24 24" fill="#ffd900">
                                 <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.162c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                             </svg>
                         </div>
                         <div class="texto-bloco">
@@ -336,7 +342,7 @@
                     </div>
 
                     <!-- Botão Pedir pelo WhatsApp -->
-                    <a href="https://wa.me/5531997577197" target="_blank" class="botao-pedir-whatsapp">
+                    <a href="https://wa.me/5531997577197" target="_blank" rel="noopener noreferrer" class="botao-pedir-whatsapp">
                         PEDIR PELO WHATSAPP <span class="seta-contato">&rarr;</span>
                     </a>
                 </div>
@@ -376,6 +382,16 @@
             .catch(error => console.error('[SW] Erro no registro:', error));
         });
       }
+
+      // Handle image error events securely (instead of inline onerror)
+      document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+          img.addEventListener('error', function() {
+            this.style.display = 'none';
+          });
+        });
+      });
     </script>
 </body>
 
