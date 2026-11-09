@@ -338,6 +338,10 @@ class ApiClient {
         return this.post('/clientes/login', { email, senha });
     }
 
+    async clienteVerify() {
+        return this.get('/clientes/verify');
+    }
+
     async getClientePerfil() {
         return this.get('/clientes/perfil');
     }
