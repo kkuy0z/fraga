@@ -13,10 +13,20 @@ import aio_pika
 from aio_pika import ExchangeType, Message, DeliveryMode
 from aio_pika.abc import AbstractConnection, AbstractChannel, AbstractQueue, AbstractExchange
 
+# Load .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 logger = logging.getLogger(__name__)
 
 # RabbitMQ Configuration
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://fraga_user:fraga_pass_2026@localhost:5672")
+RABBITMQ_URL = os.getenv(
+    "RABBITMQ_URL",
+    "amqp://fraga:fraga_password@localhost:5672/fraga"
+)
 
 
 class EventType(str, Enum):
@@ -106,7 +116,7 @@ class RabbitMQClient:
         await self._declare_exchange("fraga.commands", ExchangeType.DIRECT)
         await self._declare_exchange("fraga.dlx", ExchangeType.TOPIC)  # Dead letter exchange
 
-        logger.info("Connected to RabbitMQ")
+        logger.info("Connected to RabbitMQ at %s", self.url)
 
     async def _declare_exchange(self, name: str, exchange_type: ExchangeType) -> AbstractExchange:
         if name not in self.exchanges:

@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Auth microservice for Fraga Lanches"
 requires-python = ">=3.12"
 dependencies = [
-    "fraga-shared @ file:///app/shared",
+    "fraga-shared",
 ]
 
 [project.optional-dependencies]

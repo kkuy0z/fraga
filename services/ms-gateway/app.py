@@ -10,20 +10,28 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import logging
 
+# Load .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Service URLs
+# Service URLs - Use localhost with specific ports for local development
+# In Docker, these would be service names like "ms-auth:8000"
 SERVICE_URLS = {
-    "auth": os.getenv("AUTH_SERVICE_URL", "http://ms-auth:8000"),
-    "catalogo": os.getenv("CATALOGO_SERVICE_URL", "http://ms-catalogo:8000"),
-    "pedidos": os.getenv("PEDIDOS_SERVICE_URL", "http://ms-pedidos:8000"),
-    "cozinha": os.getenv("COZINHA_SERVICE_URL", "http://ms-cozinha:8000"),
-    "entregas": os.getenv("ENTREGAS_SERVICE_URL", "http://ms-entregas:8000"),
-    "notificacoes": os.getenv("NOTIFICACOES_SERVICE_URL", "http://ms-notificacoes:8000"),
-    "avaliacoes": os.getenv("AVALIACOES_SERVICE_URL", "http://ms-avaliacoes:8000"),
-    "pagamentos": os.getenv("PAGAMENTOS_SERVICE_URL", "http://ms-pagamentos:8000"),
-    "relatorios": os.getenv("RELATORIOS_SERVICE_URL", "http://ms-relatorios:8000"),
+    "auth": os.getenv("AUTH_SERVICE_URL", "http://localhost:8001"),
+    "catalogo": os.getenv("CATALOGO_SERVICE_URL", "http://localhost:8002"),
+    "pedidos": os.getenv("PEDIDOS_SERVICE_URL", "http://localhost:8003"),
+    "cozinha": os.getenv("COZINHA_SERVICE_URL", "http://localhost:8004"),
+    "entregas": os.getenv("ENTREGAS_SERVICE_URL", "http://localhost:8005"),
+    "notificacoes": os.getenv("NOTIFICACOES_SERVICE_URL", "http://localhost:8006"),
+    "avaliacoes": os.getenv("AVALIACOES_SERVICE_URL", "http://localhost:8007"),
+    "pagamentos": os.getenv("PAGAMENTOS_SERVICE_URL", "http://localhost:8008"),
+    "relatorios": os.getenv("RELATORIOS_SERVICE_URL", "http://localhost:8009"),
 }
 
 # Route mapping: path prefix -> service
@@ -59,6 +67,7 @@ async def lifespan(app: FastAPI):
     global http_client
     http_client = httpx.AsyncClient(timeout=30.0)
     logger.info("API Gateway started")
+    logger.info("Service URLs: %s", SERVICE_URLS)
     yield
     await http_client.aclose()
     logger.info("API Gateway stopped")
@@ -121,8 +130,14 @@ async def proxy_request(
         )
 
         # Return response
+        content_type = response.headers.get("content-type", "")
+        if content_type.startswith("application/json"):
+            content = response.json()
+        else:
+            content = response.text
+
         return JSONResponse(
-            content=response.json() if response.headers.get("content-type", "").startswith("application/json") else response.text,
+            content=content,
             status_code=response.status_code,
             headers=dict(response.headers)
         )
@@ -130,7 +145,7 @@ async def proxy_request(
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail=f"Service {service_name} timeout")
     except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail=f"Service {service_name} unavailable")
+        raise HTTPException(status_code=503, detail=f"Service {service_name} unavailable at {service_url}")
     except Exception as e:
         logger.error(f"Proxy error: {e}")
         raise HTTPException(status_code=500, detail="Gateway error")

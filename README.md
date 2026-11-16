@@ -1,327 +1,106 @@
-# Fraga Lanches - Sistema de Pedidos para Hamburgueria Artesanal
+# Fraga Lanches - Execução Local (Sem Docker)
 
-[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green.svg)](https://fastapi.tiangolo.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://www.mysql.com/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-3.12-purple.svg)](https://www.rabbitmq.com/)
+## Pré-requisitos
 
-Sistema web progressivo (PWA) para gestão completa de hamburgueria artesanal: cardápio digital, pedidos, cozinha, entregas, pagamentos, avaliações e relatórios.
+1. **Python 3.12+** - https://python.org
+2. **MariaDB/MySQL** rodando na porta 3306
+3. **RabbitMQ** rodando na porta 5672 (com plugin management na 15672)
 
-## 🏗️ Arquitetura
-
-### Microserviços (Python/FastAPI)
-
-| Serviço | Porta | Responsabilidade |
-|---------|-------|------------------|
-| **ms-gateway** | 8000 | API Gateway, roteamento, autenticação |
-| **ms-auth** | 8001 | Autenticação JWT, usuários, perfis, endereços |
-| **ms-catalogo** | 8002 | Categorias, produtos, opções, horários, taxas |
-| **ms-pedidos** | 8003 | Carrinho, pedidos, histórico, status |
-| **ms-cozinha** | 8004 | Painel cozinha, alertas tempo real, WebSocket |
-| **ms-entregas** | 8005 | Gestão de entregas, entregadores |
-| **ms-notificacoes** | 8006 | Push notifications, in-app, WebSocket |
-| **ms-avaliacoes** | 8007 | Avaliações de pedidos |
-| **ms-pagamentos** | 8008 | Pagamentos (Mercado Pago), webhooks |
-| **ms-relatorios** | 8009 | Relatórios gerenciais, dashboard |
-
-### Infraestrutura
-
-- **MySQL 8.0** - Banco de dados relacional (ACID)
-- **RabbitMQ 3.12** - Message broker para eventos assíncronos
-- **Docker Compose** - Orquestração local
-- **WebSocket** - Comunicação tempo real (cozinha, notificações)
-
-## 🚀 Início Rápido
-
-### Pré-requisitos
-
-- Docker 24+ e Docker Compose 2+
-- Python 3.12+ (para desenvolvimento local)
-- Make (opcional)
-
-### Desenvolvimento Local
+## Instalação Rápida
 
 ```bash
-# 1. Clone e configure
-git clone <repo>
-cd fraga-lanches
+# 1. Criar venv e instalar dependências
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+pip install -e ./shared
+pip install -e ./services/ms-auth
+pip install -e ./services/ms-catalogo
+pip install -e ./services/ms-pedidos
+pip install -e ./services/ms-cozinha
+pip install -e ./services/ms-entregas
+pip install -e ./services/ms-notificacoes
+pip install -e ./services/ms-avaliacoes
+pip install -e ./services/ms-pagamentos
+pip install -e ./services/ms-relatorios
+pip install -e ./services/ms-gateway
 
-# 2. Configure variáveis de ambiente
-cp .env.example .env
-# Edite .env com suas chaves (VAPID, Mercado Pago, etc.)
+# 2. Configurar .env (já criado, edite se necessário)
+# 3. Criar banco de dados
+mysql -u root -p < shared/database/init.sql
 
-# 3. Suba a infraestrutura
-docker-compose up -d mysql rabbitmq
+# 4. Iniciar cada serviço em terminais separados:
 
-# 4. Aguarde os healthchecks passarem
-docker-compose ps
+# Terminal 1 - Gateway (porta 8000)
+set SERVICE_NAME=gateway && python -m uvicorn services.ms_gateway.app:app --host 0.0.0.0 --port 8000 --reload
 
-# 5. Execute os microserviços (em terminais separados ou via IDE)
-# Exemplo para ms-auth:
-cd services/ms-auth
-pip install -e ".[dev]"
-uvicorn app:app --reload --port 8001
+# Terminal 2 - Auth (porta 8001)
+set SERVICE_NAME=auth && python -m uvicorn services.ms_auth.app:app --host 0.0.0.0 --port 8001 --reload
 
-# Ou use o script de desenvolvimento:
-./scripts/dev.sh
+# Terminal 3 - Catalogo (porta 8002)
+set SERVICE_NAME=catalogo && python -m uvicorn services.ms_catalogo.app:app --host 0.0.0.0 --port 8002 --reload
+
+# Terminal 4 - Pedidos (porta 8003)
+set SERVICE_NAME=pedidos && python -m uvicorn services.ms_pedidos.app:app --host 0.0.0.0 --port 8003 --reload
+
+# Terminal 5 - Cozinha (porta 8004)
+set SERVICE_NAME=cozinha && python -m uvicorn services.ms_cozinha.app:app --host 0.0.0.0 --port 8004 --reload
+
+# Terminal 6 - Entregas (porta 8005)
+set SERVICE_NAME=entregas && python -m uvicorn services.ms_entregas.app:app --host 0.0.0.0 --port 8005 --reload
+
+# Terminal 7 - Notificacoes (porta 8006)
+set SERVICE_NAME=notificacoes && python -m uvicorn services.ms_notificacoes.app:app --host 0.0.0.0 --port 8006 --reload
+
+# Terminal 8 - Avaliacoes (porta 8007)
+set SERVICE_NAME=avaliacoes && python -m uvicorn services.ms_avaliacoes.app:app --host 0.0.0.0 --port 8007 --reload
+
+# Terminal 9 - Pagamentos (porta 8008)
+set SERVICE_NAME=pagamentos && python -m uvicorn services.ms_pagamentos.app:app --host 0.0.0.0 --port 8008 --reload
+
+# Terminal 10 - Relatorios (porta 8009)
+set SERVICE_NAME=relatorios && python -m uvicorn services.ms_relatorios.app:app --host 0.0.0.0 --port 8009 --reload
+
+# Terminal 11 - Frontend (porta 8080)
+cd inicio && python -m http.server 8080
 ```
 
-### Produção (Docker Compose)
+## Acessar
 
-```bash
-# Build e start de todos os serviços
-docker-compose up -d --build
+- **Frontend**: http://localhost:8080
+- **API Gateway**: http://localhost:8000
+- **Docs da API**: http://localhost:8000/docs
+- **Health check**: http://localhost:8000/health
+- **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
-# Ver logs
-docker-compose logs -f
-
-# Parar
-docker-compose down
-
-# Parar e remover volumes (CUIDADO: apaga dados)
-docker-compose down -v
-```
-
-## 📋 Funcionalidades por Incremento
-
-### Incremento 1 - Cadastro, Autenticação e Cardápio ✅
-- [x] Cadastro de usuários (clientes e equipe)
-- [x] Login/Logout com JWT + Argon2id
-- [x] Perfis: Administrador, Atendente, Cozinha, Entregador, Cliente
-- [x] Categorias e produtos com foto, descrição, preço, opcionais
-- [x] Cardápio digital responsivo
-
-### Incremento 2 - Carrinho e Finalização ✅
-- [x] Gerenciamento do carrinho (add, remove, quantidade)
-- [x] Seleção de opcionais e adicionais
-- [x] Cálculo automático (subtotal, taxa entrega, total)
-- [x] Dados de entrega com validação
-- [x] Formas de pagamento: Pix, Cartão, Dinheiro (com troco)
-
-### Incremento 3 - Cozinha e Tempo Real ✅
-- [x] Painel cozinha com pedidos por status
-- [x] Atualização de status: Novo → Preparo → Pronto → Saiu → Concluído
-- [x] Alertas visuais/sonoros (WebSocket)
-- [x] Status tempo real para cliente (sem reload)
-
-### Incremento 4 - Notificações e PWA ✅
-- [x] Push notifications (Web Push API / FCM)
-- [x] Service Workers + Cache offline
-- [x] Web App Manifest + Instalação
-- [x] Banner de convite PWA
-
-### Incremento 5 - Avaliações e Pagamentos ✅
-- [x] Avaliações 1-5 estrelas + comentário
-- [x] Integração Mercado Pago (Pix dinâmico, Cartão)
-- [x] Webhooks de confirmação
-- [x] Pagamento na entrega (dinheiro)
-
-### Incremento 6 - Relatórios e Configurações ✅
-- [x] Relatórios: vendas, produtos, entregas, pagamentos, avaliações
-- [x] Horários de funcionamento + status Aberto/Fechado
-- [x] Dashboard administrativo
-- [x] Configurações do sistema
-
-## 🔧 Desenvolvimento
-
-### Estrutura do Projeto
+## Como os Serviços se Conectam
 
 ```
-fraga-lanches/
-├── docker-compose.yml          # Orquestração completa
-├── Dockerfile                  # Imagem base multi-serviço
-├── .env.example                # Template de variáveis
-├── shared/                     # Módulos compartilhados
-│   ├── database/               # SQLAlchemy async, sessões
-│   ├── models/                 # Models SQLAlchemy
-│   ├── schemas/                # Schemas Pydantic
-│   ├── auth/                   # JWT, Argon2id
-│   ├── messaging/              # RabbitMQ client, eventos
-│   └── websocket/              # WebSocket manager
-├── services/                   # Microserviços
-│   ├── ms-auth/
-│   ├── ms-catalogo/
-│   ├── ms-pedidos/
-│   ├── ms-cozinha/
-│   ├── ms-entregas/
-│   ├── ms-notificacoes/
-│   ├── ms-avaliacoes/
-│   ├── ms-pagamentos/
-│   ├── ms-relatorios/
-│   └── ms-gateway/
-└── inicio/                     # Frontend PWA (Vanilla JS)
-    ├── index.html
-    ├── cardapio.html
-    ├── carrinho.html
-    ├── checkout.html
-    ├── meus-pedidos.html
-    ├── perfil.html
-    ├── admin-*.html
-    ├── js/
-    ├── style.css
-    ├── manifest.json
-    └── service-worker.js
+Navegador (porta 8080)
+    │
+    ▼ fetch('/api/...')
+Frontend (Python http.server)
+    │
+    ▼ Proxy /api/*
+API Gateway (porta 8000) ──► Roteia por prefixo da URL
+    │
+    ├─► /auth, /usuarios, /clientes     → Auth (8001)
+    ├─► /categorias, /produtos          → Catalogo (8002)
+    ├─► /pedidos                        → Pedidos (8003)
+    ├─► /entregas                       → Entregas (8005)
+    ├─► /notificacoes, /push            → Notificacoes (8006)
+    ├─► /avaliacoes                     → Avaliacoes (8007)
+    ├─► /pagamentos, /webhook           → Pagamentos (8008)
+    └─► /relatorios                     → Relatorios (8009)
+    │
+    ▼ Todos usam o mesmo:
+MariaDB (porta 3306) ← Banco compartilhado 'fraga_lanches'
+RabbitMQ (porta 5672) ← Mensageria assíncrona entre serviços
 ```
 
-### Comandos Úteis
+## Pontos-chave
 
-```bash
-# Ver status dos containers
-docker-compose ps
-
-# Logs de um serviço específico
-docker-compose logs -f ms-auth
-
-# Acessar shell do MySQL
-docker-compose exec mysql mysql -u fraga_user -p fraga_lanches
-
-# Acessar RabbitMQ Management UI
-# http://localhost:15672 (user: fraga_user, pass: fraga_pass_2026)
-
-# Executar migrações (se usar Alembic)
-docker-compose exec ms-auth alembic upgrade head
-
-# Rodar testes
-cd services/ms-auth && pytest -v
-
-# Gerar chaves VAPID para push
-python -c "from pywebpush import generate_vapid_keys; k=generate_vapid_keys(); print('PUBLIC:', k['public_key']); print('PRIVATE:', k['private_key'])"
-```
-
-## 🔐 Segurança
-
-- **JWT** com expiração curta (60min) + Refresh tokens (30 dias)
-- **Argon2id** para hash de senhas (parâmetros OWASP recomendados)
-- **Rate limiting** no Gateway
-- **CORS** configurável
-- **Helmet-style headers** via middleware
-- **Validação server-side** em todas as operações
-- **LGPD compliance**: dados mínimos, consentimento, direito ao esquecimento
-
-## 📡 Eventos (RabbitMQ)
-
-| Evento | Publicador | Consumidores |
-|--------|------------|--------------|
-| `pedido.criado` | ms-pedidos | ms-cozinha, ms-notificacoes, ms-entregas |
-| `pedido.status_atualizado` | ms-pedidos/ms-cozinha | ms-notificacoes, ms-gateway (WS) |
-| `pagamento.aprovado` | ms-pagamentos | ms-pedidos, ms-notificacoes, ms-cozinha |
-| `pagamento.recusado` | ms-pagamentos | ms-notificacoes |
-| `entrega.atribuida` | ms-entregas | ms-notificacoes |
-| `entrega.saida` | ms-entregas | ms-notificacoes |
-| `entrega.concluida` | ms-entregas | ms-notificacoes, ms-pedidos |
-| `notificacao.enviar` | Qualquer | ms-notificacoes |
-| `avaliacao.criada` | ms-avaliacoes | ms-notificacoes |
-
-## 🌐 Frontend (PWA)
-
-O frontend em `inicio/` usa **Vanilla JS** (sem frameworks):
-
-- **HTML5** semântico
-- **CSS3** responsivo (mobile-first)
-- **ES6+** modules
-- **Service Worker** para cache offline
-- **Web App Manifest** para instalação
-- **Web Push API** para notificações
-- **WebSocket** para tempo real
-
-### Páginas
-
-| Página | Descrição |
-|--------|-----------|
-| `index.html` | Home / Cardápio |
-| `cardapio.html` | Cardápio completo com filtros |
-| `carrinho.html` | Carrinho de compras |
-| `checkout.html` | Finalização + pagamento |
-| `meus-pedidos.html` | Histórico + acompanhamento |
-| `perfil.html` | Perfil + endereços |
-| `admin-*.html` | Painel administrativo |
-
-## 📊 API Documentation
-
-Com os serviços rodando, acesse:
-
-- **Gateway**: http://localhost:8000/docs
-- **Auth**: http://localhost:8001/docs
-- **Catálogo**: http://localhost:8002/docs
-- **Pedidos**: http://localhost:8003/docs
-- **Cozinha**: http://localhost:8004/docs
-- **Entregas**: http://localhost:8005/docs
-- **Notificações**: http://localhost:8006/docs
-- **Avaliações**: http://localhost:8007/docs
-- **Pagamentos**: http://localhost:8008/docs
-- **Relatórios**: http://localhost:8009/docs
-
-## 🚢 Deploy Produção (Hostinger VPS)
-
-```bash
-# 1. No servidor, clone e configure
-git clone <repo> /opt/fraga-lanches
-cd /opt/fraga-lanches
-cp .env.example .env
-# Edite .env com valores de produção
-
-# 2. Build e deploy
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-
-# 3. Configure nginx proxy reverso (exemplo)
-# server {
-#     listen 80;
-#     server_name api.fragalanches.com;
-#     location / { proxy_pass http://localhost:8000; }
-# }
-```
-
-### docker-compose.prod.yml (exemplo)
-
-```yaml
-version: '3.8'
-services:
-  gateway:
-    environment:
-      - ENVIRONMENT=production
-      - CORS_ORIGINS=https://fragalanches.com,https://www.fragalanches.com
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-
-  mysql:
-    volumes:
-      - /opt/fraga-data/mysql:/var/lib/mysql
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-```
-
-## 🧪 Testes
-
-```bash
-# Testes unitários (por serviço)
-cd services/ms-auth && pytest -v --cov=app
-
-# Testes de integração
-pytest tests/integration -v
-
-# Testes de carga (locust)
-locust -f tests/load/locustfile.py --host=http://localhost:8000
-```
-
-## 📝 Licença
-
-Proprietary - Fraga Lanches © 2026
-
-## 👥 Equipe
-
-- **Arquiteta**: Eloise Arruda Borges
-- **Desenvolvedores**: Christian Marcelo, Gabriel Pinheiro, Samuel Welington
-
----
-
-**Documentação da Arquitetura**: Ver `docs/arquitetura.md`  
-**Requisitos de Software**: Ver `docs/requisitos.md`
+1. **Banco único**: Todos os 10 serviços conectam no mesmo MariaDB (`fraga_lanches`)
+2. **Gateway central**: Recebe tudo em `/api/*` e encaminha pro serviço certo
+3. **RabbitMQ**: Eventos assíncronos (ex: pedido criado → notifica cozinha + entregas)
+4. **Frontend estático**: Servido direto na 8080, chama API via `/api/`

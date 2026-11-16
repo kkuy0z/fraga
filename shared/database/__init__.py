@@ -1,15 +1,23 @@
 """
 Shared database configuration and session management.
 """
+import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from typing import AsyncGenerator
-import os
+
+# Load .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Database URL from environment
+# Format: mysql+asyncmy://user:password@host:port/database
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "mysql+asyncmy://fraga_user:fraga_pass_2026@localhost:3306/fraga_lanches"
+    "mysql+asyncmy://fraga_user:fraga_password@localhost:3306/fraga_lanches"
 )
 
 # Create async engine
@@ -54,3 +62,8 @@ async def init_db() -> None:
 async def close_db() -> None:
     """Close database connections."""
     await engine.dispose()
+
+
+def get_database_url() -> str:
+    """Get the current database URL (for debugging/migrations)."""
+    return DATABASE_URL
