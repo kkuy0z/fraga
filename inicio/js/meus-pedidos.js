@@ -1,6 +1,7 @@
 import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatDateTime, getStatusLabel, getStatusClass, escapeHtml } from './utils.js';
+import { verificarAuth, handleLogout } from './shared-components.js';
 
 // Estado da página
 let pedidos = [];
@@ -29,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await inicializarPagina();
     configurarEventListeners();
     atualizarContadorCarrinho();
-    verificarAuth();
 });
 
 async function inicializarPagina() {
@@ -100,25 +100,8 @@ function atualizarContadorCarrinho() {
     }
 }
 
-async function verificarAuth() {
-    const clienteUser = api.getClienteUser();
-    const userButton = document.getElementById('userButton');
-    const userName = document.getElementById('userName');
-    const userAvatar = document.getElementById('userAvatar');
-    const adminLink = document.getElementById('adminLink');
-    const loginLink = document.getElementById('loginLink');
-
-    if (clienteUser) {
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = clienteUser.nome;
-        if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'none';
-    } else {
-        if (userButton) userButton.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'inline-flex';
-    }
-}
+// verificarAuth is now centralized in shared-components.js
+// and called automatically by initHeader
 
 async function carregarPedidos() {
     showLoading('Carregando pedidos...');
@@ -586,8 +569,4 @@ async function mudarPagina(novaPagina) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function handleLogout() {
-    api.clearClienteAuth();
-    showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/index.html', 1000);
-}
+// handleLogout is imported from shared-components.js

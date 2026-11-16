@@ -2,18 +2,7 @@ import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatCEP, validateCEP, formatPhone, validatePhone, debounce } from './utils.js';
 import { subscribeToPush, initPushNotifications } from './push-notifications.js';
-
-// Função para decodificar JWT e obter payload
-function decodificarJWT(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        return null;
-    }
-}
+import { verificarAuth, handleLogout } from './shared-components.js';
 
 // Estado do checkout
 let currentStep = 1;
@@ -41,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderizarCarrinho();
     configurarEventListeners();
     atualizarContadorCarrinho();
-    verificarAuth();
     verificarCarrinhoVazio();
 });
 
@@ -435,7 +423,7 @@ async function finalizarPedido() {
 
         if (!clienteToken || !clienteUser) {
             showToast('Você precisa estar logado para finalizar o pedido', 'warning');
-            setTimeout(() => window.location.href = 'cadastro.html', 2000);
+            setTimeout(() => window.location.href = '/Cadastro/cadastro.html', 2000);
             return;
         }
 
@@ -555,53 +543,5 @@ function atualizarContadorCarrinho() {
     cartCount.style.display = total > 0 ? 'flex' : 'none';
 }
 
-async function verificarAuth() {
-    const token = localStorage.getItem('auth_token');
-    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
-    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
-
-    const userButton = document.getElementById('userButton');
-    const userName = document.getElementById('userName');
-    const userAvatar = document.getElementById('userAvatar');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const adminLink = document.getElementById('adminLink');
-    const loginLink = document.getElementById('loginLink');
-
-    if (clienteToken && clienteUser) {
-        userButton.style.display = 'flex';
-        userName.textContent = clienteUser.nome;
-        userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
-        adminLink.style.display = 'none';
-        loginLink.style.display = 'none';
-
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('cliente_token');
-            localStorage.removeItem('cliente_user');
-            sessionStorage.removeItem('cliente_token');
-            sessionStorage.removeItem('cliente_user');
-            showToast('Logout realizado com sucesso', 'success');
-            setTimeout(() => window.location.reload(), 1000);
-        });
-    } else if (token && user) {
-        // Admin logado - verificar role
-        const payload = decodificarJWT(token);
-        const isAdmin = payload && payload.role === 'administrador';
-
-        userButton.style.display = 'flex';
-        userName.textContent = user.nome;
-        userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
-        loginLink.style.display = 'none';
-
-        logoutBtn.addEventListener('click', () => {
-            api.clearAuth();
-            showToast('Logout realizado com sucesso', 'success');
-            setTimeout(() => window.location.reload(), 1000);
-        });
-    } else {
-        userButton.style.display = 'none';
-        adminLink.style.display = 'none';
-        loginLink.style.display = 'inline-flex';
-    }
-}
+// verificarAuth is now centralized in shared-components.js
+// and called automatically by initHeader

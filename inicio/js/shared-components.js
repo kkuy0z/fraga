@@ -435,6 +435,96 @@ class ModalManager {
   }
 }
 
+// ===== JWT UTILITIES =====
+function decodificarJWT(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+}
+
+function isAdminToken(token) {
+  const payload = decodificarJWT(token);
+  return payload && payload.role === 'administrador';
+}
+
+// ===== CENTRALIZED AUTH VERIFICATION =====
+async function verificarAuth() {
+  const token = localStorage.getItem('auth_token');
+  const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+  const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
+  const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
+
+  const userButton = document.getElementById('userButton');
+  const userName = document.getElementById('userName');
+  const userAvatar = document.getElementById('userAvatar');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const adminLink = document.getElementById('adminLink');
+  const loginLink = document.getElementById('loginLink');
+
+  if (clienteToken && clienteUser) {
+    // Cliente logado
+    if (userButton) userButton.style.display = 'flex';
+    if (userName) userName.textContent = clienteUser.nome;
+    if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
+    if (adminLink) adminLink.style.display = 'none';
+    if (loginLink) loginLink.style.display = 'none';
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+  } else if (token && user) {
+    // Admin logado - verificar role
+    const isAdmin = isAdminToken(token);
+
+    if (userButton) userButton.style.display = 'flex';
+    if (userName) userName.textContent = user.nome;
+    if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
+    if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
+    if (loginLink) loginLink.style.display = 'none';
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+  } else {
+    // Não logado
+    if (userButton) userButton.style.display = 'none';
+    if (adminLink) adminLink.style.display = 'none';
+    if (loginLink) loginLink.style.display = 'inline-flex';
+  }
+}
+
+async function handleLogout() {
+  const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
+  const token = localStorage.getItem('auth_token');
+
+  if (clienteToken) {
+    localStorage.removeItem('cliente_token');
+    localStorage.removeItem('cliente_user');
+    sessionStorage.removeItem('cliente_token');
+    sessionStorage.removeItem('cliente_user');
+    window.toast?.success('Logout realizado com sucesso');
+    setTimeout(() => window.location.href = '/inicio/index.html', 1000);
+  } else if (token) {
+    try {
+      const api = window.api || (await import('./api.js')).default;
+      api.clearAuth();
+    } catch (e) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+    }
+    window.toast?.success('Logout realizado com sucesso');
+    setTimeout(() => window.location.href = '/admin-login.html', 1000);
+  } else {
+    // Fallback
+    window.location.reload();
+  }
+}
+
 // ===== SERVICE WORKER REGISTRATION =====
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
@@ -488,19 +578,9 @@ function initHeader(isAdmin = false, currentPage = '') {
   const logoutBtn = document.getElementById('logoutBtn');
 
   if (userButton && userMenu) {
-    // Handle logout
+    // Handle logout - use centralized function
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        try {
-          const api = window.api || (await import('./api.js')).default;
-          api.clearClienteAuth();
-          api.clearAuth();
-          window.location.href = '/inicio/index.html';
-        } catch (e) {
-          localStorage.clear();
-          window.location.href = '/inicio/index.html';
-        }
-      });
+      logoutBtn.addEventListener('click', handleLogout);
     }
 
     // Close dropdown on outside click
@@ -523,6 +603,9 @@ function initHeader(isAdmin = false, currentPage = '') {
       adminNavToggle.setAttribute('aria-expanded', isActive);
     });
   }
+
+  // Verify and update auth state
+  verificarAuth();
 }
 
 function updateCartCount() {
@@ -574,4 +657,4 @@ function getCurrentPage() {
 }
 
 // Export for module usage
-export { ToastManager, LoadingManager, ModalManager, initHeader, createHeader, createFooter, registerServiceWorker, updateCartCount };
+export { ToastManager, LoadingManager, ModalManager, initHeader, createHeader, createFooter, registerServiceWorker, updateCartCount, verificarAuth, decodificarJWT, isAdminToken, handleLogout };

@@ -4,6 +4,7 @@
  */
 import api from '../inicio/js/api.js';
 import { showToast, showLoading, hideLoading } from '../inicio/js/utils.js';
+import { verificarAuth, handleLogout } from '../inicio/js/shared-components.js';
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
@@ -81,51 +82,8 @@ function initPendingLinks() {
     $$('a[data-pendente]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 }
 
-/* ---------- Verificar Autenticação (Header) ---------- */
-async function verificarAuth() {
-    // Verificar localStorage primeiro, depois sessionStorage (para "lembrar-me" não marcado)
-    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
-    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
-    const token = localStorage.getItem('auth_token');
-    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-
-    const userButton = $('#userButton');
-    const userName = $('#userName');
-    const userAvatar = $('#userAvatar');
-    const adminLink = $('#adminLink');
-    const loginLink = $('#loginLink');
-
-    if (clienteToken && clienteUser) {
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = clienteUser.nome;
-        if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'none';
-    } else if (token && user) {
-        const payload = decodificarJWT(token);
-        const isAdmin = payload && payload.role === 'administrador';
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = user.nome;
-        if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = isAdmin ? 'inline-flex' : 'none';
-        if (loginLink) loginLink.style.display = 'none';
-    } else {
-        if (userButton) userButton.style.display = 'none';
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'inline-flex';
-    }
-}
-
-function decodificarJWT(token) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-        return JSON.parse(jsonPayload);
-    } catch {
-        return null;
-    }
-}
+// verificarAuth is now centralized in shared-components.js
+// and called automatically by initHeader
 
 /* ---------- Submit do Formulário ---------- */
 async function handleSubmit(e) {

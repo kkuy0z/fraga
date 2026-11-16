@@ -1,6 +1,7 @@
 import cart from './cart.js';
 import api from './api.js';
 import { showToast } from './utils.js';
+import { verificarAuth, handleLogout } from './shared-components.js';
 
 // Elementos DOM
 const cartCount = document.getElementById('cartCount');
@@ -11,7 +12,6 @@ const statusIndicator = document.querySelector('.status-indicator');
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     atualizarContadorCarrinho();
-    verificarAuth();
     configurarEventListeners();
     verificarStatusEstabelecimento();
     // Verificar status a cada 30 segundos
@@ -21,12 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function configurarEventListeners() {
     // Atualizar contador do carrinho quando mudar
     cart.subscribe(atualizarContadorCarrinho);
-
-    // Logout
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
 }
 
 function atualizarContadorCarrinho() {
@@ -72,60 +66,7 @@ async function verificarStatusEstabelecimento() {
     }
 }
 
-// NOTA: Removida a função decodificarJWT insegura.
-// A validação de token e role deve ser feita no backend via /auth/verify ou /clientes/verify
-// O frontend apenas verifica a presença do token no localStorage para exibir UI.
+// verificarAuth is now centralized in shared-components.js
+// and called automatically by initHeader
 
-async function verificarAuth() {
-    const token = localStorage.getItem('auth_token');
-    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
-    const clienteUser = JSON.parse(localStorage.getItem('cliente_user') || sessionStorage.getItem('cliente_user') || 'null');
-
-    const userButton = document.getElementById('userButton');
-    const userName = document.getElementById('userName');
-    const userAvatar = document.getElementById('userAvatar');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const adminLink = document.getElementById('adminLink');
-    const loginLink = document.getElementById('loginLink');
-
-    if (clienteToken && clienteUser) {
-        // Cliente logado
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = clienteUser.nome;
-        if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'none';
-    } else if (token && user) {
-        // Admin logado - a verificação de role deve ser feita no backend
-        // Por enquanto, mostramos o link admin se houver token de admin
-        // O backend validará o role nas requisições administrativas
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = user.nome;
-        if (userAvatar) userAvatar.textContent = user.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'inline-flex';
-        if (loginLink) loginLink.style.display = 'none';
-    } else {
-        // Não logado
-        if (userButton) userButton.style.display = 'none';
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'inline-flex';
-    }
-}
-
-function handleLogout() {
-    const clienteToken = localStorage.getItem('cliente_token') || sessionStorage.getItem('cliente_token');
-    const token = localStorage.getItem('auth_token');
-
-    if (clienteToken) {
-        localStorage.removeItem('cliente_token');
-        localStorage.removeItem('cliente_user');
-        sessionStorage.removeItem('cliente_token');
-        sessionStorage.removeItem('cliente_user');
-    } else if (token) {
-        api.clearAuth();
-    }
-
-    showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.reload(), 1000);
-}
+// handleLogout is imported from shared-components.js

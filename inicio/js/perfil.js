@@ -2,6 +2,7 @@ import api from './api.js';
 import cart from './cart.js';
 import { formatCurrency, showToast, showLoading, hideLoading, formatDateTime, formatPhone, formatCEP, escapeHtml } from './utils.js';
 import { isPushSupported, getNotificationPermission, requestNotificationPermission, subscribeToPush, unsubscribeFromPush, getPushSubscriptionStatus, initPushNotifications } from './push-notifications.js';
+import { verificarAuth, handleLogout } from './shared-components.js';
 
 // Estado da página
 let enderecos = [];
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await inicializarPagina();
     configurarEventListeners();
     atualizarContadorCarrinho();
-    verificarAuth();
+    // verificarAuth is now called automatically by initHeader in shared-components.js
 });
 
 async function inicializarPagina() {
@@ -163,26 +164,6 @@ function atualizarContadorCarrinho() {
     if (cartCount) {
         cartCount.textContent = total;
         cartCount.style.display = total > 0 ? 'flex' : 'none';
-    }
-}
-
-async function verificarAuth() {
-    const clienteUser = api.getClienteUser();
-    const userButton = document.getElementById('userButton');
-    const userName = document.getElementById('userName');
-    const userAvatar = document.getElementById('userAvatar');
-    const adminLink = document.getElementById('adminLink');
-    const loginLink = document.getElementById('loginLink');
-
-    if (clienteUser) {
-        if (userButton) userButton.style.display = 'flex';
-        if (userName) userName.textContent = clienteUser.nome;
-        if (userAvatar) userAvatar.textContent = clienteUser.nome.charAt(0).toUpperCase();
-        if (adminLink) adminLink.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'none';
-    } else {
-        if (userButton) userButton.style.display = 'none';
-        if (loginLink) loginLink.style.display = 'inline-flex';
     }
 }
 
@@ -582,8 +563,4 @@ async function handlePushUnsubscribe() {
     }
 }
 
-function handleLogout() {
-    api.clearClienteAuth();
-    showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/index.html', 1000);
-}
+// handleLogout is imported from shared-components.js

@@ -1,5 +1,6 @@
 import api from './api.js';
 import { showToast, showLoading, hideLoading, formatCurrency, formatDateTime, getStatusLabel, getStatusClass, escapeHtml } from './utils.js';
+import { verificarAuth, handleLogout } from './shared-components.js';
 
 // Elementos DOM
 const userButton = document.getElementById('userButton');
@@ -206,8 +207,5 @@ async function carregarPedidosRecentes() {
     }
 }
 
-function handleLogout() {
-    api.clearAuth();
-    showToast('Logout realizado com sucesso', 'success');
-    setTimeout(() => window.location.href = '/admin-login.html', 1000);
-}
+// handleLogout is imported from shared-components.js
+// Note: admin pages should redirect to admin-login.html, handled by shared-components
