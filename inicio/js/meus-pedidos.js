@@ -36,7 +36,8 @@ async function inicializarPagina() {
     // Verificar se cliente está autenticado
     if (!api.isClienteAuthenticated()) {
         showToast('Você precisa estar logado para ver seus pedidos', 'warning');
-        setTimeout(() => window.location.href = '/index.html', 2000);
+        sessionStorage.setItem('redirectAfterLogin', '/inicio/meus-pedidos.html');
+        setTimeout(() => window.location.href = '/Cadastro/login.html', 2000);
         return;
     }
 

@@ -423,7 +423,8 @@ async function finalizarPedido() {
 
         if (!clienteToken || !clienteUser) {
             showToast('Você precisa estar logado para finalizar o pedido', 'warning');
-            setTimeout(() => window.location.href = '/Cadastro/cadastro.html', 2000);
+            sessionStorage.setItem('redirectAfterLogin', '/inicio/checkout.html');
+            setTimeout(() => window.location.href = '/Cadastro/login.html', 2000);
             return;
         }
 
