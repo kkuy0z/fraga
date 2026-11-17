@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rastreamento do pedido - Fraga Lanches">
+    <title>Rastrear Pedido - Fraga Lanches</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0c0c0c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fraga Lanches">
+    <link rel="apple-touch-icon" href="/img/icon-192.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header will be injected by shared-components.js -->
+
+    <!-- Main Content -->
+    <main class="page-main" role="main" style="padding: var(--space-4);">
+        <div class="container" style="max-width: 600px;">
+
+            <!-- Loading State -->
+            <div id="loadingState" class="empty-state" style="padding: var(--space-12) 0;">
+                <div class="loading-spinner" style="width: 48px; height: 48px; border-width: 3px; margin-bottom: var(--space-4);"></div>
+                <h2 class="empty-state-title">Carregando pedido...</h2>
+                <p class="empty-state-message">Buscando informações do seu pedido</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="empty-state hidden" style="padding: var(--space-12) 0;">
+                <div class="empty-state-icon" style="color: var(--error);">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+                <h2 class="empty-state-title">Pedido não encontrado</h2>
+                <p class="empty-state-message" id="errorMessage">Não foi possível localizar este pedido.</p>
+                <div style="margin-top: var(--space-6); display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;">
+                    <button class="btn btn-primary" id="btnTentarNovamente">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-refresh" /></svg>
+                        Tentar Novamente
+                    </button>
+                    <a href="/inicio/meus-pedidos.html" class="btn btn-secondary">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-list" /></svg>
+                        Ver Meus Pedidos
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Content (Hidden until loaded) -->
+            <div id="orderContent" class="hidden">
+                <!-- Header with Order Number & Status Badge -->
+                <div class="card" style="margin-bottom: var(--space-4); overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card)); border-bottom: 1px solid var(--border-subtle); padding: var(--space-5);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap;">
+                            <div>
+                                <h1 id="orderNumber" style="font-family: var(--font-heading); font-size: var(--fs-2xl); font-weight: 700; color: var(--text-primary); margin: 0;">#0000</h1>
+                                <p id="orderDate" style="color: var(--text-muted); margin: var(--space-1) 0 0 0; font-size: var(--fs-sm);">00/00/0000 às 00:00</p>
+                            </div>
+                            <div id="statusBadge" class="badge" style="font-size: var(--fs-sm); padding: var(--space-2) var(--space-4); white-space: nowrap; min-width: 140px; text-align: center; border-radius: var(--radius-full);">
+                                <span id="statusIcon" aria-hidden="true"></span>
+                                <span id="statusLabel">Carregando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Countdown (only for active orders) -->
+                <div id="countdownSection" class="hidden">
+                    <div class="card" style="background: linear-gradient(135deg, var(--accent-weak), var(--bg-elevated)); border: 1px solid var(--accent-weak-border); margin-bottom: var(--space-4);">
+                        <div style="padding: var(--space-4); text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span style="font-family: var(--font-title); font-size: var(--fs-base); color: var(--accent); font-weight: 600;">Tempo estimado para entrega</span>
+                            </div>
+                            <div id="countdownDisplay" style="font-family: var(--font-display); font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 700; color: var(--accent); letter-spacing: -0.02em;">
+                                --:--
+                            </div>
+                            <p id="countdownLabel" style="color: var(--text-secondary); font-size: var(--fs-sm); margin-top: var(--space-1);">Calculando...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Timeline -->
+                <section aria-labelledby="timelineTitle" style="margin-bottom: var(--space-6);">
+                    <h2 id="timelineTitle" class="visually-hidden">Acompanhamento do pedido</h2>
+                    <div id="timelineContainer" class="card">
+                        <div style="padding: var(--space-5);">
+                            <h3 style="font-family: var(--font-title); font-size: var(--fs-lg); color: var(--text-primary); margin-bottom: var(--space-5); display: flex; align-items: center; gap: var(--space-2);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                Status do Pedido
+                            </h3>
+                            <div id="statusTimeline" class="status-timeline" role="list" aria-label="Etapas do pedido">
+                                <!-- Timeline items will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Order Details -->
+                <section aria-labelledby="detailsTitle" style="margin-bottom: var(--space-6);">
+                    <h2 id="detailsTitle" class="visually-hidden">Detalhes do pedido</h2>
+                    <div class="card" style="margin-bottom: var(--space-4);">
+                        <div style="padding: var(--space-5);">
+                            <h3 style="font-family: var(--font-title); font-size: var(--fs-lg); color: var(--text-primary); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-2);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                Informações da Entrega
+                            </h3>
+                            <div id="deliveryInfo" style="display: grid; gap: var(--space-3);">
+                                <!-- Delivery info will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: var(--space-4);">
+                        <div style="padding: var(--space-5);">
+                            <h3 style="font-family: var(--font-title); font-size: var(--fs-lg); color: var(--text-primary); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-2);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                                Itens do Pedido
+                            </h3>
+                            <div id="orderItems" style="display: grid; gap: var(--space-3);">
+                                <!-- Items will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: var(--space-4);">
+                        <div style="padding: var(--space-5);">
+                            <h3 style="font-family: var(--font-title); font-size: var(--fs-lg); color: var(--text-primary); margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-2);">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                Pagamento
+                            </h3>
+                            <div id="paymentInfo" style="display: grid; gap: var(--space-3);">
+                                <!-- Payment info will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Order Totals -->
+                <div class="card" style="margin-bottom: var(--space-6); background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
+                    <div style="padding: var(--space-5);">
+                        <h3 style="font-family: var(--font-title); font-size: var(--fs-lg); color: var(--text-primary); margin-bottom: var(--space-4);">Resumo</h3>
+                        <div style="display: grid; gap: var(--space-2);" id="orderTotals">
+                            <!-- Totals will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;">
+                    <button class="btn btn-primary" id="btnRecomprar" style="flex: 1; min-width: 200px;">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-rotate-ccw" /></svg>
+                        Pedir Novamente
+                    </button>
+                    <a href="/inicio/meus-pedidos.html" class="btn btn-secondary" style="flex: 1; min-width: 200px; text-align: center;">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-list" /></svg>
+                        Ver Meus Pedidos
+                    </a>
+                    <a href="/inicio/cardapio.html" class="btn btn-outline" style="flex: 1; min-width: 200px; text-align: center;">
+                        <svg class="btn-icon" aria-hidden="true"><use href="#i-chevron-left" /></svg>
+                        Continuar Comprando
+                    </a>
+                </div>
+
+                <!-- Support Link -->
+                <p style="text-align: center; margin-top: var(--space-6); color: var(--text-muted); font-size: var(--fs-sm);">
+                    Precisa de ajuda? <a href="https://wa.me/5531999999999" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 600;">Fale conosco no WhatsApp</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be injected by shared-components.js -->
+
+    <script type="module" src="js/shared-components.js"></script>
+    <script type="module" src="js/status.js"></script>
+    <script type="module">
+        import { initHeader } from './js/shared-components.js';
+        import { initTrackingPage, initTrackingModal } from './js/status.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initHeader(false);
+
+            // Inicializar página de rastreamento dedicada
+            await initTrackingPage();
+        });
+    </script>
+</body>
+
+</html>
